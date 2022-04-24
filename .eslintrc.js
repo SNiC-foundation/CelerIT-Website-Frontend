@@ -21,5 +21,24 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    'linebreak-style': ['error', 'windows'],
+    'import/prefer-default-export': 'off',
+    'class-methods-use-this': 'off',
+    'import/extensions': ['off', 'ignorePackages', {
+      js: 'never',
+      ts: 'never',
+    }],
+    'react/jsx-filename-extension': [2, { extensions: ['.jsx', '.tsx'] }],
+  },
+  settings: {
+    'import/extensions': ['.js', '.ts', '.jsx', '.tsx'],
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts'],
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.ts', '.jsx', '.tsx'],
+      },
+    },
   },
 };

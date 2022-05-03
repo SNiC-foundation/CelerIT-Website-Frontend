@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-  Box, FormControl, IconButton, Input, InputAdornment, InputLabel, Paper,
+  Box, FormControl, IconButton, Input, InputAdornment,
+  InputLabel, MenuItem, Select,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
@@ -21,13 +22,19 @@ function ParticipantSettings() {
   interface State {
     password: string;
     showPassword: boolean;
+    association: string;
   }
+
   const [values, setValues] = React.useState<State>({
     password: '',
     showPassword: false,
+    association: '',
   });
+  const [association, setAssociation] = React.useState('');
 
-  const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    prop: keyof State,
+  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value });
   };
 
@@ -41,6 +48,7 @@ function ParticipantSettings() {
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
+
   return (
     <Box
       sx={{ display: 'flex', flexWrap: 'wrap' }}
@@ -60,17 +68,10 @@ function ParticipantSettings() {
           defaultValue="snicjes@celerit.nl"
           variant="standard"
         />
-        <TextField
-          disabled
-          id="password"
-          label="Password"
-          defaultValue="John Doe"
-          variant="standard"
-        />
         <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
           <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
           <Input
-            id="standard-adornment-password"
+            id="password"
             type={values.showPassword ? 'text' : 'password'}
             value={values.password}
             onChange={handleChange('password')}
@@ -86,6 +87,28 @@ function ParticipantSettings() {
               </InputAdornment>
             )}
           />
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel id="association">Age</InputLabel>
+          <Select
+            labelId="association-label"
+            id="association"
+            value={association}
+            label="Association"
+            onChange={(event) => setAssociation(event.target.value)}
+          >
+            <MenuItem value="A Eskwadraat">A-Eskwadraat</MenuItem>
+            <MenuItem value="ASCII">ASCII</MenuItem>
+            <MenuItem value="Cognac">Cognac</MenuItem>
+            <MenuItem value="Cover">Cover</MenuItem>
+            <MenuItem value="De Leidsche Flesch">De Leidsche Flesch</MenuItem>
+            <MenuItem value="GEWIS">GEWIS</MenuItem>
+            <MenuItem value="Inter Actief">CInter-Actief</MenuItem>
+            <MenuItem value="Sticky">Sticky</MenuItem>
+            <MenuItem value="Thalia">Thalia</MenuItem>
+            <MenuItem value="via">via</MenuItem>
+
+          </Select>
         </FormControl>
 
       </div>

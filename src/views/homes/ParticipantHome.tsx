@@ -1,10 +1,12 @@
 import React from 'react';
 import ParticipantSettings from '../../components/ParticipantSettings';
 
-interface Props {}
+// interface Props {}
 
-function ParticipantHome({}:Props) {
+function ParticipantHome() {
   return (
     <ParticipantSettings />
   );
 }
+
+export default ParticipantHome;

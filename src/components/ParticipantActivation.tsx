@@ -19,7 +19,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // I give permission to share my information with the Partners of SNiC 2022 (checkbox)
 //
 // Save button
-function ParticipantSettings() {
+function ParticipantActivation() {
   interface State {
     password: string;
     showPassword: boolean;
@@ -91,7 +91,7 @@ function ParticipantSettings() {
                   {values.showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
-              )}
+            )}
           />
         </FormControl>
         <FormControl fullWidth>
@@ -167,4 +167,4 @@ function ParticipantSettings() {
   );
 }
 
-export default ParticipantSettings;
+export default ParticipantActivation;

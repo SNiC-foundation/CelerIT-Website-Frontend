@@ -10,6 +10,14 @@ interface State {
   showPassword: boolean;
 }
 
+function handleClickLogin() {
+  alert('Je bent ingelogd');
+}
+
+function handleClickForgotPassword() {
+  alert('Ja doe gewoon onthouden ofzo');
+}
+
 function LoginForm() {
   const [values, setValues] = React.useState<State>({
     showPassword: false,
@@ -70,8 +78,8 @@ function LoginForm() {
           />
         </FormControl>
 
-        <Button variant="contained" sx={{ mt: 2 }}>Login</Button>
-        <Button sx={{ color: 'text.disabled', mt: 2 }}>Forgot password</Button>
+        <Button variant="contained" sx={{ mt: 2 }} onClick={handleClickLogin}>Login</Button>
+        <Button sx={{ color: 'text.disabled', mt: 2 }} onClick={handleClickForgotPassword}>Forgot password</Button>
       </Paper>
     </Container>
   );

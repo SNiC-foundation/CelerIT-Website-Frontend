@@ -14,17 +14,16 @@ function Activity(props: Props) {
     title, location, startTime, endTime, description,
   } = props;
   return (
-    <Box sx={{
-      p: 1, m: 2, border: '5px grey', backgroundColor: 'primary.main', width: '40%',
-    }}
-    >
+    <Box>
       <h1>
         {`${title}`}
       </h1>
       <h4>
         {`${location}, ${startTime.getUTCHours().toString().padStart(2, '0')}:${startTime.getUTCMinutes().toString().padStart(2, '0')}-${endTime.getUTCHours().toString().padStart(2, '0')}:${endTime.getUTCMinutes().toString().padStart(2, '0')}`}
       </h4>
-      <p>{description}</p>
+      <p>
+        {description}
+      </p>
     </Box>
   );
 }

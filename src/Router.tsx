@@ -1,13 +1,13 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from './views/App';
-import Program from './components/Program';
+import ProgramComponent from './components/ProgramComponent';
 
 function Router() {
   return (
     <Routes>
       <Route path="" element={<App />} />
-      <Route path="program" element={<Program />} />
+      <Route path="program" element={<ProgramComponent />} />
     </Routes>
   );
 }

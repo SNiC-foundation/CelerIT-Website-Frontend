@@ -9,7 +9,7 @@ interface Props {
   description?: string;
 }
 
-function Activity(props: Props) {
+function ActivityComponent(props: Props) {
   const {
     title, location, startTime, endTime, description,
   } = props;
@@ -28,8 +28,8 @@ function Activity(props: Props) {
   );
 }
 
-Activity.defaultProps = {
+ActivityComponent.defaultProps = {
   description: 'A description is not yet set',
 };
 
-export default Activity;
+export default ActivityComponent;

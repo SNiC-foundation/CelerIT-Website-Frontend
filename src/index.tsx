@@ -4,6 +4,8 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
+import SNiCTheme from './theme';
+import MainMenu from './components/navigation/MainMenu';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -11,7 +13,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Router />
+      <SNiCTheme>
+        <MainMenu>
+          <Router />
+        </MainMenu>
+      </SNiCTheme>
     </BrowserRouter>
   </React.StrictMode>,
 );

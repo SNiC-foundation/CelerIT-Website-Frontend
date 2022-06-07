@@ -23,6 +23,10 @@ export const generalPages: MenuItem[] = [
 
 export const userMenuPages: MenuItem[] = [
   {
+    name: 'Login',
+    target: '/login',
+  },
+  {
     name: 'Account',
     target: '/user/:id',
   },

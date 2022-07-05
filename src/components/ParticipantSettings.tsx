@@ -19,14 +19,19 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // I give permission to share my information with the Partners of SNiC 2022 (checkbox)
 //
 // Save button
-function ParticipantSettings() {
-  interface State {
-    password: string;
-    showPassword: boolean;
-    association: string;
-    study: string;
-  }
 
+interface Props {
+  create: boolean;
+}
+
+interface State {
+  password: string;
+  showPassword: boolean;
+  association: string;
+  study: string;
+}
+
+function ParticipantSettings(props: Props) {
   const [values, setValues] = React.useState<State>({
     password: '',
     showPassword: false,
@@ -35,8 +40,9 @@ function ParticipantSettings() {
   });
 
   const [association, setAssociation] = React.useState('');
-
   const [study, setStudy] = React.useState('');
+
+  const { create } = props;
 
   const handleChange = (
     prop: keyof State,
@@ -61,14 +67,14 @@ function ParticipantSettings() {
     >
       <Stack spacing={2}>
         <TextField
-          disabled
+          disabled={!create}
           id="name"
           label="Name"
           defaultValue="John Doe"
           variant="standard"
         />
         <TextField
-          disabled
+          disabled={!create}
           id="email"
           label="Email"
           defaultValue="snicjes@celerit.nl"
@@ -159,7 +165,11 @@ function ParticipantSettings() {
           variant="standard"
         />
         <FormGroup>
-          <FormControlLabel control={<Checkbox />} label="I give permission to share my information with Partners of SNiC 2022 (optional)" />
+          <FormControlLabel
+            control={<Checkbox />}
+            label="I give permission to share my information with Partners of SNiC 2022 (optional)"
+            sx={(theme) => ({ color: theme.palette.text.primary })}
+          />
         </FormGroup>
         <Button variant="contained" style={{ maxWidth: '50px' }}>Save</Button>
       </Stack>

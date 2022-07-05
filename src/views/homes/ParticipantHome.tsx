@@ -5,7 +5,7 @@ import ParticipantSettings from '../../components/ParticipantSettings';
 
 function ParticipantHome() {
   return (
-    <ParticipantSettings />
+    <ParticipantSettings create={false} />
   );
 }
 

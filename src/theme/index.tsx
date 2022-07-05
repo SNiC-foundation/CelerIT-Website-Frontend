@@ -16,6 +16,7 @@ function SNiCTheme({ children }: Props) {
       secondary: {
         main: '#072b4e',
       },
+      mode: 'dark',
     },
   });
 

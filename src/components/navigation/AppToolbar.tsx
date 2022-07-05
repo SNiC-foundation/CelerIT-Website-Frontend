@@ -34,7 +34,7 @@ function AppToolbar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" enableColorOnDark sx={{ position: 'absolute', zIndex: 100 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -119,7 +119,9 @@ function AppToolbar() {
               <Button
                 key={page.name}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{
+                  color: 'white', display: 'block', marginY: '13.75px',
+                }}
                 component={Link}
                 to={page.target}
               >

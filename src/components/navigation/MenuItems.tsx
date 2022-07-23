@@ -1,6 +1,8 @@
 import React from 'react';
 import AdminSpeakers from '../../views/admin/AdminSpeakers';
 import ParticipantHome from '../../views/homes/ParticipantHome';
+import AdminPartners from '../../views/admin/AdminPartners';
+import AdminProgram from '../../views/admin/AdminProgram';
 
 export interface MenuItem {
   name: string;
@@ -35,11 +37,11 @@ export const adminMenuPages: MenuItem[] = [
   }, {
     name: 'Partners',
     target: '/admin/partners',
-    component: null,
+    component: <AdminPartners />,
   }, {
     name: 'Program',
-    target: '/admin/partners',
-    component: null,
+    target: '/admin/program',
+    component: <AdminProgram />,
   }, {
     name: 'Users',
     target: '/admin/users',

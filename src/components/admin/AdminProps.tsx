@@ -10,10 +10,11 @@ export interface AdminPropField<T extends BaseEntity> {
   attribute: keyof T;
   label: string;
   fieldType: FieldType;
+  initial: T[keyof T];
 }
 
 export interface AdminPropsProps<T extends BaseEntity> {
-  entity: T;
+  entity?: T;
   fields: AdminPropField<T>[];
   // eslint-disable-next-line no-unused-vars
   handleSave: (entity: T) => void;
@@ -22,7 +23,14 @@ export interface AdminPropsProps<T extends BaseEntity> {
 function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
   const { entity, fields, handleSave } = props;
 
-  const [updatedEntity, setUpdatedEntity] = React.useState<T>(entity);
+  const [updatedEntity, setUpdatedEntity] = React.useState<T>(() => {
+    if (entity) return entity;
+    const newEntity: T = {} as T;
+    fields.forEach((f) => {
+      newEntity[f.attribute] = f.initial;
+    });
+    return newEntity;
+  });
 
   const getInputField = (field: AdminPropField<T>) => {
     switch (field.fieldType) {
@@ -74,5 +82,9 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
     </>
   );
 }
+
+AdminProps.defaultProps = ({
+  entity: undefined,
+});
 
 export default AdminProps;

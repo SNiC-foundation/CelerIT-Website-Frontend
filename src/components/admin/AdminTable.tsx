@@ -2,20 +2,24 @@ import React from 'react';
 import {
   DataGrid, GridColDef, GridRowsProp, GridRenderCellParams,
 } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
+import { Box, LinearProgress } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import BaseEntity from '../../clients/BaseEntity';
 import { AdminPropField, FieldType } from './AdminProps';
 import AdminUpdateEntityModal from './AdminUpdateEntityModal';
+import AdminTableButton from './AdminTableButton';
 
 export interface Column<T extends BaseEntity> {
   headerName: string;
   attribute: keyof T;
   updateFieldType?: FieldType;
   width: number;
+  initial: T[keyof T];
 }
 
 interface Props<T extends BaseEntity> {
   entities?: T[];
+  loading: boolean;
   entityColumns: Column<T>[];
   // eslint-disable-next-line no-unused-vars
   handleUpdate: (entity: T) => void;
@@ -27,7 +31,7 @@ interface Props<T extends BaseEntity> {
 
 function AdminTable<T extends BaseEntity>(props: Props<T>) {
   const {
-    entities, entityColumns, handleUpdate, handleCreate, handleDelete,
+    entities, loading, entityColumns, handleUpdate, handleCreate, handleDelete,
   } = props;
 
   if (!entities) {
@@ -40,6 +44,7 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
       attribute: c.attribute,
       label: c.headerName,
       fieldType: c.updateFieldType!,
+      initial: c.initial,
     }));
 
   const columns: GridColDef[] = entityColumns.map((c): GridColDef => ({
@@ -53,20 +58,20 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
   columns.push({
     field: 'action',
     headerName: '',
-    width: 100,
+    width: 200,
+    disableColumnMenu: true,
     renderCell: (params: GridRenderCellParams<any, T>) => (
       <div>
-        <AdminUpdateEntityModal entity={params.row} fields={propFields} handleSave={() => {}} />
-        <Button
-          variant="contained"
+        <AdminUpdateEntityModal entity={params.row} fields={propFields} handleSave={handleUpdate} />
+        <AdminTableButton
           color="error"
           onClick={(event) => {
             event.preventDefault();
             handleDelete(params.row);
           }}
         >
-          Delete
-        </Button>
+          <Delete fontSize="small" />
+        </AdminTableButton>
       </div>
     ),
   });
@@ -83,7 +88,20 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
   });
 
   return (
-    <DataGrid rows={rows} columns={columns} autoHeight />
+    <>
+      <Box sx={{ textAlign: 'right', marginBottom: '1em' }}>
+        <AdminUpdateEntityModal fields={propFields} handleSave={handleCreate} />
+      </Box>
+      <DataGrid
+        components={{
+          LoadingOverlay: LinearProgress,
+        }}
+        rows={rows}
+        columns={columns}
+        autoHeight
+        loading={loading}
+      />
+    </>
   );
 }
 

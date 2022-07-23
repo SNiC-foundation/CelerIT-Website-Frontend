@@ -12,17 +12,21 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
-import { generalPages, userMenuPages } from './MenuItems';
+import { adminMenuPages, generalPages, userMenuPages } from './MenuItems';
 
 function AppToolbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElAdmin, setAnchorElAdmin] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+  };
+  const handleOpenAdminMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElAdmin(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
@@ -31,6 +35,10 @@ function AppToolbar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleCloseAdminMenu = () => {
+    setAnchorElAdmin(null);
   };
 
   return (
@@ -94,6 +102,11 @@ function AppToolbar() {
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
+              <MenuItem
+                onClick={handleOpenAdminMenu}
+              >
+                <Typography textAlign="center">Admin</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <Typography
@@ -128,6 +141,44 @@ function AppToolbar() {
                 {page.name}
               </Button>
             ))}
+            <Button
+              sx={{
+                color: 'white', display: 'block', marginY: '13.75px',
+              }}
+              onClick={handleOpenAdminMenu}
+            >
+              Admin
+            </Button>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-admin-appbar"
+              anchorEl={anchorElAdmin}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElAdmin)}
+              onClose={handleCloseAdminMenu}
+            >
+              {adminMenuPages.map((page) => (
+                <MenuItem
+                  key={page.name}
+                  component={Link}
+                  to={page.target}
+                  onClick={() => {
+                    handleCloseAdminMenu();
+                    handleCloseNavMenu();
+                  }}
+                >
+                  <Typography textAlign="center">{page.name}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

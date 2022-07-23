@@ -1,7 +1,9 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent } from '@mui/material';
+import validator from 'validator';
 import { Client, Speaker } from '../../clients/server.generated';
 import AdminTable, { Column } from '../../components/admin/AdminTable';
+import TypographyHeader from '../../components/TypographyHeader';
 
 function AdminSpeakers() {
   const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
@@ -21,7 +23,12 @@ function AdminSpeakers() {
   }, []);
 
   const entityColumns: Column<Speaker>[] = [{
-    attribute: 'name', headerName: 'Name', width: 200, updateFieldType: 'string', initial: '',
+    attribute: 'name',
+    headerName: 'Name',
+    width: 200,
+    updateFieldType: 'string',
+    initial: '',
+    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
   }, {
     attribute: 'description', headerName: 'Description', width: 400, updateFieldType: 'text', initial: '',
   }];
@@ -53,11 +60,12 @@ function AdminSpeakers() {
 
   return (
     <>
-      <Typography variant="h1" sx={(theme) => ({ color: theme.palette.text.primary })}>All Speakers</Typography>
+      <TypographyHeader variant="h2">All Speakers</TypographyHeader>
       <Card>
         <CardContent>
           <AdminTable
             entityColumns={entityColumns}
+            entityName="speaker"
             loading={loading}
             entities={speakers}
             handleCreate={handleCreate}

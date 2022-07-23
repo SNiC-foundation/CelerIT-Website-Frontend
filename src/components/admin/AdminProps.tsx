@@ -11,17 +11,22 @@ export interface AdminPropField<T extends BaseEntity> {
   label: string;
   fieldType: FieldType;
   initial: T[keyof T];
+  // eslint-disable-next-line no-unused-vars
+  error?: (value: T[keyof T]) => boolean;
 }
 
 export interface AdminPropsProps<T extends BaseEntity> {
   entity?: T;
+  entityName: string;
   fields: AdminPropField<T>[];
   // eslint-disable-next-line no-unused-vars
   handleSave: (entity: T) => void;
 }
 
 function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
-  const { entity, fields, handleSave } = props;
+  const {
+    entity, entityName, fields, handleSave,
+  } = props;
 
   const [updatedEntity, setUpdatedEntity] = React.useState<T>(() => {
     if (entity) return entity;
@@ -47,8 +52,11 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
                 value={updatedEntity[field.attribute]}
                 onChange={(event) => setUpdatedEntity({
                   ...updatedEntity,
-                  [field.attribute]: event.target.value,
+                  [field.attribute]: field.fieldType !== 'text' ? event.target.value : event.target.value,
                 })}
+                error={field.error !== undefined
+                  ? field.error(updatedEntity[field.attribute])
+                  : false}
               />
             </FormControl>
           </Grid>
@@ -58,10 +66,13 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
     }
   };
 
+  const inputHasErrors = () => fields
+    .some((f) => (f.error ? f.error(updatedEntity[f.attribute]) : false));
+
   return (
     <>
       <DialogContent>
-        <Box component="form">
+        <Box component="form" sx={{ paddingTop: '0.5em' }}>
           <Grid container alignItems="center" direction="column" spacing={2}>
             {fields.map((field) => getInputField(field))}
           </Grid>
@@ -75,6 +86,8 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
           }}
           color="success"
           variant="contained"
+          title={`Save ${entityName}`}
+          disabled={inputHasErrors()}
         >
           Save
         </Button>

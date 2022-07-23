@@ -8,6 +8,7 @@ import BaseEntity from '../../clients/BaseEntity';
 import { AdminPropField, FieldType } from './AdminProps';
 import AdminUpdateEntityModal from './AdminUpdateEntityModal';
 import AdminTableButton from './AdminTableButton';
+import AdminTableExpandableCell from './AdminTableExpandableCell';
 
 export interface Column<T extends BaseEntity> {
   headerName: string;
@@ -15,10 +16,13 @@ export interface Column<T extends BaseEntity> {
   updateFieldType?: FieldType;
   width: number;
   initial: T[keyof T];
+  // eslint-disable-next-line no-unused-vars
+  validationError?: (value: T[keyof T]) => boolean;
 }
 
 interface Props<T extends BaseEntity> {
   entities?: T[];
+  entityName: string;
   loading: boolean;
   entityColumns: Column<T>[];
   // eslint-disable-next-line no-unused-vars
@@ -31,7 +35,7 @@ interface Props<T extends BaseEntity> {
 
 function AdminTable<T extends BaseEntity>(props: Props<T>) {
   const {
-    entities, loading, entityColumns, handleUpdate, handleCreate, handleDelete,
+    entities, entityName, loading, entityColumns, handleUpdate, handleCreate, handleDelete,
   } = props;
 
   if (!entities) {
@@ -45,14 +49,15 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
       label: c.headerName,
       fieldType: c.updateFieldType!,
       initial: c.initial,
+      error: c.validationError,
     }));
 
   const columns: GridColDef[] = entityColumns.map((c): GridColDef => ({
     field: c.attribute as string,
     headerName: c.headerName,
     width: c.width,
-    renderCell: (params: any) => (
-      <span title={params.value}>{params.formattedValue}</span>
+    renderCell: (params: GridRenderCellParams<any, T>) => (
+      <AdminTableExpandableCell value={params.formattedValue} />
     ),
   }));
   columns.push({
@@ -62,9 +67,15 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
     disableColumnMenu: true,
     renderCell: (params: GridRenderCellParams<any, T>) => (
       <div>
-        <AdminUpdateEntityModal entity={params.row} fields={propFields} handleSave={handleUpdate} />
+        <AdminUpdateEntityModal
+          entity={params.row}
+          entityName={entityName}
+          fields={propFields}
+          handleSave={handleUpdate}
+        />
         <AdminTableButton
           color="error"
+          title={`Delete ${entityName}`}
           onClick={(event) => {
             event.preventDefault();
             handleDelete(params.row);
@@ -90,7 +101,11 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
   return (
     <>
       <Box sx={{ textAlign: 'right', marginBottom: '1em' }}>
-        <AdminUpdateEntityModal fields={propFields} handleSave={handleCreate} />
+        <AdminUpdateEntityModal
+          fields={propFields}
+          entityName={entityName}
+          handleSave={handleCreate}
+        />
       </Box>
       <DataGrid
         components={{
@@ -100,6 +115,13 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
         columns={columns}
         autoHeight
         loading={loading}
+        getRowHeight={() => 'auto'}
+        getEstimatedRowHeight={() => 200}
+        sx={{
+          '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
+          '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
+          '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
+        }}
       />
     </>
   );

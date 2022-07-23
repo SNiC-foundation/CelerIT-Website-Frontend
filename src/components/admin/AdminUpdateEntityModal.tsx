@@ -1,5 +1,7 @@
 import React from 'react';
-import { Dialog, Button } from '@mui/material';
+import {
+  Dialog, Button, DialogTitle,
+} from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 import AdminProps, { AdminPropsProps } from './AdminProps';
 import BaseEntity from '../../clients/BaseEntity';
@@ -9,7 +11,7 @@ interface Props<T extends BaseEntity> extends AdminPropsProps<T> {}
 
 function AdminUpdateEntityModal<T extends BaseEntity>(props: Props<T>) {
   const {
-    entity, fields, handleSave,
+    entity, fields, handleSave, entityName,
   } = props;
 
   const [open, setOpen] = React.useState(false);
@@ -19,18 +21,30 @@ function AdminUpdateEntityModal<T extends BaseEntity>(props: Props<T>) {
   };
 
   const button = () => (entity === undefined ? (
-    <Button variant="contained" onClick={() => setOpen(true)}>
+    <Button variant="contained" onClick={() => setOpen(true)} title={`Create ${entityName}`}>
       <Add sx={{ marginRight: '0.25em' }} />
       Create
+      {' '}
+      {entityName}
     </Button>
   ) : (
-    <AdminTableButton onClick={() => setOpen(true)}><Edit fontSize="small" /></AdminTableButton>
+    <AdminTableButton
+      onClick={() => setOpen(true)}
+      title={`Edit ${entityName}`}
+    >
+      <Edit fontSize="small" />
+    </AdminTableButton>
   ));
+
+  const header = () => (entity === undefined ? `Create ${entityName}` : `Update ${entityName}`);
 
   return (
     <>
       {button()}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {header()}
+        </DialogTitle>
         <AdminProps
           entity={entity}
           fields={fields}
@@ -38,6 +52,7 @@ function AdminUpdateEntityModal<T extends BaseEntity>(props: Props<T>) {
             handleSave(e);
             handleClose();
           }}
+          entityName={entityName}
         />
       </Dialog>
     </>

@@ -26,7 +26,7 @@ function MainMenu({ children }: Props) {
           flex: '1 1 auto',
         })}
         >
-          <Container maxWidth="xl" sx={{ minHeight: 'calc(100vh - 64px)' }}>
+          <Container maxWidth="xl" sx={{ minHeight: 'calc(100vh - 64px)', paddingTop: '1em', paddingBottom: '1em' }}>
             {children}
           </Container>
         </Box>

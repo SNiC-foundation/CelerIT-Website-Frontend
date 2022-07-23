@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 import { Client, Speaker } from '../../clients/server.generated';
 import AdminTable, { Column } from '../../components/admin/AdminTable';
 
@@ -17,15 +17,25 @@ function AdminSpeakers() {
   }, []);
 
   const entityColumns: Column<Speaker>[] = [{
-    attribute: 'name', headerName: 'Name', width: 200,
+    attribute: 'name', headerName: 'Name', width: 200, updateFieldType: 'string',
   }, {
-    attribute: 'description', headerName: 'Description', width: 400,
+    attribute: 'description', headerName: 'Description', width: 400, updateFieldType: 'text',
   }];
+
+  const handleDelete = async (speaker: Speaker) => {
+    const client = new Client();
+    await client.deleteSpeaker(speaker.id);
+    getSpeakers();
+  };
 
   return (
     <>
-      <Typography variant="h1">All Speakers</Typography>
-      <AdminTable entityColumns={entityColumns} entities={speakers} />
+      <Typography variant="h1" sx={(theme) => ({ color: theme.palette.text.primary })}>All Speakers</Typography>
+      <Card>
+        <CardContent>
+          <AdminTable entityColumns={entityColumns} entities={speakers} />
+        </CardContent>
+      </Card>
     </>
   );
 }

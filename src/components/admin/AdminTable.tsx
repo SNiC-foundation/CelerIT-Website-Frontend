@@ -5,7 +5,7 @@ import {
 import { Box, LinearProgress } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import BaseEntity from '../../clients/BaseEntity';
-import { AdminPropField, FieldType } from './AdminProps';
+import { AdminPropDropdownOptions, AdminPropField, FieldType } from './AdminProps';
 import AdminUpdateEntityModal from './AdminUpdateEntityModal';
 import AdminTableButton from './AdminTableButton';
 import AdminTableExpandableCell from './AdminTableExpandableCell';
@@ -17,7 +17,8 @@ export interface Column<T extends BaseEntity> {
   width: number;
   initial: T[keyof T];
   // eslint-disable-next-line no-unused-vars
-  validationError?: (value: T[keyof T]) => boolean;
+  validationError?: (value: T[keyof T], entity?: T) => boolean;
+  selectOptions?: AdminPropDropdownOptions<T>[];
 }
 
 interface Props<T extends BaseEntity> {
@@ -31,11 +32,14 @@ interface Props<T extends BaseEntity> {
   handleCreate: (entity: T) => void;
   // eslint-disable-next-line no-unused-vars
   handleDelete: (entity: T) => void;
+  // eslint-disable-next-line no-unused-vars
+  canDelete?: (entity: T) => boolean;
 }
 
 function AdminTable<T extends BaseEntity>(props: Props<T>) {
   const {
-    entities, entityName, loading, entityColumns, handleUpdate, handleCreate, handleDelete,
+    entities, entityName, loading, entityColumns,
+    handleUpdate, handleCreate, handleDelete, canDelete,
   } = props;
 
   if (!entities) {
@@ -50,6 +54,7 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
       fieldType: c.updateFieldType!,
       initial: c.initial,
       error: c.validationError,
+      options: c.selectOptions,
     }));
 
   const columns: GridColDef[] = entityColumns.map((c): GridColDef => ({
@@ -80,6 +85,7 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
             event.preventDefault();
             handleDelete(params.row);
           }}
+          disabled={canDelete === undefined ? false : !canDelete(params.row)}
         >
           <Delete fontSize="small" />
         </AdminTableButton>
@@ -129,6 +135,7 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
 
 AdminTable.defaultProps = ({
   entities: undefined,
+  canDelete: undefined,
 });
 
 export default AdminTable;

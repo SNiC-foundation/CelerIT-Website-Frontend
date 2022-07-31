@@ -1,9 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@mui/material';
 import validator from 'validator';
-import {
-  Activity, Client, ProgramPart,
-} from '../../clients/server.generated';
+import { Activity, Client, ProgramPart } from '../../clients/server.generated';
 import AdminTable, { Column } from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
 
@@ -40,16 +38,16 @@ function AdminProgram() {
     attribute: 'beginTime',
     headerName: 'Begin time',
     width: 200,
-    updateFieldType: 'string',
+    updateFieldType: 'datetime',
     initial: new Date(),
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: (value) => value === null || value === undefined || value.toString() === '',
   }, {
     attribute: 'endTime',
     headerName: 'End time',
     width: 200,
-    updateFieldType: 'string',
+    updateFieldType: 'datetime',
     initial: new Date(),
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: (value, entity) => value === null || value === undefined || value.toString() === '' || (entity !== undefined && value <= entity.beginTime),
   }];
 
   const aEntityColumns: Column<Activity>[] = [{
@@ -59,6 +57,16 @@ function AdminProgram() {
     updateFieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+  }, {
+    attribute: 'programPartId',
+    headerName: 'Program Part',
+    width: 100,
+    updateFieldType: 'dropdown',
+    initial: programParts && programParts.length > 0 ? programParts[0].id : '',
+    selectOptions: programParts ? programParts.map((p) => ({
+      key: p.id,
+      value: p.id.toString(),
+    })) : [],
   }, {
     attribute: 'location',
     headerName: 'Location',
@@ -71,7 +79,7 @@ function AdminProgram() {
     headerName: 'Description',
     width: 200,
     updateFieldType: 'string',
-    initial: new Date(),
+    initial: '',
   }];
 
   const handleCreateProgramPart = async (programPart: ProgramPart) => {
@@ -98,6 +106,10 @@ function AdminProgram() {
     await client.deleteProgramPart(programPart.id);
     getProgramParts();
   };
+
+  const canDeleteProgramPart = (programPart: ProgramPart): boolean => (
+    activities === undefined ? false : !activities
+      .some((a) => a.programPartId === programPart.id));
 
   const handleCreateActivity = async (activity: Activity) => {
     setActivityLoading(true);
@@ -138,6 +150,7 @@ function AdminProgram() {
             handleCreate={handleCreateProgramPart}
             handleUpdate={handleUpdateProgramPart}
             handleDelete={handleDeleteProgramPart}
+            canDelete={canDeleteProgramPart}
           />
         </CardContent>
       </Card>

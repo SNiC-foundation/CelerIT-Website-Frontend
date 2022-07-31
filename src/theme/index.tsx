@@ -1,4 +1,5 @@
 import React from 'react';
+import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { createTheme, ThemeProvider } from '@mui/material';
 
 interface Props {

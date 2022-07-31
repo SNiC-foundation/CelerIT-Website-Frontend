@@ -8,6 +8,10 @@ interface Props {
 export default function AdminTableExpandableCell({ value }: Props) {
   const [expanded, setExpanded] = React.useState(false);
 
+  if (typeof value !== 'string') {
+    return <Box>{value.toString()}</Box>;
+  }
+
   return (
     <Box sx={{ whiteSpace: 'pre-wrap' }}>
       {expanded ? value : value.slice(0, 200).trim()}

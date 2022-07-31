@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
 import SNiCTheme from './theme';
@@ -13,11 +15,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <SNiCTheme>
-        <MainMenu>
-          <Router />
-        </MainMenu>
-      </SNiCTheme>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <SNiCTheme>
+          <MainMenu>
+            <Router />
+          </MainMenu>
+        </SNiCTheme>
+      </LocalizationProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

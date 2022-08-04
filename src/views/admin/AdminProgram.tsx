@@ -1,15 +1,20 @@
 import React from 'react';
 import { Card, CardContent } from '@mui/material';
 import validator from 'validator';
-import { Activity, Client, ProgramPart } from '../../clients/server.generated';
+import {
+  Activity, Client, ProgramPart, Speaker,
+} from '../../clients/server.generated';
 import AdminTable, { Column } from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
+import { AdminPropDropdownOptions } from '../../components/admin/AdminProps';
 
 function AdminProgram() {
   const [programParts, setProgramParts] = React.useState<ProgramPart[] | undefined>(undefined);
   const [activities, setActivities] = React.useState<Activity[] | undefined>(undefined);
+  const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
   const [programPartsLoading, setProgramPartsLoading] = React.useState(true);
   const [activityLoading, setActivityLoading] = React.useState(true);
+  const [speakerLoading, setSpeakerLoading] = React.useState(true);
 
   const getProgramParts = () => {
     const client = new Client();
@@ -29,9 +34,19 @@ function AdminProgram() {
       });
   };
 
+  const getSpeakers = () => {
+    const client = new Client();
+    client.getAllSpeakers()
+      .then((s) => {
+        setSpeakers(s);
+        setSpeakerLoading(false);
+      });
+  };
+
   React.useEffect(() => {
     getProgramParts();
     getActivities();
+    getSpeakers();
   }, []);
 
   const pEntityColumns: Column<ProgramPart>[] = [{
@@ -50,6 +65,15 @@ function AdminProgram() {
     validationError: (value, entity) => value === null || value === undefined || value.toString() === '' || (entity !== undefined && value <= entity.beginTime),
   }];
 
+  const noSpeakerOption: AdminPropDropdownOptions<Activity> = {
+    key: '',
+    value: (<i>No speaker</i>),
+  };
+  const speakerOptions = speakers ? [noSpeakerOption, ...speakers.map((s) => ({
+    key: s.id,
+    value: s.name,
+  }))] : [noSpeakerOption];
+
   const aEntityColumns: Column<Activity>[] = [{
     attribute: 'name',
     headerName: 'Name',
@@ -60,7 +84,7 @@ function AdminProgram() {
   }, {
     attribute: 'programPartId',
     headerName: 'Program Part',
-    width: 100,
+    width: 150,
     updateFieldType: 'dropdown',
     initial: programParts && programParts.length > 0 ? programParts[0].id : '',
     selectOptions: programParts ? programParts.map((p) => ({
@@ -74,6 +98,13 @@ function AdminProgram() {
     updateFieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+  }, {
+    attribute: 'speakerId',
+    headerName: 'Speaker',
+    width: 150,
+    updateFieldType: 'dropdown',
+    initial: undefined,
+    selectOptions: speakerOptions,
   }, {
     attribute: 'description',
     headerName: 'Description',
@@ -160,7 +191,7 @@ function AdminProgram() {
           <AdminTable
             entityColumns={aEntityColumns}
             entityName="activity"
-            loading={activityLoading}
+            loading={activityLoading || speakerLoading}
             entities={activities}
             handleCreate={handleCreateActivity}
             handleUpdate={handleUpdateActivity}

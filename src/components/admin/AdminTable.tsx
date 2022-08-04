@@ -61,9 +61,15 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
     field: c.attribute as string,
     headerName: c.headerName,
     width: c.width,
-    renderCell: (params: GridRenderCellParams<any, T>) => (
-      <AdminTableExpandableCell value={params.formattedValue} />
-    ),
+    renderCell: (params: GridRenderCellParams<any, T>) => {
+      let value = params.formattedValue;
+      if (c.updateFieldType === 'dropdown') {
+        value = c.selectOptions?.find((o) => o.key === params.value)?.value;
+      }
+      return (
+        <AdminTableExpandableCell value={value} />
+      );
+    },
   }));
   columns.push({
     field: 'action',
@@ -128,6 +134,7 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
           '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
           '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
         }}
+        disableSelectionOnClick
       />
     </>
   );

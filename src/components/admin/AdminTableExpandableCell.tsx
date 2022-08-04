@@ -8,6 +8,10 @@ interface Props {
 export default function AdminTableExpandableCell({ value }: Props) {
   const [expanded, setExpanded] = React.useState(false);
 
+  if (value === null || value === undefined) {
+    return <Box />;
+  }
+
   if (typeof value !== 'string') {
     return <Box>{value.toString()}</Box>;
   }

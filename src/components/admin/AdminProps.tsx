@@ -9,8 +9,8 @@ import BaseEntity from '../../clients/BaseEntity';
 export type FieldType = 'string' | 'text' | 'number' | 'datetime' | 'dropdown';
 
 export interface AdminPropDropdownOptions<T extends BaseEntity> {
-  key: T[keyof T];
-  value: string;
+  key: T[keyof T] | '';
+  value: React.ReactNode | string;
 }
 
 export interface AdminPropField<T extends BaseEntity> {
@@ -44,6 +44,22 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
     });
     return newEntity;
   });
+
+  // Our backend and client do not handle undefined and null-values well. Therefore,
+  // when we use a dropdown, we have to set empty values to undefined.
+  const handleSaveWithPreprocessing = (ent: T) => {
+    const entityToSave = {
+      ...ent,
+    };
+    fields.forEach((f) => {
+      // @ts-ignore
+      if (f.fieldType === 'dropdown' && updatedEntity[f.attribute] === '') {
+        // @ts-ignore
+        entityToSave[f.attribute] = undefined;
+      }
+    });
+    handleSave(ent);
+  };
 
   const getInputField = (field: AdminPropField<T>) => {
     switch (field.fieldType) {
@@ -143,7 +159,7 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
         <Button
           onClick={(event) => {
             event.preventDefault();
-            handleSave(updatedEntity);
+            handleSaveWithPreprocessing(updatedEntity);
           }}
           color="success"
           variant="contained"

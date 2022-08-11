@@ -4,28 +4,16 @@ import {
 } from '@mui/x-data-grid';
 import { Box, LinearProgress } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import BaseEntity from '../../clients/BaseEntity';
-import { AdminPropDropdownOptions, AdminPropField, FieldType } from './AdminProps';
+import { AdminPropField } from './AdminProps';
 import AdminUpdateEntityModal from './AdminUpdateEntityModal';
 import AdminTableButton from './AdminTableButton';
 import AdminTableExpandableCell from './AdminTableExpandableCell';
 
-export interface Column<T extends BaseEntity> {
-  headerName: string;
-  attribute: keyof T;
-  updateFieldType?: FieldType;
-  width: number;
-  initial: T[keyof T];
-  // eslint-disable-next-line no-unused-vars
-  validationError?: (value: T[keyof T], entity?: T) => boolean;
-  selectOptions?: AdminPropDropdownOptions<T>[];
-}
-
-interface Props<T extends BaseEntity> {
+interface Props<T, P> {
   entities?: T[];
   entityName: string;
   loading: boolean;
-  entityColumns: Column<T>[];
+  entityColumns: AdminPropField<T, P>[];
   // eslint-disable-next-line no-unused-vars
   handleUpdate: (entity: T) => void;
   // eslint-disable-next-line no-unused-vars
@@ -36,7 +24,7 @@ interface Props<T extends BaseEntity> {
   canDelete?: (entity: T) => boolean;
 }
 
-function AdminTable<T extends BaseEntity>(props: Props<T>) {
+function AdminTable<T, P = {}>(props: Props<T, P>) {
   const {
     entities, entityName, loading, entityColumns,
     handleUpdate, handleCreate, handleDelete, canDelete,
@@ -46,31 +34,49 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
     return null;
   }
 
-  const propFields: AdminPropField<T>[] = entityColumns
-    .filter((c) => c.updateFieldType !== undefined)
-    .map((c) => ({
-      attribute: c.attribute,
-      label: c.headerName,
-      fieldType: c.updateFieldType!,
-      initial: c.initial,
-      error: c.validationError,
-      options: c.selectOptions,
-    }));
+  const propFields: AdminPropField<T, P>[] = entityColumns
+    .filter((c) => c.canBeUpdated);
 
-  const columns: GridColDef[] = entityColumns.map((c): GridColDef => ({
-    field: c.attribute as string,
-    headerName: c.headerName,
-    width: c.width,
-    renderCell: (params: GridRenderCellParams<any, T>) => {
-      let value = params.formattedValue;
-      if (c.updateFieldType === 'dropdown') {
-        value = c.selectOptions?.find((o) => o.key === params.value)?.value;
+  const getColumns = (columns: AdminPropField<T, P>[], parentFields: string[] = [])
+    : GridColDef[] => {
+    const cols: GridColDef[] = [];
+    columns.forEach((c): void => {
+      if (c.fieldType === 'nested') {
+        cols.push(...getColumns(c.fields as any, [...parentFields, c.attribute as any as string]));
+      } else {
+        cols.push({
+          field: c.attribute as string,
+          headerName: c.label,
+          width: c.width,
+          renderCell: (params: GridRenderCellParams<any, T>) => {
+            let value = params.formattedValue;
+            if (c.fieldType === 'dropdown') {
+              value = c.options.find((o) => o.key === params.value)?.value;
+            }
+            return (
+              <AdminTableExpandableCell value={value} />
+            );
+          },
+          valueGetter: (params) => {
+            let intermediate = params.row;
+            parentFields.forEach((pf) => {
+              intermediate = intermediate[pf];
+            });
+            return intermediate[c.attribute];
+          },
+        });
       }
-      return (
-        <AdminTableExpandableCell value={value} />
-      );
-    },
-  }));
+    });
+    return cols;
+  };
+
+  // const getEntityFromRow = (row: any): T => {
+  //   const index = entities.findIndex((e) => (e as any).id === row.id);
+  //   if (index >= 0) return entities[index];
+  //   throw new Error(`Entity not found with ID ${row.id}`);
+  // };
+
+  const columns = getColumns(entityColumns);
   columns.push({
     field: 'action',
     headerName: '',
@@ -99,16 +105,30 @@ function AdminTable<T extends BaseEntity>(props: Props<T>) {
     ),
   });
 
-  const rows: GridRowsProp = entities.map((e) => {
-    const row: any = {};
-    entityColumns.forEach((c) => {
-      row[c.attribute] = e[c.attribute];
+  const getRows = (cs: AdminPropField<T, P>[], e: T): GridRowsProp => {
+    let row: any = {};
+    cs.forEach((c) => {
+      if (c.fieldType === 'nested') {
+        const nestedRows = e[c.attribute]
+          ? getRows(c.fields as any, e[c.attribute] as any)
+          : {};
+        row = {
+          ...row,
+          [c.attribute]: nestedRows,
+        };
+      } else {
+        row[c.attribute] = e[c.attribute];
+      }
     });
     return {
-      id: e.id,
       ...row,
+      id: (e as any).id,
     };
-  });
+  };
+
+  const rows: GridRowsProp = entities.map((e) => getRows(entityColumns, e));
+
+  console.log(rows);
 
   return (
     <>

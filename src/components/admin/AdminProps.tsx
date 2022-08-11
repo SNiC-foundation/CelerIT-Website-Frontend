@@ -1,49 +1,90 @@
 import React from 'react';
 import {
-  Box, Button, DialogActions, DialogContent, FormControl,
+  Box, Button, Checkbox, DialogActions, DialogContent, FormControl, FormControlLabel,
   Grid, InputLabel, MenuItem, Select, TextField,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
-import BaseEntity from '../../clients/BaseEntity';
 
-export type FieldType = 'string' | 'text' | 'number' | 'datetime' | 'dropdown';
-
-export interface AdminPropDropdownOptions<T extends BaseEntity> {
+export interface AdminPropDropdownOptions<T> {
   key: T[keyof T] | '';
   value: React.ReactNode | string;
 }
 
-export interface AdminPropField<T extends BaseEntity> {
-  attribute: keyof T;
-  label: string;
-  fieldType: FieldType;
-  initial: T[keyof T];
+export type BasePropField<T> = {
+  attribute: keyof T,
+  label: string,
+  initial: T[keyof T],
   // eslint-disable-next-line no-unused-vars
-  error?: (value: T[keyof T], entity?: T) => boolean;
-  options?: AdminPropDropdownOptions<T>[];
+  validationError?: (value: T[keyof T], entity?: T) => boolean,
+  width: number,
+  canBeUpdated: boolean,
 }
 
-export interface AdminPropsProps<T extends BaseEntity> {
+export type GeneralPropField<T> = BasePropField<T> & {
+  fieldType: 'string' | 'text' | 'number' | 'datetime',
+}
+
+export type DropdownPropField<T> = BasePropField<T> & {
+  fieldType: 'dropdown',
+  options: AdminPropDropdownOptions<T>[],
+}
+
+export type NestedPropField<T, P> = BasePropField<T> & {
+  fieldType: 'nested'
+  // eslint-disable-next-line no-use-before-define
+  fields: AdminPropField<P>[]
+}
+
+export type AdminPropField<T, P = {}> = NestedPropField<T, P>
+  | GeneralPropField<T>
+  | DropdownPropField<T>;
+
+export interface AdminPropsProps<T, P> {
   entity?: T;
   entityName: string;
-  fields: AdminPropField<T>[];
+  fields: AdminPropField<T, P>[];
   // eslint-disable-next-line no-unused-vars
   handleSave: (entity: T) => void;
 }
 
-function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
+function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
   const {
     entity, entityName, fields, handleSave,
   } = props;
 
-  const [updatedEntity, setUpdatedEntity] = React.useState<T>(() => {
-    if (entity) return entity;
-    const newEntity: T = {} as T;
-    fields.forEach((f) => {
-      newEntity[f.attribute] = f.initial;
+  const constructNewEntity = (fs: AdminPropField<T, P>[]): T => {
+    let newEntity: T = {} as T;
+    fs.forEach((f) => {
+      if (f.fieldType === 'nested') {
+        const nestedAttributes = constructNewEntity(f.fields as any);
+        newEntity = {
+          ...newEntity,
+          [f.attribute]: nestedAttributes,
+        };
+      } else {
+        newEntity[f.attribute] = f.initial;
+      }
     });
     return newEntity;
+  };
+
+  const [updatedEntity, setUpdatedEntity] = React.useState<T>(() => {
+    if (entity) {
+      const e = { ...entity };
+      Object.keys(entity).forEach((k) => {
+        // @ts-ignore
+        if (typeof entity[k] === 'object' && entity[k] && Object.keys(entity[k]).length === 0) {
+          // @ts-ignore
+          e[k] = undefined;
+        }
+      });
+      console.log(entity, e);
+      return e;
+    }
+    return constructNewEntity(fields);
   });
+
+  console.log(updatedEntity);
 
   // Our backend and client do not handle undefined and null-values well. Therefore,
   // when we use a dropdown, we have to set empty values to undefined.
@@ -56,12 +97,54 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
       if (f.fieldType === 'dropdown' && updatedEntity[f.attribute] === '') {
         // @ts-ignore
         entityToSave[f.attribute] = undefined;
+      } else if (updatedEntity[f.attribute] === null) {
+        // @ts-ignore
+        entityToSave[f.attribute] = undefined;
       }
     });
-    handleSave(ent);
+    handleSave(entityToSave);
   };
 
-  const getInputField = (field: AdminPropField<T>) => {
+  const updateSingleField = (
+    attribute: keyof T,
+    value: T[keyof T] | undefined,
+    parentAttribute?: keyof T,
+  ) => {
+    if (parentAttribute) {
+      setUpdatedEntity({
+        ...updatedEntity,
+        [parentAttribute]: {
+          ...updatedEntity[parentAttribute],
+          [attribute]: value,
+        },
+      });
+    } else {
+      setUpdatedEntity({
+        ...updatedEntity,
+        [attribute]: value,
+      });
+    }
+  };
+
+  const error = (field: AdminPropField<T>, parentAttribute?: keyof T) => {
+    if (parentAttribute) {
+      return field.validationError !== undefined
+        ? field.validationError(
+          (updatedEntity[parentAttribute] as any)[field.attribute] as any,
+          updatedEntity,
+        )
+        : false;
+    }
+    return field.validationError !== undefined
+      ? field.validationError(updatedEntity[field.attribute], updatedEntity)
+      : false;
+  };
+
+  const getInputField = (field: AdminPropField<T, P>, parentField?: keyof T) => {
+    const currentValue = parentField
+      // @ts-ignore
+      ? (updatedEntity[parentField])[field.attribute]
+      : updatedEntity[field.attribute];
     switch (field.fieldType) {
       case 'string':
       case 'text':
@@ -73,14 +156,33 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
                 required
                 fullWidth
                 multiline={field.fieldType === 'text'}
-                value={updatedEntity[field.attribute]}
-                onChange={(event) => setUpdatedEntity({
-                  ...updatedEntity,
-                  [field.attribute]: field.fieldType !== 'text' ? event.target.value : event.target.value,
-                })}
-                error={field.error !== undefined
-                  ? field.error(updatedEntity[field.attribute], updatedEntity)
-                  : false}
+                value={currentValue}
+                onChange={(event) => (
+                  updateSingleField(field.attribute, event.target.value as any, parentField)
+                )}
+                error={error(field, parentField)}
+              />
+            </FormControl>
+          </Grid>
+        );
+      case 'number':
+        return (
+          <Grid item xs={12} sx={{ width: '100%' }} key={field.attribute as string}>
+            <FormControl fullWidth>
+              <TextField
+                label={field.label}
+                required
+                fullWidth
+                type="number"
+                value={currentValue}
+                onChange={(event) => (
+                  updateSingleField(
+                    field.attribute,
+                    parseInt(event.target.value, 10) as any,
+                    parentField,
+                  )
+                )}
+                error={error(field, parentField)}
               />
             </FormControl>
           </Grid>
@@ -89,18 +191,13 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
         return (
           <Grid item xs={12} sx={{ width: '100%' }} key={field.attribute as string}>
             <DateTimePicker
-              onChange={(value) => setUpdatedEntity({
-                ...updatedEntity,
-                [field.attribute]: value,
-              })}
-              value={updatedEntity[field.attribute]}
+              onChange={(value) => updateSingleField(field.attribute, value as any, parentField)}
+              value={currentValue}
               renderInput={(fieldProps) => (
                 <TextField
                   // eslint-disable-next-line react/jsx-props-no-spreading
                   {...fieldProps}
-                  error={field.error !== undefined
-                    ? field.error(updatedEntity[field.attribute], updatedEntity)
-                    : false}
+                  error={error(field, parentField)}
                 />
               )}
               label={field.label}
@@ -109,7 +206,6 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
           </Grid>
         );
       case 'dropdown':
-        if (field.options === undefined) throw new Error('\'options\' cannot be undefined when field is of type \'dropdown\'');
         // eslint-disable-next-line no-case-declarations
         const id = `props-field-${field.label.toLowerCase()}`;
         return (
@@ -119,12 +215,11 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
               <Select
                 labelId={`${id}-label`}
                 id={id}
-                value={updatedEntity[field.attribute]}
+                value={currentValue}
                 label={field.label}
-                onChange={(event) => setUpdatedEntity({
-                  ...updatedEntity,
-                  [field.attribute]: event.target.value,
-                })}
+                onChange={(event) => (
+                  updateSingleField(field.attribute, event.target.value as any, parentField)
+                )}
               >
                 {field.options.map((option) => (
                   <MenuItem
@@ -138,13 +233,48 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
             </FormControl>
           </Grid>
         );
+      case 'nested':
+        return (
+          <Grid item xs={12} sx={{ width: '100%' }} key={field.attribute as string}>
+            <FormControl>
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={updatedEntity[field.attribute] !== undefined}
+                    onChange={(event) => {
+                      if (event.target.checked && entity !== undefined) {
+                        updateSingleField(field.attribute, entity[field.attribute]);
+                      } else if (event.target.checked && entity === undefined) {
+                        updateSingleField(
+                          field.attribute,
+                          constructNewEntity(field.fields as any) as any,
+                        );
+                      } else {
+                        updateSingleField(field.attribute, undefined);
+                      }
+                    }}
+                  />
+                )}
+                label={field.label}
+              />
+            </FormControl>
+            {updatedEntity[field.attribute] !== undefined ? (
+              <Grid container alignItems="center" direction="column" spacing={2}>
+                {field.fields.map((f) => getInputField(f as any, field.attribute))}
+              </Grid>
+            ) : null}
+          </Grid>
+        );
       default:
         return null;
     }
   };
 
-  const inputHasErrors = () => fields
-    .some((f) => (f.error ? f.error(updatedEntity[f.attribute]) : false));
+  const inputHasErrors = (inputFields: AdminPropField<T>[]): boolean => inputFields
+    .some((f) => {
+      if (f.fieldType === 'nested') return updatedEntity[f.attribute] !== undefined ? inputHasErrors(f.fields as any) : false;
+      return f.validationError ? f.validationError(updatedEntity[f.attribute]) : false;
+    });
 
   return (
     <>
@@ -164,7 +294,7 @@ function AdminProps<T extends BaseEntity>(props: AdminPropsProps<T>) {
           color="success"
           variant="contained"
           title={`Save ${entityName}`}
-          disabled={inputHasErrors()}
+          disabled={inputHasErrors(fields as any)}
         >
           Save
         </Button>

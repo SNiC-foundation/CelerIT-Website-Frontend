@@ -150,7 +150,7 @@ export class Client {
      * @param body Update subset of parameter of activity
      * @return Ok
      */
-    updateActivity(id: number, body: Partial_ActivityParams_): Promise<Activity> {
+    updateActivity(id: number, body: ActivityParams): Promise<Activity> {
         let url_ = this.baseUrl + "/activity/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1804,7 +1804,6 @@ export class Activity implements IActivity {
     programPart!: ProgramPart;
     description?: string;
     image?: string;
-    maxParticipants?: number;
     speakerId?: number;
     speaker?: Speaker;
     subscribe?: SubscribeActivity;
@@ -1833,7 +1832,6 @@ export class Activity implements IActivity {
             this.programPart = _data["programPart"] ? ProgramPart.fromJS(_data["programPart"]) : new ProgramPart();
             this.description = _data["description"];
             this.image = _data["image"];
-            this.maxParticipants = _data["maxParticipants"];
             this.speakerId = _data["speakerId"];
             this.speaker = _data["speaker"] ? Speaker.fromJS(_data["speaker"]) : <any>undefined;
             this.subscribe = _data["subscribe"] ? SubscribeActivity.fromJS(_data["subscribe"]) : <any>undefined;
@@ -1859,7 +1857,6 @@ export class Activity implements IActivity {
         data["programPart"] = this.programPart ? this.programPart.toJSON() : <any>undefined;
         data["description"] = this.description;
         data["image"] = this.image;
-        data["maxParticipants"] = this.maxParticipants;
         data["speakerId"] = this.speakerId;
         data["speaker"] = this.speaker ? this.speaker.toJSON() : <any>undefined;
         data["subscribe"] = this.subscribe ? this.subscribe.toJSON() : <any>undefined;
@@ -1878,7 +1875,6 @@ export interface IActivity {
     programPart: ProgramPart;
     description?: string;
     image?: string;
-    maxParticipants?: number;
     speakerId?: number;
     speaker?: Speaker;
     subscribe?: SubscribeActivity;
@@ -2246,14 +2242,58 @@ export interface ISubscribeActivity {
     subscribers: User[];
 }
 
+export class SubscribeActivityParams implements ISubscribeActivityParams {
+    maxParticipants!: number;
+    subscriptionListOpenDate!: Date;
+    subscriptionListCloseDate!: Date;
+
+    constructor(data?: ISubscribeActivityParams) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.maxParticipants = _data["maxParticipants"];
+            this.subscriptionListOpenDate = _data["subscriptionListOpenDate"] ? new Date(_data["subscriptionListOpenDate"].toString()) : <any>undefined;
+            this.subscriptionListCloseDate = _data["subscriptionListCloseDate"] ? new Date(_data["subscriptionListCloseDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SubscribeActivityParams {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubscribeActivityParams();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["maxParticipants"] = this.maxParticipants;
+        data["subscriptionListOpenDate"] = this.subscriptionListOpenDate ? this.subscriptionListOpenDate.toISOString() : <any>undefined;
+        data["subscriptionListCloseDate"] = this.subscriptionListCloseDate ? this.subscriptionListCloseDate.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISubscribeActivityParams {
+    maxParticipants: number;
+    subscriptionListOpenDate: Date;
+    subscriptionListCloseDate: Date;
+}
+
 export class ActivityParams implements IActivityParams {
     name!: string;
     location!: string;
     programPartId!: number;
     description?: string;
     image?: string;
-    maxParticipants?: number;
     speakerId?: number;
+    subscribe?: SubscribeActivityParams;
 
     constructor(data?: IActivityParams) {
         if (data) {
@@ -2271,8 +2311,8 @@ export class ActivityParams implements IActivityParams {
             this.programPartId = _data["programPartId"];
             this.description = _data["description"];
             this.image = _data["image"];
-            this.maxParticipants = _data["maxParticipants"];
             this.speakerId = _data["speakerId"];
+            this.subscribe = _data["subscribe"] ? SubscribeActivityParams.fromJS(_data["subscribe"]) : <any>undefined;
         }
     }
 
@@ -2290,8 +2330,8 @@ export class ActivityParams implements IActivityParams {
         data["programPartId"] = this.programPartId;
         data["description"] = this.description;
         data["image"] = this.image;
-        data["maxParticipants"] = this.maxParticipants;
         data["speakerId"] = this.speakerId;
+        data["subscribe"] = this.subscribe ? this.subscribe.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -2302,70 +2342,8 @@ export interface IActivityParams {
     programPartId: number;
     description?: string;
     image?: string;
-    maxParticipants?: number;
     speakerId?: number;
-}
-
-/** Make all properties in T optional */
-export class Partial_ActivityParams_ implements IPartial_ActivityParams_ {
-    name?: string;
-    location?: string;
-    programPartId?: number;
-    description?: string;
-    image?: string;
-    maxParticipants?: number;
-    speakerId?: number;
-
-    constructor(data?: IPartial_ActivityParams_) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.location = _data["location"];
-            this.programPartId = _data["programPartId"];
-            this.description = _data["description"];
-            this.image = _data["image"];
-            this.maxParticipants = _data["maxParticipants"];
-            this.speakerId = _data["speakerId"];
-        }
-    }
-
-    static fromJS(data: any): Partial_ActivityParams_ {
-        data = typeof data === 'object' ? data : {};
-        let result = new Partial_ActivityParams_();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["location"] = this.location;
-        data["programPartId"] = this.programPartId;
-        data["description"] = this.description;
-        data["image"] = this.image;
-        data["maxParticipants"] = this.maxParticipants;
-        data["speakerId"] = this.speakerId;
-        return data;
-    }
-}
-
-/** Make all properties in T optional */
-export interface IPartial_ActivityParams_ {
-    name?: string;
-    location?: string;
-    programPartId?: number;
-    description?: string;
-    image?: string;
-    maxParticipants?: number;
-    speakerId?: number;
+    subscribe?: SubscribeActivityParams;
 }
 
 export class ParticipantParams implements IParticipantParams {
@@ -2878,57 +2856,8 @@ export interface IPartial_SpeakerParams_ {
     description?: string;
 }
 
-export class SubscribeActivityParams implements ISubscribeActivityParams {
-    activityId!: number;
-    maxParticipants!: number;
-    subscriptionListOpenDate!: Date;
-    subscriptionListCloseDate!: Date;
-
-    constructor(data?: ISubscribeActivityParams) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.activityId = _data["activityId"];
-            this.maxParticipants = _data["maxParticipants"];
-            this.subscriptionListOpenDate = _data["subscriptionListOpenDate"] ? new Date(_data["subscriptionListOpenDate"].toString()) : <any>undefined;
-            this.subscriptionListCloseDate = _data["subscriptionListCloseDate"] ? new Date(_data["subscriptionListCloseDate"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): SubscribeActivityParams {
-        data = typeof data === 'object' ? data : {};
-        let result = new SubscribeActivityParams();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["activityId"] = this.activityId;
-        data["maxParticipants"] = this.maxParticipants;
-        data["subscriptionListOpenDate"] = this.subscriptionListOpenDate ? this.subscriptionListOpenDate.toISOString() : <any>undefined;
-        data["subscriptionListCloseDate"] = this.subscriptionListCloseDate ? this.subscriptionListCloseDate.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ISubscribeActivityParams {
-    activityId: number;
-    maxParticipants: number;
-    subscriptionListOpenDate: Date;
-    subscriptionListCloseDate: Date;
-}
-
 /** Make all properties in T optional */
 export class Partial_SubscribeActivityParams_ implements IPartial_SubscribeActivityParams_ {
-    activityId?: number;
     maxParticipants?: number;
     subscriptionListOpenDate?: Date;
     subscriptionListCloseDate?: Date;
@@ -2944,7 +2873,6 @@ export class Partial_SubscribeActivityParams_ implements IPartial_SubscribeActiv
 
     init(_data?: any) {
         if (_data) {
-            this.activityId = _data["activityId"];
             this.maxParticipants = _data["maxParticipants"];
             this.subscriptionListOpenDate = _data["subscriptionListOpenDate"] ? new Date(_data["subscriptionListOpenDate"].toString()) : <any>undefined;
             this.subscriptionListCloseDate = _data["subscriptionListCloseDate"] ? new Date(_data["subscriptionListCloseDate"].toString()) : <any>undefined;
@@ -2960,7 +2888,6 @@ export class Partial_SubscribeActivityParams_ implements IPartial_SubscribeActiv
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["activityId"] = this.activityId;
         data["maxParticipants"] = this.maxParticipants;
         data["subscriptionListOpenDate"] = this.subscriptionListOpenDate ? this.subscriptionListOpenDate.toISOString() : <any>undefined;
         data["subscriptionListCloseDate"] = this.subscriptionListCloseDate ? this.subscriptionListCloseDate.toISOString() : <any>undefined;
@@ -2970,7 +2897,6 @@ export class Partial_SubscribeActivityParams_ implements IPartial_SubscribeActiv
 
 /** Make all properties in T optional */
 export interface IPartial_SubscribeActivityParams_ {
-    activityId?: number;
     maxParticipants?: number;
     subscriptionListOpenDate?: Date;
     subscriptionListCloseDate?: Date;

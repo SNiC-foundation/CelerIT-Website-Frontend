@@ -2,16 +2,17 @@ import React from 'react';
 import { Card, CardContent } from '@mui/material';
 import validator from 'validator';
 import {
-  Activity, Client, ProgramPart, Speaker,
+  Activity, Client, ProgramPart, Speaker, SubscribeActivity,
 } from '../../clients/server.generated';
-import AdminTable, { Column } from '../../components/admin/AdminTable';
+import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
-import { AdminPropDropdownOptions } from '../../components/admin/AdminProps';
+import { AdminPropDropdownOptions, AdminPropField } from '../../components/admin/AdminProps';
 
 function AdminProgram() {
   const [programParts, setProgramParts] = React.useState<ProgramPart[] | undefined>(undefined);
   const [activities, setActivities] = React.useState<Activity[] | undefined>(undefined);
   const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
+  // eslint-disable-next-line no-unused-vars
   const [programPartsLoading, setProgramPartsLoading] = React.useState(true);
   const [activityLoading, setActivityLoading] = React.useState(true);
   const [speakerLoading, setSpeakerLoading] = React.useState(true);
@@ -49,20 +50,23 @@ function AdminProgram() {
     getSpeakers();
   }, []);
 
-  const pEntityColumns: Column<ProgramPart>[] = [{
+  const pEntityColumns: AdminPropField<ProgramPart>[] = [{
     attribute: 'beginTime',
-    headerName: 'Begin time',
+    label: 'Begin time',
     width: 200,
-    updateFieldType: 'datetime',
+    fieldType: 'datetime',
     initial: new Date(),
     validationError: (value) => value === null || value === undefined || value.toString() === '',
+    canBeUpdated: true,
   }, {
     attribute: 'endTime',
-    headerName: 'End time',
+    label: 'End time',
     width: 200,
-    updateFieldType: 'datetime',
+    fieldType: 'datetime',
     initial: new Date(),
-    validationError: (value, entity) => value === null || value === undefined || value.toString() === '' || (entity !== undefined && value <= entity.beginTime),
+    validationError: (value, entity) => value === null || value === undefined
+    || value.toString() === '' || (entity !== undefined && value <= entity.beginTime),
+    canBeUpdated: true,
   }];
 
   const noSpeakerOption: AdminPropDropdownOptions<Activity> = {
@@ -74,43 +78,81 @@ function AdminProgram() {
     value: s.name,
   }))] : [noSpeakerOption];
 
-  const aEntityColumns: Column<Activity>[] = [{
+  const aEntityColumns: AdminPropField<Activity, SubscribeActivity>[] = [{
     attribute: 'name',
-    headerName: 'Name',
+    label: 'Name',
     width: 200,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
   }, {
     attribute: 'programPartId',
-    headerName: 'Program Part',
+    label: 'Program Part',
     width: 150,
-    updateFieldType: 'dropdown',
+    fieldType: 'dropdown',
     initial: programParts && programParts.length > 0 ? programParts[0].id : '',
-    selectOptions: programParts ? programParts.map((p) => ({
+    options: programParts ? programParts.map((p) => ({
       key: p.id,
       value: p.id.toString(),
     })) : [],
+    canBeUpdated: true,
   }, {
     attribute: 'location',
-    headerName: 'Location',
+    label: 'Location',
     width: 100,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
   }, {
     attribute: 'speakerId',
-    headerName: 'Speaker',
+    label: 'Speaker',
     width: 150,
-    updateFieldType: 'dropdown',
+    fieldType: 'dropdown',
     initial: undefined,
-    selectOptions: speakerOptions,
+    options: speakerOptions,
+    canBeUpdated: true,
   }, {
     attribute: 'description',
-    headerName: 'Description',
+    label: 'Description',
     width: 200,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
+    canBeUpdated: true,
+  }, {
+    attribute: 'subscribe',
+    label: 'Activity can be subscribed to',
+    width: 0,
+    fieldType: 'nested',
+    initial: 1,
+    canBeUpdated: true,
+    fields: [{
+      attribute: 'maxParticipants',
+      label: 'Max participants',
+      width: 150,
+      fieldType: 'number',
+      canBeUpdated: true,
+      initial: 100,
+      validationError: (value) => value === null || value === undefined || value <= 0,
+    }, {
+      attribute: 'subscriptionListOpenDate',
+      label: 'Subscription list open',
+      width: 200,
+      fieldType: 'datetime',
+      initial: new Date(),
+      validationError: (value) => value === null || value === undefined || value.toString() === '',
+      canBeUpdated: true,
+    }, {
+      attribute: 'subscriptionListCloseDate',
+      label: 'Subscription list close',
+      width: 200,
+      fieldType: 'datetime',
+      initial: new Date(),
+      validationError: (value, entity) => value === null || value === undefined
+      || value.toString() === '' || (entity !== undefined && value <= entity.subscriptionListOpenDate),
+      canBeUpdated: true,
+    }],
   }];
 
   const handleCreateProgramPart = async (programPart: ProgramPart) => {
@@ -154,6 +196,11 @@ function AdminProgram() {
     const client = new Client();
     await client.updateActivity(activity.id, {
       ...activity,
+      subscribe: activity.subscribe ? {
+        ...activity.subscribe,
+        // @ts-ignore
+        id: undefined,
+      } : undefined,
       // @ts-ignore
       id: undefined,
     });

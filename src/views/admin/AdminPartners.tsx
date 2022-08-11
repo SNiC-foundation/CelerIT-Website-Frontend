@@ -2,8 +2,9 @@ import React from 'react';
 import { Card, CardContent } from '@mui/material';
 import validator from 'validator';
 import { Client, Partner } from '../../clients/server.generated';
-import AdminTable, { Column } from '../../components/admin/AdminTable';
+import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
+import { AdminPropField } from '../../components/admin/AdminProps';
 
 function AdminPartners() {
   const [partners, setPartners] = React.useState<Partner[] | undefined>(undefined);
@@ -22,40 +23,45 @@ function AdminPartners() {
     getPartners();
   }, []);
 
-  const entityColumns: Column<Partner>[] = [{
+  const entityColumns: AdminPropField<Partner>[] = [{
     attribute: 'name',
-    headerName: 'Name',
+    label: 'Name',
     width: 200,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
   }, {
     attribute: 'location',
-    headerName: 'Location',
+    label: 'Location',
     width: 200,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
   }, {
     attribute: 'specialization',
-    headerName: 'Specialization',
+    label: 'Specialization',
     width: 200,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
   }, {
     attribute: 'description',
-    headerName: 'Description',
+    label: 'Description',
     width: 400,
-    updateFieldType: 'text',
+    fieldType: 'text',
     initial: '',
+    canBeUpdated: true,
   }, {
     attribute: 'url',
-    headerName: 'URL',
+    label: 'URL',
     width: 200,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
   }];
 
   const handleCreate = async (partner: Partner) => {

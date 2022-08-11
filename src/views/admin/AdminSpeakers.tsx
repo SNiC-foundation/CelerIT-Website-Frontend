@@ -2,8 +2,9 @@ import React from 'react';
 import { Card, CardContent } from '@mui/material';
 import validator from 'validator';
 import { Client, Speaker } from '../../clients/server.generated';
-import AdminTable, { Column } from '../../components/admin/AdminTable';
+import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
+import { AdminPropField } from '../../components/admin/AdminProps';
 
 function AdminSpeakers() {
   const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
@@ -22,15 +23,21 @@ function AdminSpeakers() {
     getSpeakers();
   }, []);
 
-  const entityColumns: Column<Speaker>[] = [{
+  const entityColumns: AdminPropField<Speaker>[] = [{
     attribute: 'name',
-    headerName: 'Name',
+    label: 'Name',
     width: 200,
-    updateFieldType: 'string',
+    fieldType: 'string',
     initial: '',
     validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
   }, {
-    attribute: 'description', headerName: 'Description', width: 400, updateFieldType: 'text', initial: '',
+    attribute: 'description',
+    label: 'Description',
+    width: 400,
+    fieldType: 'text',
+    initial: '',
+    canBeUpdated: true,
   }];
 
   const handleCreate = async (speaker: Speaker) => {

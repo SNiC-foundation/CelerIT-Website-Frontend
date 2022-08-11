@@ -4,12 +4,11 @@ import {
 } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 import AdminProps, { AdminPropsProps } from './AdminProps';
-import BaseEntity from '../../clients/BaseEntity';
 import AdminTableButton from './AdminTableButton';
 
-interface Props<T extends BaseEntity> extends AdminPropsProps<T> {}
+interface Props<T, P> extends AdminPropsProps<T, P> {}
 
-function AdminUpdateEntityModal<T extends BaseEntity>(props: Props<T>) {
+function AdminUpdateEntityModal<T, P = {}>(props: Props<T, P>) {
   const {
     entity, fields, handleSave, entityName,
   } = props;

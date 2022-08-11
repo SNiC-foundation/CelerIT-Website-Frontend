@@ -13,7 +13,7 @@ function MainMenu({ children }: Props) {
       <Box sx={(theme) => ({
         display: 'flex',
         flexFlow: 'column',
-        height: '100vh',
+        minHeight: '100vh',
         backgroundColor: theme.palette.secondary.main,
       })}
       >
@@ -26,7 +26,7 @@ function MainMenu({ children }: Props) {
           flex: '1 1 auto',
         })}
         >
-          <Container maxWidth="xl" sx={(theme) => ({ ...theme.mixins.toolbar })}>
+          <Container maxWidth="xl" sx={{ minHeight: 'calc(100vh - 64px)', paddingTop: '1em', paddingBottom: '1em' }}>
             {children}
           </Container>
         </Box>

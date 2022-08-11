@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '@mui/material';
+import { Box, Card, CardContent } from '@mui/material';
 import { Client, Partner } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
@@ -90,7 +90,7 @@ function AdminPartners() {
   };
 
   return (
-    <>
+    <Box sx={{ width: '100%', minHeight: '100%' }}>
       <TypographyHeader variant="h2">All Partners</TypographyHeader>
       <Card>
         <CardContent>
@@ -105,7 +105,7 @@ function AdminPartners() {
           />
         </CardContent>
       </Card>
-    </>
+    </Box>
   );
 }
 

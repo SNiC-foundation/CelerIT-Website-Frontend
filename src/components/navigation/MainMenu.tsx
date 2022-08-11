@@ -1,10 +1,19 @@
 import React from 'react';
-import { Box, Container } from '@mui/material';
+import {
+  Box, Container as MuiContainer, styled,
+} from '@mui/material';
 import AppToolbar from './AppToolbar';
 
 interface Props {
   children: React.ReactNode | React.ReactNode[];
 }
+
+const Container = styled(MuiContainer)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  minHeight: 'calc(100vh - 64px)',
+  paddingTop: '1em',
+  paddingBottom: '1em',
+}));
 
 function MainMenu({ children }: Props) {
   return (
@@ -26,7 +35,9 @@ function MainMenu({ children }: Props) {
           flex: '1 1 auto',
         })}
         >
-          <Container maxWidth="xl" sx={{ minHeight: 'calc(100vh - 64px)', paddingTop: '1em', paddingBottom: '1em' }}>
+          <Container
+            maxWidth="xl"
+          >
             {children}
           </Container>
         </Box>

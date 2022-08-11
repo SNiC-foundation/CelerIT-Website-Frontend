@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '@mui/material';
+import { CardContent, Paper } from '@mui/material';
 import { Client, Speaker } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
@@ -68,7 +68,7 @@ function AdminSpeakers() {
   return (
     <>
       <TypographyHeader variant="h2">All Speakers</TypographyHeader>
-      <Card>
+      <Paper elevation={3}>
         <CardContent>
           <AdminTable
             entityColumns={entityColumns}
@@ -80,7 +80,7 @@ function AdminSpeakers() {
             handleDelete={handleDelete}
           />
         </CardContent>
-      </Card>
+      </Paper>
     </>
   );
 }

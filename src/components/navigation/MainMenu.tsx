@@ -19,11 +19,10 @@ function MainMenu({ children }: Props) {
   return (
     <>
       <AppToolbar />
-      <Box sx={(theme) => ({
+      <Box sx={() => ({
         display: 'flex',
         flexFlow: 'column',
         minHeight: '100vh',
-        backgroundColor: theme.palette.secondary.main,
       })}
       >
         <Box sx={() => ({

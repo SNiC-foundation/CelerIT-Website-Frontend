@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '@mui/material';
+import { CardContent, Paper } from '@mui/material';
 import {
   Activity, Client, ProgramPart, Speaker, SubscribeActivity,
 } from '../../clients/server.generated';
@@ -225,7 +225,7 @@ function AdminProgram() {
   return (
     <>
       <TypographyHeader variant="h2">Program</TypographyHeader>
-      <Card sx={{ marginBottom: '2rem' }}>
+      <Paper elevation={3} sx={{ marginBottom: '2rem' }}>
         <CardContent>
           <AdminTable
             entityColumns={pEntityColumns}
@@ -239,8 +239,8 @@ function AdminProgram() {
             subHeader="All program parts"
           />
         </CardContent>
-      </Card>
-      <Card>
+      </Paper>
+      <Paper elevation={3}>
         <CardContent>
           <AdminTable
             entityColumns={aEntityColumns}
@@ -253,7 +253,7 @@ function AdminProgram() {
             subHeader="All activities"
           />
         </CardContent>
-      </Card>
+      </Paper>
     </>
   );
 }

@@ -12,12 +12,12 @@ function SNiCTheme({ children }: Props) {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#df421d',
-      },
-      secondary: {
         main: '#072b4e',
       },
-      mode: 'dark',
+      secondary: {
+        main: '#df421d',
+      },
+      mode: 'light',
     },
   });
 

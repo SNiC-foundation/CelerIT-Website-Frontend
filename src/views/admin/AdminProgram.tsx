@@ -51,6 +51,14 @@ function AdminProgram() {
   }, []);
 
   const pEntityColumns: AdminPropField<ProgramPart>[] = [{
+    attribute: 'name',
+    label: 'Name',
+    width: 250,
+    fieldType: 'string',
+    initial: '',
+    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    canBeUpdated: true,
+  }, {
     attribute: 'beginTime',
     label: 'Begin time',
     width: 200,
@@ -217,9 +225,8 @@ function AdminProgram() {
   return (
     <>
       <TypographyHeader variant="h2">Program</TypographyHeader>
-      <Card>
+      <Card sx={{ marginBottom: '2rem' }}>
         <CardContent>
-          <TypographyHeader variant="h4">All program parts</TypographyHeader>
           <AdminTable
             entityColumns={pEntityColumns}
             entityName="program part"
@@ -229,12 +236,12 @@ function AdminProgram() {
             handleUpdate={handleUpdateProgramPart}
             handleDelete={handleDeleteProgramPart}
             canDelete={canDeleteProgramPart}
+            subHeader="All program parts"
           />
         </CardContent>
       </Card>
       <Card>
         <CardContent>
-          <TypographyHeader variant="h4">All activities</TypographyHeader>
           <AdminTable
             entityColumns={aEntityColumns}
             entityName="activity"
@@ -243,6 +250,7 @@ function AdminProgram() {
             handleCreate={handleCreateActivity}
             handleUpdate={handleUpdateActivity}
             handleDelete={handleDeleteActivity}
+            subHeader="All activities"
           />
         </CardContent>
       </Card>

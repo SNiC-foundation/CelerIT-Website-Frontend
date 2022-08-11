@@ -8,6 +8,7 @@ import { AdminPropField } from './AdminProps';
 import AdminUpdateEntityModal from './AdminUpdateEntityModal';
 import AdminTableButton from './AdminTableButton';
 import AdminTableExpandableCell from './AdminTableExpandableCell';
+import TypographyHeader from '../TypographyHeader';
 
 interface Props<T, P> {
   entities?: T[];
@@ -22,12 +23,14 @@ interface Props<T, P> {
   handleDelete: (entity: T) => void;
   // eslint-disable-next-line no-unused-vars
   canDelete?: (entity: T) => boolean;
+  subHeader?: string;
 }
 
 function AdminTable<T, P = {}>(props: Props<T, P>) {
   const {
     entities, entityName, loading, entityColumns,
     handleUpdate, handleCreate, handleDelete, canDelete,
+    subHeader,
   } = props;
 
   if (!entities) {
@@ -128,16 +131,21 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
 
   const rows: GridRowsProp = entities.map((e) => getRows(entityColumns, e));
 
-  console.log(rows);
-
   return (
     <>
-      <Box sx={{ textAlign: 'right', marginBottom: '1em' }}>
-        <AdminUpdateEntityModal
-          fields={propFields}
-          entityName={entityName}
-          handleSave={handleCreate}
-        />
+      <Box sx={{ textAlign: 'right', marginBottom: '1em', display: 'flex' }}>
+        { subHeader !== undefined ? (
+          <Box>
+            <TypographyHeader variant="h4">{ subHeader }</TypographyHeader>
+          </Box>
+        ) : null}
+        <Box sx={{ flex: 1 }}>
+          <AdminUpdateEntityModal
+            fields={propFields}
+            entityName={entityName}
+            handleSave={handleCreate}
+          />
+        </Box>
       </Box>
       <DataGrid
         components={{
@@ -163,6 +171,7 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
 AdminTable.defaultProps = ({
   entities: undefined,
   canDelete: undefined,
+  subHeader: undefined,
 });
 
 export default AdminTable;

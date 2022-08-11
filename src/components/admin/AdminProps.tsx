@@ -78,13 +78,10 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
           e[k] = undefined;
         }
       });
-      console.log(entity, e);
       return e;
     }
     return constructNewEntity(fields);
   });
-
-  console.log(updatedEntity);
 
   // Our backend and client do not handle undefined and null-values well. Therefore,
   // when we use a dropdown, we have to set empty values to undefined.
@@ -153,7 +150,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
             <FormControl fullWidth>
               <TextField
                 label={field.label}
-                required
+                required={field.validationError !== undefined}
                 fullWidth
                 multiline={field.fieldType === 'text'}
                 value={currentValue}
@@ -171,7 +168,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
             <FormControl fullWidth>
               <TextField
                 label={field.label}
-                required
+                required={field.validationError !== undefined}
                 fullWidth
                 type="number"
                 value={currentValue}
@@ -198,6 +195,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
                   // eslint-disable-next-line react/jsx-props-no-spreading
                   {...fieldProps}
                   error={error(field, parentField)}
+                  required={field.validationError !== undefined}
                 />
               )}
               label={field.label}
@@ -214,6 +212,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
               <InputLabel id={`${id}-label`}>{field.label}</InputLabel>
               <Select
                 labelId={`${id}-label`}
+                required={field.validationError !== undefined}
                 id={id}
                 value={currentValue}
                 label={field.label}
@@ -236,7 +235,8 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
       case 'nested':
         return (
           <Grid item xs={12} sx={{ width: '100%' }} key={field.attribute as string}>
-            <FormControl>
+            <hr />
+            <FormControl sx={{ marginBottom: '1rem' }}>
               <FormControlLabel
                 control={(
                   <Checkbox
@@ -270,10 +270,19 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
     }
   };
 
-  const inputHasErrors = (inputFields: AdminPropField<T>[]): boolean => inputFields
+  const inputHasErrors = (
+    inputFields: AdminPropField<T>[],
+    parentField?: string,
+  ): boolean => inputFields
     .some((f) => {
-      if (f.fieldType === 'nested') return updatedEntity[f.attribute] !== undefined ? inputHasErrors(f.fields as any) : false;
-      return f.validationError ? f.validationError(updatedEntity[f.attribute]) : false;
+      if (f.fieldType === 'nested') return updatedEntity[f.attribute] !== undefined ? inputHasErrors(f.fields as any, f.attribute as any) : false;
+      if (f.validationError) {
+        return parentField
+          // @ts-ignore
+          ? f.validationError(updatedEntity[parentField][f.attribute])
+          : f.validationError(updatedEntity[f.attribute]);
+      }
+      return false;
     });
 
   return (

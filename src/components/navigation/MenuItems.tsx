@@ -3,6 +3,7 @@ import AdminSpeakers from '../../views/admin/AdminSpeakers';
 import ParticipantHome from '../../views/homes/ParticipantHome';
 import AdminPartners from '../../views/admin/AdminPartners';
 import AdminProgram from '../../views/admin/AdminProgram';
+import AdminUsers from '../../views/admin/AdminUsers';
 
 export interface MenuItem {
   name: string;
@@ -45,7 +46,7 @@ export const adminMenuPages: MenuItem[] = [
   }, {
     name: 'Users',
     target: '/admin/users',
-    component: null,
+    component: <AdminUsers />,
   },
 ];
 

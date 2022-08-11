@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, CardContent } from '@mui/material';
-import validator from 'validator';
 import { Client, Speaker } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
 import { AdminPropField } from '../../components/admin/AdminProps';
+import { notEmptyString } from '../../components/admin/defaultValidators';
 
 function AdminSpeakers() {
   const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
@@ -29,7 +29,7 @@ function AdminSpeakers() {
     width: 200,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }, {
     attribute: 'description',

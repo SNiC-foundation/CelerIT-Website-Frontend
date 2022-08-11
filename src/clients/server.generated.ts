@@ -1964,7 +1964,7 @@ export class User implements IUser {
     name!: string;
     dietaryWishes!: string;
     agreeToPrivacyPolicy!: boolean;
-    participantInfo!: Participant;
+    participantInfo?: Participant;
     roles!: Role[];
 
     constructor(data?: IUser) {
@@ -1975,7 +1975,6 @@ export class User implements IUser {
             }
         }
         if (!data) {
-            this.participantInfo = new Participant();
             this.roles = [];
         }
     }
@@ -1990,7 +1989,7 @@ export class User implements IUser {
             this.name = _data["name"];
             this.dietaryWishes = _data["dietaryWishes"];
             this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
-            this.participantInfo = _data["participantInfo"] ? Participant.fromJS(_data["participantInfo"]) : new Participant();
+            this.participantInfo = _data["participantInfo"] ? Participant.fromJS(_data["participantInfo"]) : <any>undefined;
             if (Array.isArray(_data["roles"])) {
                 this.roles = [] as any;
                 for (let item of _data["roles"])
@@ -2035,7 +2034,7 @@ export interface IUser {
     name: string;
     dietaryWishes: string;
     agreeToPrivacyPolicy: boolean;
-    participantInfo: Participant;
+    participantInfo?: Participant;
     roles: Role[];
 }
 

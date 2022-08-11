@@ -29,6 +29,10 @@ export type DropdownPropField<T> = BasePropField<T> & {
   options: AdminPropDropdownOptions<T>[],
 }
 
+export type BooleanPropField<T> = BasePropField<T> & {
+  fieldType: 'boolean',
+}
+
 export type NestedPropField<T, P> = BasePropField<T> & {
   fieldType: 'nested'
   // eslint-disable-next-line no-use-before-define
@@ -37,7 +41,8 @@ export type NestedPropField<T, P> = BasePropField<T> & {
 
 export type AdminPropField<T, P = {}> = NestedPropField<T, P>
   | GeneralPropField<T>
-  | DropdownPropField<T>;
+  | DropdownPropField<T>
+  | BooleanPropField<T>;
 
 export interface AdminPropsProps<T, P> {
   entity?: T;
@@ -229,6 +234,24 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
                   </MenuItem>
                 ))}
               </Select>
+            </FormControl>
+          </Grid>
+        );
+      case 'boolean':
+        return (
+          <Grid item xs={12} sx={{ width: '100%' }} key={field.attribute as string}>
+            <FormControl fullWidth>
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={currentValue}
+                    onChange={(event) => (
+                      updateSingleField(field.attribute, event.target.checked as any, parentField)
+                    )}
+                  />
+                )}
+                label={field.label}
+              />
             </FormControl>
           </Grid>
         );

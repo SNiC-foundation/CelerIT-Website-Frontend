@@ -1,12 +1,12 @@
 import React from 'react';
 import { Card, CardContent } from '@mui/material';
-import validator from 'validator';
 import {
   Activity, Client, ProgramPart, Speaker, SubscribeActivity,
 } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
 import { AdminPropDropdownOptions, AdminPropField } from '../../components/admin/AdminProps';
+import { notEmptyString, validDate } from '../../components/admin/defaultValidators';
 
 function AdminProgram() {
   const [programParts, setProgramParts] = React.useState<ProgramPart[] | undefined>(undefined);
@@ -56,7 +56,7 @@ function AdminProgram() {
     width: 250,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }, {
     attribute: 'beginTime',
@@ -64,7 +64,7 @@ function AdminProgram() {
     width: 200,
     fieldType: 'datetime',
     initial: new Date(),
-    validationError: (value) => value === null || value === undefined || value.toString() === '',
+    validationError: validDate,
     canBeUpdated: true,
   }, {
     attribute: 'endTime',
@@ -72,8 +72,8 @@ function AdminProgram() {
     width: 200,
     fieldType: 'datetime',
     initial: new Date(),
-    validationError: (value, entity) => value === null || value === undefined
-    || value.toString() === '' || (entity !== undefined && value <= entity.beginTime),
+    validationError: (value, entity) => validDate(value)
+      || (entity !== undefined && value <= entity.beginTime),
     canBeUpdated: true,
   }];
 
@@ -92,7 +92,7 @@ function AdminProgram() {
     width: 200,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }, {
     attribute: 'programPartId',
@@ -111,7 +111,7 @@ function AdminProgram() {
     width: 100,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }, {
     attribute: 'speakerId',
@@ -149,7 +149,7 @@ function AdminProgram() {
       width: 200,
       fieldType: 'datetime',
       initial: new Date(),
-      validationError: (value) => value === null || value === undefined || value.toString() === '',
+      validationError: validDate,
       canBeUpdated: true,
     }, {
       attribute: 'subscriptionListCloseDate',
@@ -157,8 +157,8 @@ function AdminProgram() {
       width: 200,
       fieldType: 'datetime',
       initial: new Date(),
-      validationError: (value, entity) => value === null || value === undefined
-      || value.toString() === '' || (entity !== undefined && value <= entity.subscriptionListOpenDate),
+      validationError: (value, entity) => validDate(value)
+        || (entity !== undefined && value <= entity.subscriptionListOpenDate),
       canBeUpdated: true,
     }],
   }];

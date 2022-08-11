@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, CardContent } from '@mui/material';
-import validator from 'validator';
 import { Client, Partner } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/TypographyHeader';
 import { AdminPropField } from '../../components/admin/AdminProps';
+import { notEmptyString } from '../../components/admin/defaultValidators';
 
 function AdminPartners() {
   const [partners, setPartners] = React.useState<Partner[] | undefined>(undefined);
@@ -29,7 +29,7 @@ function AdminPartners() {
     width: 200,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }, {
     attribute: 'location',
@@ -37,7 +37,7 @@ function AdminPartners() {
     width: 200,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }, {
     attribute: 'specialization',
@@ -45,7 +45,7 @@ function AdminPartners() {
     width: 200,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }, {
     attribute: 'description',
@@ -60,7 +60,7 @@ function AdminPartners() {
     width: 200,
     fieldType: 'string',
     initial: '',
-    validationError: (value) => typeof value !== 'string' || validator.isEmpty(value),
+    validationError: notEmptyString,
     canBeUpdated: true,
   }];
 

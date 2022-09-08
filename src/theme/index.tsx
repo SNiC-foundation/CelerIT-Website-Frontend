@@ -1,4 +1,5 @@
 import React from 'react';
+import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { createTheme, ThemeProvider } from '@mui/material';
 
 interface Props {
@@ -16,6 +17,7 @@ function SNiCTheme({ children }: Props) {
       secondary: {
         main: '#072b4e',
       },
+      mode: 'dark',
     },
   });
 

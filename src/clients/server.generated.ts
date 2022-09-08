@@ -276,7 +276,7 @@ export class Client {
      * @param body Parameters to create participant with
      * @return Ok
      */
-    createParticipant(body: ParticipantParams): Promise<Participant> {
+    createParticipant(body: CreateParticipantParams): Promise<Participant> {
         let url_ = this.baseUrl + "/participant";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -360,7 +360,7 @@ export class Client {
      * @param body Update subset of parameter of participant
      * @return Ok
      */
-    updateParticipant(id: number, body: Partial_ParticipantParams_): Promise<Participant> {
+    updateParticipant(id: number, body: Partial_UpdateParticipantParams_): Promise<Participant> {
         let url_ = this.baseUrl + "/participant/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1364,7 +1364,7 @@ export class Client {
      * @param body Parameters to create subscribeActivity with
      * @return Ok
      */
-    createSubscribeActivity(body: SubscribeActivityParams): Promise<SubscribeActivity> {
+    createSubscribeActivity(body: CreateSubscribeActivityParams): Promise<SubscribeActivity> {
         let url_ = this.baseUrl + "/subscribeActivity";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1448,7 +1448,7 @@ export class Client {
      * @param body Update subset of parameter of subscribeActivity
      * @return Ok
      */
-    updateSubscribeActivity(id: number, body: Partial_SubscribeActivityParams_): Promise<SubscribeActivity> {
+    updateSubscribeActivity(id: number, body: Partial_UpdateSubscribeActivityParams_): Promise<SubscribeActivity> {
         let url_ = this.baseUrl + "/subscribeActivity/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -2045,9 +2045,9 @@ export class Participant implements IParticipant {
     version!: number;
     userId!: number;
     user!: User;
-    studyAssociation?: string;
-    studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
+    studyAssociation!: string;
+    studyProgram!: string;
+    agreeToSharingWithCompanies!: boolean;
 
     constructor(data?: IParticipant) {
         if (data) {
@@ -2104,9 +2104,9 @@ export interface IParticipant {
     version: number;
     userId: number;
     user: User;
-    studyAssociation?: string;
-    studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
+    studyAssociation: string;
+    studyProgram: string;
+    agreeToSharingWithCompanies: boolean;
 }
 
 export class Role implements IRole {
@@ -2245,12 +2245,12 @@ export interface ISubscribeActivity {
     subscribers: User[];
 }
 
-export class SubscribeActivityParams implements ISubscribeActivityParams {
+export class UpdateSubscribeActivityParams implements IUpdateSubscribeActivityParams {
     maxParticipants!: number;
     subscriptionListOpenDate!: Date;
     subscriptionListCloseDate!: Date;
 
-    constructor(data?: ISubscribeActivityParams) {
+    constructor(data?: IUpdateSubscribeActivityParams) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2267,9 +2267,9 @@ export class SubscribeActivityParams implements ISubscribeActivityParams {
         }
     }
 
-    static fromJS(data: any): SubscribeActivityParams {
+    static fromJS(data: any): UpdateSubscribeActivityParams {
         data = typeof data === 'object' ? data : {};
-        let result = new SubscribeActivityParams();
+        let result = new UpdateSubscribeActivityParams();
         result.init(data);
         return result;
     }
@@ -2283,7 +2283,7 @@ export class SubscribeActivityParams implements ISubscribeActivityParams {
     }
 }
 
-export interface ISubscribeActivityParams {
+export interface IUpdateSubscribeActivityParams {
     maxParticipants: number;
     subscriptionListOpenDate: Date;
     subscriptionListCloseDate: Date;
@@ -2296,7 +2296,7 @@ export class ActivityParams implements IActivityParams {
     description?: string;
     image?: string;
     speakerId?: number;
-    subscribe?: SubscribeActivityParams;
+    subscribe?: UpdateSubscribeActivityParams;
 
     constructor(data?: IActivityParams) {
         if (data) {
@@ -2315,7 +2315,7 @@ export class ActivityParams implements IActivityParams {
             this.description = _data["description"];
             this.image = _data["image"];
             this.speakerId = _data["speakerId"];
-            this.subscribe = _data["subscribe"] ? SubscribeActivityParams.fromJS(_data["subscribe"]) : <any>undefined;
+            this.subscribe = _data["subscribe"] ? UpdateSubscribeActivityParams.fromJS(_data["subscribe"]) : <any>undefined;
         }
     }
 
@@ -2346,16 +2346,16 @@ export interface IActivityParams {
     description?: string;
     image?: string;
     speakerId?: number;
-    subscribe?: SubscribeActivityParams;
+    subscribe?: UpdateSubscribeActivityParams;
 }
 
-export class ParticipantParams implements IParticipantParams {
+export class CreateParticipantParams implements ICreateParticipantParams {
+    studyAssociation!: string;
+    studyProgram!: string;
+    agreeToSharingWithCompanies!: boolean;
     userId!: number;
-    studyAssociation?: string;
-    studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
 
-    constructor(data?: IParticipantParams) {
+    constructor(data?: ICreateParticipantParams) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2366,45 +2366,44 @@ export class ParticipantParams implements IParticipantParams {
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
             this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
+            this.userId = _data["userId"];
         }
     }
 
-    static fromJS(data: any): ParticipantParams {
+    static fromJS(data: any): CreateParticipantParams {
         data = typeof data === 'object' ? data : {};
-        let result = new ParticipantParams();
+        let result = new CreateParticipantParams();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
         data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
+        data["userId"] = this.userId;
         return data;
     }
 }
 
-export interface IParticipantParams {
+export interface ICreateParticipantParams {
+    studyAssociation: string;
+    studyProgram: string;
+    agreeToSharingWithCompanies: boolean;
     userId: number;
-    studyAssociation?: string;
-    studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
 }
 
 /** Make all properties in T optional */
-export class Partial_ParticipantParams_ implements IPartial_ParticipantParams_ {
-    userId?: number;
+export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticipantParams_ {
     studyAssociation?: string;
     studyProgram?: string;
     agreeToSharingWithCompanies?: boolean;
 
-    constructor(data?: IPartial_ParticipantParams_) {
+    constructor(data?: IPartial_UpdateParticipantParams_) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2415,23 +2414,21 @@ export class Partial_ParticipantParams_ implements IPartial_ParticipantParams_ {
 
     init(_data?: any) {
         if (_data) {
-            this.userId = _data["userId"];
             this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
             this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
         }
     }
 
-    static fromJS(data: any): Partial_ParticipantParams_ {
+    static fromJS(data: any): Partial_UpdateParticipantParams_ {
         data = typeof data === 'object' ? data : {};
-        let result = new Partial_ParticipantParams_();
+        let result = new Partial_UpdateParticipantParams_();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
         data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
         data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
@@ -2440,11 +2437,17 @@ export class Partial_ParticipantParams_ implements IPartial_ParticipantParams_ {
 }
 
 /** Make all properties in T optional */
-export interface IPartial_ParticipantParams_ {
-    userId?: number;
+export interface IPartial_UpdateParticipantParams_ {
     studyAssociation?: string;
     studyProgram?: string;
     agreeToSharingWithCompanies?: boolean;
+}
+
+export enum SponsorPackage {
+    Bronze = "bronze",
+    Silver = "silver",
+    Gold = "gold",
+    Platinum = "platinum",
 }
 
 export class Partner implements IPartner {
@@ -2457,6 +2460,7 @@ export class Partner implements IPartner {
     specialization!: string;
     description!: string;
     url!: string;
+    package!: SponsorPackage;
 
     constructor(data?: IPartner) {
         if (data) {
@@ -2478,6 +2482,7 @@ export class Partner implements IPartner {
             this.specialization = _data["specialization"];
             this.description = _data["description"];
             this.url = _data["url"];
+            this.package = _data["package"];
         }
     }
 
@@ -2499,6 +2504,7 @@ export class Partner implements IPartner {
         data["specialization"] = this.specialization;
         data["description"] = this.description;
         data["url"] = this.url;
+        data["package"] = this.package;
         return data;
     }
 }
@@ -2513,6 +2519,7 @@ export interface IPartner {
     specialization: string;
     description: string;
     url: string;
+    package: SponsorPackage;
 }
 
 export class PartnerParams implements IPartnerParams {
@@ -2521,6 +2528,7 @@ export class PartnerParams implements IPartnerParams {
     specialization!: string;
     description!: string;
     url!: string;
+    package!: SponsorPackage;
 
     constructor(data?: IPartnerParams) {
         if (data) {
@@ -2538,6 +2546,7 @@ export class PartnerParams implements IPartnerParams {
             this.specialization = _data["specialization"];
             this.description = _data["description"];
             this.url = _data["url"];
+            this.package = _data["package"];
         }
     }
 
@@ -2555,6 +2564,7 @@ export class PartnerParams implements IPartnerParams {
         data["specialization"] = this.specialization;
         data["description"] = this.description;
         data["url"] = this.url;
+        data["package"] = this.package;
         return data;
     }
 }
@@ -2565,6 +2575,7 @@ export interface IPartnerParams {
     specialization: string;
     description: string;
     url: string;
+    package: SponsorPackage;
 }
 
 /** Make all properties in T optional */
@@ -2574,6 +2585,7 @@ export class Partial_PartnerParams_ implements IPartial_PartnerParams_ {
     specialization?: string;
     description?: string;
     url?: string;
+    package?: SponsorPackage;
 
     constructor(data?: IPartial_PartnerParams_) {
         if (data) {
@@ -2591,6 +2603,7 @@ export class Partial_PartnerParams_ implements IPartial_PartnerParams_ {
             this.specialization = _data["specialization"];
             this.description = _data["description"];
             this.url = _data["url"];
+            this.package = _data["package"];
         }
     }
 
@@ -2608,6 +2621,7 @@ export class Partial_PartnerParams_ implements IPartial_PartnerParams_ {
         data["specialization"] = this.specialization;
         data["description"] = this.description;
         data["url"] = this.url;
+        data["package"] = this.package;
         return data;
     }
 }
@@ -2619,6 +2633,7 @@ export interface IPartial_PartnerParams_ {
     specialization?: string;
     description?: string;
     url?: string;
+    package?: SponsorPackage;
 }
 
 export class ProgramPartParams implements IProgramPartParams {
@@ -2867,13 +2882,61 @@ export interface IPartial_SpeakerParams_ {
     description?: string;
 }
 
+export class CreateSubscribeActivityParams implements ICreateSubscribeActivityParams {
+    maxParticipants!: number;
+    subscriptionListOpenDate!: Date;
+    subscriptionListCloseDate!: Date;
+    activityId!: number;
+
+    constructor(data?: ICreateSubscribeActivityParams) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.maxParticipants = _data["maxParticipants"];
+            this.subscriptionListOpenDate = _data["subscriptionListOpenDate"] ? new Date(_data["subscriptionListOpenDate"].toString()) : <any>undefined;
+            this.subscriptionListCloseDate = _data["subscriptionListCloseDate"] ? new Date(_data["subscriptionListCloseDate"].toString()) : <any>undefined;
+            this.activityId = _data["activityId"];
+        }
+    }
+
+    static fromJS(data: any): CreateSubscribeActivityParams {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSubscribeActivityParams();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["maxParticipants"] = this.maxParticipants;
+        data["subscriptionListOpenDate"] = this.subscriptionListOpenDate ? this.subscriptionListOpenDate.toISOString() : <any>undefined;
+        data["subscriptionListCloseDate"] = this.subscriptionListCloseDate ? this.subscriptionListCloseDate.toISOString() : <any>undefined;
+        data["activityId"] = this.activityId;
+        return data;
+    }
+}
+
+export interface ICreateSubscribeActivityParams {
+    maxParticipants: number;
+    subscriptionListOpenDate: Date;
+    subscriptionListCloseDate: Date;
+    activityId: number;
+}
+
 /** Make all properties in T optional */
-export class Partial_SubscribeActivityParams_ implements IPartial_SubscribeActivityParams_ {
+export class Partial_UpdateSubscribeActivityParams_ implements IPartial_UpdateSubscribeActivityParams_ {
     maxParticipants?: number;
     subscriptionListOpenDate?: Date;
     subscriptionListCloseDate?: Date;
 
-    constructor(data?: IPartial_SubscribeActivityParams_) {
+    constructor(data?: IPartial_UpdateSubscribeActivityParams_) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2890,9 +2953,9 @@ export class Partial_SubscribeActivityParams_ implements IPartial_SubscribeActiv
         }
     }
 
-    static fromJS(data: any): Partial_SubscribeActivityParams_ {
+    static fromJS(data: any): Partial_UpdateSubscribeActivityParams_ {
         data = typeof data === 'object' ? data : {};
-        let result = new Partial_SubscribeActivityParams_();
+        let result = new Partial_UpdateSubscribeActivityParams_();
         result.init(data);
         return result;
     }
@@ -2907,10 +2970,54 @@ export class Partial_SubscribeActivityParams_ implements IPartial_SubscribeActiv
 }
 
 /** Make all properties in T optional */
-export interface IPartial_SubscribeActivityParams_ {
+export interface IPartial_UpdateSubscribeActivityParams_ {
     maxParticipants?: number;
     subscriptionListOpenDate?: Date;
     subscriptionListCloseDate?: Date;
+}
+
+export class UpdateParticipantParams implements IUpdateParticipantParams {
+    studyAssociation!: string;
+    studyProgram!: string;
+    agreeToSharingWithCompanies!: boolean;
+
+    constructor(data?: IUpdateParticipantParams) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.studyAssociation = _data["studyAssociation"];
+            this.studyProgram = _data["studyProgram"];
+            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
+        }
+    }
+
+    static fromJS(data: any): UpdateParticipantParams {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateParticipantParams();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["studyAssociation"] = this.studyAssociation;
+        data["studyProgram"] = this.studyProgram;
+        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
+        return data;
+    }
+}
+
+export interface IUpdateParticipantParams {
+    studyAssociation: string;
+    studyProgram: string;
+    agreeToSharingWithCompanies: boolean;
 }
 
 export class UserParams implements IUserParams {
@@ -2918,6 +3025,7 @@ export class UserParams implements IUserParams {
     name!: string;
     dietaryWishes!: string;
     agreeToPrivacyPolicy!: boolean;
+    participantInfo?: UpdateParticipantParams;
 
     constructor(data?: IUserParams) {
         if (data) {
@@ -2934,6 +3042,7 @@ export class UserParams implements IUserParams {
             this.name = _data["name"];
             this.dietaryWishes = _data["dietaryWishes"];
             this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
+            this.participantInfo = _data["participantInfo"] ? UpdateParticipantParams.fromJS(_data["participantInfo"]) : <any>undefined;
         }
     }
 
@@ -2950,6 +3059,7 @@ export class UserParams implements IUserParams {
         data["name"] = this.name;
         data["dietaryWishes"] = this.dietaryWishes;
         data["agreeToPrivacyPolicy"] = this.agreeToPrivacyPolicy;
+        data["participantInfo"] = this.participantInfo ? this.participantInfo.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -2959,6 +3069,7 @@ export interface IUserParams {
     name: string;
     dietaryWishes: string;
     agreeToPrivacyPolicy: boolean;
+    participantInfo?: UpdateParticipantParams;
 }
 
 /** Make all properties in T optional */
@@ -2967,6 +3078,7 @@ export class Partial_UserParams_ implements IPartial_UserParams_ {
     name?: string;
     dietaryWishes?: string;
     agreeToPrivacyPolicy?: boolean;
+    participantInfo?: UpdateParticipantParams;
 
     constructor(data?: IPartial_UserParams_) {
         if (data) {
@@ -2983,6 +3095,7 @@ export class Partial_UserParams_ implements IPartial_UserParams_ {
             this.name = _data["name"];
             this.dietaryWishes = _data["dietaryWishes"];
             this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
+            this.participantInfo = _data["participantInfo"] ? UpdateParticipantParams.fromJS(_data["participantInfo"]) : <any>undefined;
         }
     }
 
@@ -2999,6 +3112,7 @@ export class Partial_UserParams_ implements IPartial_UserParams_ {
         data["name"] = this.name;
         data["dietaryWishes"] = this.dietaryWishes;
         data["agreeToPrivacyPolicy"] = this.agreeToPrivacyPolicy;
+        data["participantInfo"] = this.participantInfo ? this.participantInfo.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -3009,6 +3123,7 @@ export interface IPartial_UserParams_ {
     name?: string;
     dietaryWishes?: string;
     agreeToPrivacyPolicy?: boolean;
+    participantInfo?: UpdateParticipantParams;
 }
 
 export class ApiException extends Error {

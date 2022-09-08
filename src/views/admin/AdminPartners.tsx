@@ -32,6 +32,26 @@ function AdminPartners() {
     validationError: notEmptyString,
     canBeUpdated: true,
   }, {
+    attribute: 'package',
+    label: 'Package',
+    width: 150,
+    fieldType: 'dropdown',
+    initial: 'bronze',
+    options: [{
+      key: 'bronze',
+      value: 'Bronze',
+    }, {
+      key: 'silver',
+      value: 'Silver',
+    }, {
+      key: 'gold',
+      value: 'Gold',
+    }, {
+      key: 'platinum',
+      value: 'Platinum',
+    }],
+    canBeUpdated: true,
+  }, {
     attribute: 'location',
     label: 'Location',
     width: 200,

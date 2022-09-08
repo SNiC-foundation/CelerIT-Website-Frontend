@@ -649,6 +649,50 @@ export class Client {
     }
 
     /**
+     * @param logo (optional) 
+     * @return No content
+     */
+    uploadPartnerLogo(id: number, logo: FileParameter | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/partner/{id}/logo";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (logo === null || logo === undefined)
+            throw new Error("The parameter 'logo' cannot be null.");
+        else
+            content_.append("logo", logo.data, logo.fileName ? logo.fileName : "logo");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUploadPartnerLogo(_response);
+        });
+    }
+
+    protected processUploadPartnerLogo(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return Ok
      */
     getAllProgramParts(): Promise<ProgramPart[]> {
@@ -1892,6 +1936,7 @@ export class Speaker implements ISpeaker {
     name!: string;
     description!: string;
     activities!: Activity[];
+    imageFilename?: string;
 
     constructor(data?: ISpeaker) {
         if (data) {
@@ -1918,6 +1963,7 @@ export class Speaker implements ISpeaker {
                 for (let item of _data["activities"])
                     this.activities!.push(Activity.fromJS(item));
             }
+            this.imageFilename = _data["imageFilename"];
         }
     }
 
@@ -1941,6 +1987,7 @@ export class Speaker implements ISpeaker {
             for (let item of this.activities)
                 data["activities"].push(item.toJSON());
         }
+        data["imageFilename"] = this.imageFilename;
         return data;
     }
 }
@@ -1953,6 +2000,7 @@ export interface ISpeaker {
     name: string;
     description: string;
     activities: Activity[];
+    imageFilename?: string;
 }
 
 export class User implements IUser {
@@ -2461,6 +2509,7 @@ export class Partner implements IPartner {
     description!: string;
     url!: string;
     package!: SponsorPackage;
+    logoFilename?: string;
 
     constructor(data?: IPartner) {
         if (data) {
@@ -2483,6 +2532,7 @@ export class Partner implements IPartner {
             this.description = _data["description"];
             this.url = _data["url"];
             this.package = _data["package"];
+            this.logoFilename = _data["logoFilename"];
         }
     }
 
@@ -2505,6 +2555,7 @@ export class Partner implements IPartner {
         data["description"] = this.description;
         data["url"] = this.url;
         data["package"] = this.package;
+        data["logoFilename"] = this.logoFilename;
         return data;
     }
 }
@@ -2520,6 +2571,7 @@ export interface IPartner {
     description: string;
     url: string;
     package: SponsorPackage;
+    logoFilename?: string;
 }
 
 export class PartnerParams implements IPartnerParams {
@@ -3124,6 +3176,11 @@ export interface IPartial_UserParams_ {
     dietaryWishes?: string;
     agreeToPrivacyPolicy?: boolean;
     participantInfo?: UpdateParticipantParams;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export class ApiException extends Error {

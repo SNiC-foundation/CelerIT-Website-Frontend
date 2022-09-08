@@ -9,6 +9,7 @@ import AdminUpdateEntityModal from './AdminUpdateEntityModal';
 import AdminTableButton from './AdminTableButton';
 import AdminTableExpandableCell from './AdminTableExpandableCell';
 import TypographyHeader from '../TypographyHeader';
+import AdminUploadImage from './AdminUploadImage';
 
 interface Props<T, P> {
   entities?: T[];
@@ -46,6 +47,16 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
     columns.forEach((c): void => {
       if (c.fieldType === 'nested') {
         cols.push(...getColumns(c.fields as any, [...parentFields, c.attribute as any as string]));
+      } else if (c.fieldType === 'image') {
+        cols.push({
+          field: c.attribute as string,
+          headerName: c.label,
+          width: c.width,
+          renderCell: (params: GridRenderCellParams<any, T>) => {
+            if (params.value === null) return null;
+            return (<img alt="logo" src={`/api/static/${params.value.replaceAll('\\', '/')}`} style={{ height: '1rem' }} />);
+          },
+        });
       } else {
         cols.push({
           field: c.attribute as string,
@@ -87,6 +98,10 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
     disableColumnMenu: true,
     renderCell: (params: GridRenderCellParams<any, T>) => (
       <div>
+        <AdminUploadImage
+          id={(params.row as any).id}
+          entity={entityName}
+        />
         <AdminUpdateEntityModal
           entity={params.row}
           entityName={entityName}

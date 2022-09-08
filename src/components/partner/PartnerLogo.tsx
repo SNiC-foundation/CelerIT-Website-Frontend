@@ -11,10 +11,13 @@ interface Props {
 function PartnerLogo({ partner, size }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
+  const logoFilename = partner.logoFilename != null ? partner.logoFilename.replace('\\', '/') : '';
+  console.log(partner.logoFilename, logoFilename);
+
   return (
     <Box>
       <img
-        src="https://join.gewis.nl/img/gewis.png"
+        src={`/api/static/${logoFilename}`}
         alt="logo"
         onMouseEnter={(event) => setAnchorEl(event.currentTarget)}
         style={{ height: size }}

@@ -19,6 +19,8 @@ function PartnerPopover({
 
   const open = Boolean(anchorEl);
 
+  const logoFilename = partner.logoFilename ? partner.logoFilename.replaceAll('\\', '/') : '';
+
   return (
     <>
       <Popover
@@ -28,7 +30,7 @@ function PartnerPopover({
         transformOrigin={{ vertical: 'center', horizontal: 'center' }}
       >
         <Box onMouseLeave={onMouseLeave} sx={{ margin: '1rem', textAlign: 'center' }}>
-          <img src="https://join.gewis.nl/img/gewis.png" alt="logo" style={{ height: size }} />
+          <img src={`/api/static/${logoFilename}`} alt="logo" style={{ height: size }} />
           <br />
           <Box sx={{ paddingTop: '1rem', color: 'darkgrey', fontStyle: 'italic' }}>
             {partner.specialization}

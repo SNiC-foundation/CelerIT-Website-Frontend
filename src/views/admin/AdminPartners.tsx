@@ -24,9 +24,16 @@ function AdminPartners() {
   }, []);
 
   const entityColumns: AdminPropField<Partner>[] = [{
+    attribute: 'logoFilename',
+    label: '',
+    width: 50,
+    fieldType: 'image',
+    canBeUpdated: false,
+    initial: '',
+  }, {
     attribute: 'name',
     label: 'Name',
-    width: 200,
+    width: 170,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
@@ -34,7 +41,7 @@ function AdminPartners() {
   }, {
     attribute: 'package',
     label: 'Package',
-    width: 150,
+    width: 100,
     fieldType: 'dropdown',
     initial: 'bronze',
     options: [{
@@ -54,7 +61,7 @@ function AdminPartners() {
   }, {
     attribute: 'location',
     label: 'Location',
-    width: 200,
+    width: 150,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,

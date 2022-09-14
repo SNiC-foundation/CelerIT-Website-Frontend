@@ -102,7 +102,7 @@ function AdminProgram() {
     initial: programParts && programParts.length > 0 ? programParts[0].id : '',
     options: programParts ? programParts.map((p) => ({
       key: p.id,
-      value: p.id.toString(),
+      value: p.name,
     })) : [],
     canBeUpdated: true,
   }, {

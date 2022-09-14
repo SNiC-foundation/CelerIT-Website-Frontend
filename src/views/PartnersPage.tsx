@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, CircularProgress, styled } from '@mui/material';
+import {
+  Box, CircularProgress, styled, Typography,
+} from '@mui/material';
 import { Client, Partner, SponsorPackage } from '../clients/server.generated';
 import PartnerLogo from '../components/partner/PartnerLogo';
 import TypographyHeader from '../components/TypographyHeader';
@@ -44,26 +46,36 @@ function PartnersPage() {
   const orderedPartners = [{
     header: 'Platinum Partners',
     partners: platinums,
-    size: '400px',
+    size: '320px',
   }, {
     header: 'Gold Partners',
     partners: golds,
-    size: '300px',
+    size: '220px',
   }, {
     header: 'Silver Partners',
     partners: silvers,
-    size: '200px',
+    size: '170px',
   }, {
     header: 'Bronze Partners',
     partners: bronzes,
-    size: '150px',
+    size: '140px',
   }];
 
   return (
     <Box sx={{ width: '100%', textAlign: 'center' }}>
+      <Box sx={{ marginBottom: '6rem' }}>
+        <TypographyHeader variant="h1">
+          2022 Partners
+        </TypographyHeader>
+        <Typography variant="body1">
+          Without it&lsquo;s partners, SNiC 2022: CelerIT could not take place.
+          Interested in becoming a partner? Contact us for more details.
+        </Typography>
+      </Box>
       {orderedPartners.map((o) => (
         <Box sx={{ paddingBottom: '4rem' }}>
-          <TypographyHeader variant="h3">
+          <hr />
+          <TypographyHeader variant="h3" sx={{ marginTop: '2rem', marginBottom: '2rem' }}>
             {o.header}
           </TypographyHeader>
           <LogoGrid>

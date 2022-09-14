@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Paper } from '@mui/material';
 import { Partner } from '../../clients/server.generated';
 import PartnerPopover from './PartnerPopover';
 
@@ -12,15 +12,18 @@ function PartnerLogo({ partner, size }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const logoFilename = partner.logoFilename != null ? partner.logoFilename.replace('\\', '/') : '';
-  console.log(partner.logoFilename, logoFilename);
 
   return (
-    <Box>
+    <Paper
+      sx={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', width: size,
+      }}
+      onMouseEnter={(event) => setAnchorEl(event.currentTarget)}
+    >
       <img
         src={`/api/static/${logoFilename}`}
         alt="logo"
-        onMouseEnter={(event) => setAnchorEl(event.currentTarget)}
-        style={{ height: size }}
+        style={{ maxHeight: size, maxWidth: '100%' }}
       />
       <PartnerPopover
         partner={partner}
@@ -28,7 +31,7 @@ function PartnerLogo({ partner, size }: Props) {
         onMouseLeave={() => setAnchorEl(null)}
         size={size}
       />
-    </Box>
+    </Paper>
   );
 }
 

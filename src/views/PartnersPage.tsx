@@ -20,7 +20,7 @@ const LogoGrid = styled(Box)({
   flexWrap: 'wrap',
   justifyContent: 'center',
   alignItems: 'stretch',
-  gap: '2rem',
+  gap: '3rem',
   width: '100%',
 });
 
@@ -46,19 +46,19 @@ function PartnersPage() {
   const orderedPartners = [{
     header: 'Platinum Partners',
     partners: platinums,
-    size: '320px',
+    size: '600px',
   }, {
     header: 'Gold Partners',
     partners: golds,
-    size: '220px',
+    size: '380px',
   }, {
     header: 'Silver Partners',
     partners: silvers,
-    size: '170px',
+    size: '280px',
   }, {
     header: 'Bronze Partners',
     partners: bronzes,
-    size: '140px',
+    size: '200px',
   }];
 
   return (

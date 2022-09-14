@@ -30,7 +30,7 @@ function PartnerPopover({
         transformOrigin={{ vertical: 'center', horizontal: 'center' }}
       >
         <Box onMouseLeave={onMouseLeave} sx={{ margin: '1rem', textAlign: 'center' }}>
-          <img src={`/api/static/${logoFilename}`} alt="logo" style={{ height: size }} />
+          <img src={`/api/static/${logoFilename}`} alt="logo" style={{ maxHeight: size, maxWidth: size }} />
           <br />
           <Box sx={{ paddingTop: '1rem', color: 'darkgrey', fontStyle: 'italic' }}>
             {partner.specialization}

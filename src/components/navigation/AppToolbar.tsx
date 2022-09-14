@@ -42,7 +42,7 @@ function AppToolbar() {
   };
 
   return (
-    <AppBar position="static" enableColorOnDark sx={{ position: 'absolute', zIndex: 100 }}>
+    <AppBar id="main-menu" position="static" enableColorOnDark sx={{ position: 'absolute', zIndex: 100 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography

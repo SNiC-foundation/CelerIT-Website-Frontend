@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import {
-  Grid, Paper, styled, Typography,
+  Box, Grid, Paper, styled, Typography,
 } from '@mui/material';
 import ActivityComponent from './ActivityComponent';
-import { Activity, Client } from '../clients/server.generated';
+import { Activity, Client, ProgramPart } from '../clients/server.generated';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -14,100 +14,88 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function ProgramComponent() {
-  const [data, setData] = React.useState<Activity[] | null>(null);
+  const [activities, setActivities] = React.useState<Activity[] | null>(null);
+  const [programParts, setProgramParts] = React.useState<ProgramPart[] | null>(null);
   const client = new Client();
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchActivities() {
       const res = await client.getAllActivities();
-      setData(res);
+      setActivities(res);
     }
-    fetchData();
-  }, [setData]); // re-render once when data is loaded
 
-  if (data != null) {
+    async function fetchProgramParts() {
+      const res = await client.getAllProgramParts();
+      // TODO: fix something for when timeslots are overlapping (or just don't)
+      res.sort((a, b) => ((a.beginTime > b.beginTime) ? 1 : -1));
+      setProgramParts(res);
+    }
+
+    fetchProgramParts();
+    fetchActivities();
+  }, []);
+
+  if (activities != null && programParts != null) {
+    const locations = Array.from(new Set(activities.map((element) => element.location)));
+
+    const activitiesHtml = programParts.map((programPart) => {
+      const activitiesInProgramPart = activities
+        .filter((activity) => activity.programPartId === programPart.id);
+
+      return (
+        <>
+          <Grid item xs={1}>
+            <Item>
+              <h1>{programPart.name}</h1>
+            </Item>
+          </Grid>
+
+          {locations.map((location) => {
+            const activity = activitiesInProgramPart.filter((ac) => ac.location === location);
+            if (activity[0] === undefined) {
+              return (
+                <Grid item xs={1}>
+                  {/* TODO: think off something to put for the empty activities
+                  (maybe just a box with background colour) */}
+                </Grid>
+              );
+            }
+            return (
+              <Grid item xs={1}>
+                <Item>
+                  <ActivityComponent
+                    title={activity[0].name}
+                    location={activity[0].location}
+                    startTime={activity[0].programPart.beginTime}
+                    endTime={activity[0].programPart.endTime}
+                    description={activity[0].description}
+                  />
+                </Item>
+              </Grid>
+            );
+          })}
+        </>
+      );
+    });
+
+    const locationsHtml = locations.map((location) => (
+      <Grid item xs={1}>
+        <Box>
+          <Item>
+            <h1>{location}</h1>
+          </Item>
+        </Box>
+      </Grid>
+    ));
+
     return (
-      <Grid container direction="row" spacing={2}>
-        <Grid item xs={12}>
-          <Item>
-            <ActivityComponent title="Opening" location="Room 1" startTime={new Date()} endTime={new Date()} description="Plenary opening of the day" />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 1.1" location="Room 1" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 1.2" location="Room 2" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 1.3" location="Room 3" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Speeddates 1" location="Speeddates room" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={12}>
-          <Item>
-            <ActivityComponent title="Lunch" location="Foyer" startTime={new Date()} endTime={new Date()} description="Lekker smikkelen" />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 2.1" location="Room 1" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 2.2" location="Room 2" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 2.3" location="Room 3" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Speeddates 2" location="Speeddates room" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 3.1" location="Room 1" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 3.2" location="Room 2" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Parallel 3.3" location="Room 3" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={3}>
-          <Item>
-            <ActivityComponent title="Speeddates 3" location="Speeddates room" startTime={new Date()} endTime={new Date()} />
-          </Item>
-        </Grid>
-        <Grid item xs={12}>
-          <Item>
-            <ActivityComponent title="Dinner" location="Foyer" startTime={new Date()} endTime={new Date()} description="Lekker smikkelen" />
-          </Item>
-        </Grid>
-        <Grid item xs={12}>
-          <Item>
-            <ActivityComponent title="Borrel" location="Foyer" startTime={new Date()} endTime={new Date()} description="Lekker smikkelen" />
-          </Item>
-        </Grid>
+      // TODO: fix the blocks such that they are all the same length
+      // TODO: add a mobile layout :(
+      <Grid container direction="row" spacing={2} columns={locations.length + 1} sx={{ alignItems: 'center' }}>
+        {/* This is an empty box to make the table look nicer */}
+        <Grid item xs={1} />
+        {locationsHtml}
+        {activitiesHtml}
       </Grid>
     );
   }

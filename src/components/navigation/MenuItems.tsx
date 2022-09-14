@@ -4,6 +4,7 @@ import ParticipantHome from '../../views/homes/ParticipantHome';
 import AdminPartners from '../../views/admin/AdminPartners';
 import AdminProgram from '../../views/admin/AdminProgram';
 import AdminUsers from '../../views/admin/AdminUsers';
+import ProgramComponent from '../ProgramComponent';
 
 export interface MenuItem {
   name: string;
@@ -26,7 +27,7 @@ export const generalPages: MenuItem[] = [
   {
     name: 'Program',
     target: '/program',
-    component: null,
+    component: <ProgramComponent />,
   },
 ];
 

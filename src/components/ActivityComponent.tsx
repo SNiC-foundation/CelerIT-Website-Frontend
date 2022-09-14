@@ -13,6 +13,12 @@ function ActivityComponent(props: Props) {
   const {
     title, location, startTime, endTime, description,
   } = props;
+
+  let newDescription = description;
+  if (description == null || description === '') {
+    newDescription = 'A description is not yet set';
+  }
+
   return (
     <Box>
       <h1>
@@ -22,14 +28,14 @@ function ActivityComponent(props: Props) {
         {`${location}, ${startTime.getUTCHours().toString().padStart(2, '0')}:${startTime.getUTCMinutes().toString().padStart(2, '0')}-${endTime.getUTCHours().toString().padStart(2, '0')}:${endTime.getUTCMinutes().toString().padStart(2, '0')}`}
       </h4>
       <p>
-        {description}
+        {newDescription}
       </p>
     </Box>
   );
 }
 
 ActivityComponent.defaultProps = {
-  description: 'A description is not yet set',
+  description: undefined,
 };
 
 export default ActivityComponent;

@@ -1361,6 +1361,50 @@ export class Client {
     }
 
     /**
+     * @param logo (optional) 
+     * @return No content
+     */
+    uploadSpeakerImage(id: number, logo: FileParameter | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/speaker/{id}/image";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (logo === null || logo === undefined)
+            throw new Error("The parameter 'logo' cannot be null.");
+        else
+            content_.append("logo", logo.data, logo.fileName ? logo.fileName : "logo");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUploadSpeakerImage(_response);
+        });
+    }
+
+    protected processUploadSpeakerImage(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return Ok
      */
     getAllSubscribeActivities(): Promise<SubscribeActivity[]> {
@@ -2506,7 +2550,8 @@ export class Partner implements IPartner {
     name!: string;
     location!: string;
     specialization!: string;
-    description!: string;
+    shortDescription?: string;
+    description?: string;
     url!: string;
     package!: SponsorPackage;
     logoFilename?: string;
@@ -2529,6 +2574,7 @@ export class Partner implements IPartner {
             this.name = _data["name"];
             this.location = _data["location"];
             this.specialization = _data["specialization"];
+            this.shortDescription = _data["shortDescription"];
             this.description = _data["description"];
             this.url = _data["url"];
             this.package = _data["package"];
@@ -2552,6 +2598,7 @@ export class Partner implements IPartner {
         data["name"] = this.name;
         data["location"] = this.location;
         data["specialization"] = this.specialization;
+        data["shortDescription"] = this.shortDescription;
         data["description"] = this.description;
         data["url"] = this.url;
         data["package"] = this.package;
@@ -2568,7 +2615,8 @@ export interface IPartner {
     name: string;
     location: string;
     specialization: string;
-    description: string;
+    shortDescription?: string;
+    description?: string;
     url: string;
     package: SponsorPackage;
     logoFilename?: string;
@@ -2578,7 +2626,8 @@ export class PartnerParams implements IPartnerParams {
     name!: string;
     location!: string;
     specialization!: string;
-    description!: string;
+    shortDescription?: string;
+    description?: string;
     url!: string;
     package!: SponsorPackage;
 
@@ -2596,6 +2645,7 @@ export class PartnerParams implements IPartnerParams {
             this.name = _data["name"];
             this.location = _data["location"];
             this.specialization = _data["specialization"];
+            this.shortDescription = _data["shortDescription"];
             this.description = _data["description"];
             this.url = _data["url"];
             this.package = _data["package"];
@@ -2614,6 +2664,7 @@ export class PartnerParams implements IPartnerParams {
         data["name"] = this.name;
         data["location"] = this.location;
         data["specialization"] = this.specialization;
+        data["shortDescription"] = this.shortDescription;
         data["description"] = this.description;
         data["url"] = this.url;
         data["package"] = this.package;
@@ -2625,7 +2676,8 @@ export interface IPartnerParams {
     name: string;
     location: string;
     specialization: string;
-    description: string;
+    shortDescription?: string;
+    description?: string;
     url: string;
     package: SponsorPackage;
 }
@@ -2635,6 +2687,7 @@ export class Partial_PartnerParams_ implements IPartial_PartnerParams_ {
     name?: string;
     location?: string;
     specialization?: string;
+    shortDescription?: string;
     description?: string;
     url?: string;
     package?: SponsorPackage;
@@ -2653,6 +2706,7 @@ export class Partial_PartnerParams_ implements IPartial_PartnerParams_ {
             this.name = _data["name"];
             this.location = _data["location"];
             this.specialization = _data["specialization"];
+            this.shortDescription = _data["shortDescription"];
             this.description = _data["description"];
             this.url = _data["url"];
             this.package = _data["package"];
@@ -2671,6 +2725,7 @@ export class Partial_PartnerParams_ implements IPartial_PartnerParams_ {
         data["name"] = this.name;
         data["location"] = this.location;
         data["specialization"] = this.specialization;
+        data["shortDescription"] = this.shortDescription;
         data["description"] = this.description;
         data["url"] = this.url;
         data["package"] = this.package;
@@ -2683,6 +2738,7 @@ export interface IPartial_PartnerParams_ {
     name?: string;
     location?: string;
     specialization?: string;
+    shortDescription?: string;
     description?: string;
     url?: string;
     package?: SponsorPackage;

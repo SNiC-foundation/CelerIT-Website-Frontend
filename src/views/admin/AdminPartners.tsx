@@ -33,7 +33,7 @@ function AdminPartners() {
   }, {
     attribute: 'name',
     label: 'Name',
-    width: 170,
+    width: 150,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
@@ -41,7 +41,7 @@ function AdminPartners() {
   }, {
     attribute: 'package',
     label: 'Package',
-    width: 100,
+    width: 90,
     fieldType: 'dropdown',
     initial: 'bronze',
     options: [{
@@ -61,7 +61,7 @@ function AdminPartners() {
   }, {
     attribute: 'location',
     label: 'Location',
-    width: 150,
+    width: 120,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
@@ -69,15 +69,22 @@ function AdminPartners() {
   }, {
     attribute: 'specialization',
     label: 'Specialization',
-    width: 200,
+    width: 180,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
     canBeUpdated: true,
   }, {
+    attribute: 'shortDescription',
+    label: 'Description (short)',
+    width: 300,
+    fieldType: 'text',
+    initial: '',
+    canBeUpdated: true,
+  }, {
     attribute: 'description',
     label: 'Description',
-    width: 400,
+    width: 300,
     fieldType: 'text',
     initial: '',
     canBeUpdated: true,

@@ -54,7 +54,7 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
           width: c.width,
           renderCell: (params: GridRenderCellParams<any, T>) => {
             if (params.value === null) return null;
-            return (<img alt="logo" src={`/api/static/${params.value.replaceAll('\\', '/')}`} style={{ height: '1rem' }} />);
+            return (<img alt="logo" src={`/api/static/${params.value.replaceAll('\\', '/')}`} style={{ maxHeight: '1rem', maxWidth: '2rem' }} />);
           },
         });
       } else {

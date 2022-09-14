@@ -1,7 +1,10 @@
 import React from 'react';
-import { Paper } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import { Info, Public } from '@mui/icons-material';
 import { Partner } from '../../clients/server.generated';
-import PartnerPopover from './PartnerPopover';
+import PartnerModal from './PartnerModal';
+import TypographyHeader from '../TypographyHeader';
 
 interface Props {
   partner: Partner;
@@ -9,28 +12,60 @@ interface Props {
 }
 
 function PartnerLogo({ partner, size }: Props) {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [modalOpen, setModalOpen] = React.useState(false);
 
   const logoFilename = partner.logoFilename != null ? partner.logoFilename.replace('\\', '/') : '';
 
   return (
     <Paper
       sx={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', width: size,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        padding: '1.5rem',
+        width: size,
       }}
-      onMouseEnter={(event) => setAnchorEl(event.currentTarget)}
     >
-      <img
-        src={`/api/static/${logoFilename}`}
-        alt="logo"
-        style={{ maxHeight: size, maxWidth: '100%' }}
-      />
-      <PartnerPopover
-        partner={partner}
-        anchorEl={anchorEl}
-        onMouseLeave={() => setAnchorEl(null)}
-        size={size}
-      />
+      <Box sx={{
+        display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1,
+      }}
+      >
+        <img
+          src={`/api/static/${logoFilename}`}
+          alt="logo"
+          style={{ maxHeight: size, maxWidth: '100%' }}
+        />
+      </Box>
+      <Box>
+        <TypographyHeader variant="h6" sx={{ paddingTop: '1rem', color: 'darkgrey', fontStyle: 'italic' }}>
+          {partner.specialization}
+        </TypographyHeader>
+        {partner.shortDescription ? (
+          <Box sx={{ marginTop: '0.5rem' }}>
+            <Typography variant="body1">
+              {partner.shortDescription}
+            </Typography>
+          </Box>
+        ) : null}
+        <Box sx={{ paddingTop: '1rem' }}>
+          <Button href={partner.url} target="_blank" variant="contained" sx={{ marginRight: partner.description ? '1rem' : '' }}>
+            <Public />
+          </Button>
+          {partner.description ? (
+            <>
+              <Button variant="contained" onClick={() => setModalOpen(true)}>
+                <Info />
+              </Button>
+              <PartnerModal
+                partner={partner}
+                open={modalOpen}
+                handleClose={() => setModalOpen(false)}
+              />
+            </>
+          ) : null}
+        </Box>
+      </Box>
     </Paper>
   );
 }

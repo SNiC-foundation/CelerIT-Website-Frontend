@@ -10,9 +10,15 @@ interface Props {
 function LandingComponent({ location, partners }: Props) {
   const [width, setWidth] = React.useState(document.body.scrollWidth);
   const [outerHeight, setOuterHeight] = React.useState(window.innerHeight);
-  const [innerHeight, setInnerHeight] = React.useState(0);
+  const [innerHeight, setInnerHeight] = React.useState(window.innerHeight);
+  const [partnerBarHeight, setPartnerBarHeight] = React.useState(0);
+
+  const calcHeight = innerHeight + 32;
+  const estimatedLogoHeight = (outerHeight - partnerBarHeight - 64);
+  const fixedHeight = (estimatedLogoHeight * 3) < width || estimatedLogoHeight * 1.1 > width;
 
   const outerRef = React.useRef(null);
+  const partnerBarRef = React.useRef(null);
 
   const recalcSizes = () => {
     const viewportWidth = document.body.scrollWidth;
@@ -21,18 +27,24 @@ function LandingComponent({ location, partners }: Props) {
     setOuterHeight(viewportHeight);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const getRefHeight = () => {
+  const getOuterRefHeight = () => {
     if (!outerRef.current) return;
     const h = (outerRef.current as any).scrollHeight;
     setInnerHeight(h);
   };
 
+  const getPartnerBarHeight = () => {
+    if (!partnerBarRef.current) return;
+    const h = (partnerBarRef.current as any).scrollHeight;
+    setPartnerBarHeight(h);
+  };
+
   React.useEffect(() => {
     recalcSizes();
-    getRefHeight();
+    getOuterRefHeight();
+    getPartnerBarHeight();
 
-    const ob = new ResizeObserver(getRefHeight);
+    const ob = new ResizeObserver(getOuterRefHeight);
     ob.observe(outerRef.current as any);
 
     window.addEventListener('resize', recalcSizes);
@@ -44,22 +56,25 @@ function LandingComponent({ location, partners }: Props) {
   }, []);
 
   React.useEffect(() => {
-    getRefHeight();
+    getOuterRefHeight();
+    getPartnerBarHeight();
   }, [outerRef, outerRef.current]);
 
-  const calcHeight = `calc(${outerHeight}px - 16px - 64px)`;
+  let calculatedHeightIfWidth = width / 2.5;
+  if (width <= 386) calculatedHeightIfWidth -= 32;
 
   return (
-    <Box sx={{
-      display: 'flex', height: calcHeight, width: '100%', flexDirection: 'column',
-    }}
+    <Box
+      sx={{
+        display: fixedHeight ? '' : 'flex', height: fixedHeight ? '' : `calc(${outerHeight}px - 16px - 64px)`, width: '100%', flexDirection: 'column',
+      }}
     >
-      <Box sx={{ flexGrow: 1 }} ref={outerRef}>
+      <Box sx={{ flexGrow: 1, height: fixedHeight ? `${calculatedHeightIfWidth}px` : '' }} ref={outerRef}>
         <Box sx={(theme) => ({
           marginTop: '-32px',
           position: 'absolute',
           width: `${width}px`,
-          height: `${innerHeight + 32}px`,
+          height: fixedHeight ? `${calculatedHeightIfWidth}px` : `${calcHeight}px`,
           backgroundColor: theme.palette.primary.main,
           left: 0,
         })}
@@ -74,9 +89,11 @@ function LandingComponent({ location, partners }: Props) {
           </video>
         </Box>
       </Box>
-      <Box sx={{
-        display: 'flex', justifyContent: 'center', flexWrap: 'wrap', paddingY: '0.5rem',
-      }}
+      <Box
+        sx={{
+          display: 'flex', justifyContent: 'center', flexWrap: 'wrap', paddingY: '0.5rem',
+        }}
+        ref={partnerBarRef}
       >
         {partners.map((p) => (
           <Box sx={{

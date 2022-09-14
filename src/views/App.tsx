@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import LandingComponent from '../components/frontpage/LandingComponent';
 import { Client, Partner } from '../clients/server.generated';
+import ThemeComponent from '../components/frontpage/ThemeComponent';
+import DateLocationComponent from '../components/frontpage/DateLocationComponent';
 
 function App() {
   const [partners, setPartners] = React.useState<Partner[] | null>(null);
@@ -17,7 +18,8 @@ function App() {
   return (
     <>
       <LandingComponent location="./CelerIT_animatie.mp4" partners={partners} />
-      <Box sx={{ height: '1000px' }} />
+      <DateLocationComponent />
+      <ThemeComponent />
     </>
   );
 }

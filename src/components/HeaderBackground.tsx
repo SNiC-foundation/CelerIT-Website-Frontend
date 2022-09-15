@@ -23,6 +23,7 @@ function HeaderBackground({ lines }: Props) {
   const height = 50 + lines;
 
   React.useEffect(() => {
+    getWidth();
     window.addEventListener('resize', getWidth);
 
     return () => {

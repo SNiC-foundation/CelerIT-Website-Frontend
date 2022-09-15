@@ -12,7 +12,7 @@ function AdminSpeakers() {
 
   const getSpeakers = () => {
     const client = new Client();
-    client.getAllSpeakers()
+    client.getAllSpeakers(false)
       .then((s) => {
         setSpeakers(s);
         setLoading(false);

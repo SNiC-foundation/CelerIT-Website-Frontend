@@ -1151,10 +1151,15 @@ export class Client {
     }
 
     /**
+     * @param activities (optional) 
      * @return Ok
      */
-    getAllSpeakers(): Promise<Speaker[]> {
-        let url_ = this.baseUrl + "/speaker";
+    getAllSpeakers(activities: boolean | undefined): Promise<Speaker[]> {
+        let url_ = this.baseUrl + "/speaker?";
+        if (activities === null)
+            throw new Error("The parameter 'activities' cannot be null.");
+        else if (activities !== undefined)
+            url_ += "activities=" + encodeURIComponent("" + activities) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1238,13 +1243,18 @@ export class Client {
 
     /**
      * @param id ID of speaker to retrieve
+     * @param activities (optional) 
      * @return Ok
      */
-    getSpeaker(id: number): Promise<Speaker> {
-        let url_ = this.baseUrl + "/speaker/{id}";
+    getSpeaker(id: number, activities: boolean | undefined): Promise<Speaker> {
+        let url_ = this.baseUrl + "/speaker/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (activities === null)
+            throw new Error("The parameter 'activities' cannot be null.");
+        else if (activities !== undefined)
+            url_ += "activities=" + encodeURIComponent("" + activities) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {

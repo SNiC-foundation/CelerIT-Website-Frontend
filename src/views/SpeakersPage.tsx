@@ -9,7 +9,7 @@ function SpeakersPage() {
 
   React.useEffect(() => {
     const client = new Client();
-    client.getAllSpeakers().then((s) => setSpeakers(s));
+    client.getAllSpeakers(true).then((s) => setSpeakers(s));
   });
 
   if (speakers === undefined) {
@@ -24,7 +24,7 @@ function SpeakersPage() {
         title="Speakers"
         text="The following amazing speakers will join us during the congress, either with their own talk, or part of a panel."
         lines={1}
-        extraMargin={3}
+        extraMargin={4}
       />
       <Grid
         container
@@ -32,7 +32,7 @@ function SpeakersPage() {
         justifyContent="center"
       >
         {speakers.map((s) => (
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <SpeakerCard speaker={s} key={s.id} />
           </Grid>
         ))}

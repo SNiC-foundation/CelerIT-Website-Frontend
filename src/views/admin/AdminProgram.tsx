@@ -37,7 +37,7 @@ function AdminProgram() {
 
   const getSpeakers = () => {
     const client = new Client();
-    client.getAllSpeakers()
+    client.getAllSpeakers(true)
       .then((s) => {
         setSpeakers(s);
         setSpeakerLoading(false);

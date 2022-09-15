@@ -5,6 +5,7 @@ import {
 import { Client, Partner, SponsorPackage } from '../clients/server.generated';
 import PartnerLogo from '../components/partner/PartnerLogo';
 import TypographyHeader from '../components/TypographyHeader';
+import HeaderBackground from '../components/HeaderBackground';
 
 function shuffleArray<T>(array: T[]): T[] {
   const result = [...array];
@@ -63,7 +64,11 @@ function PartnersPage() {
 
   return (
     <Box sx={{ width: '100%', textAlign: 'center' }}>
-      <Box sx={{ marginBottom: '6rem' }}>
+      <HeaderBackground lines={1} />
+      <Box sx={{
+        marginBottom: '9rem', zIndex: 10, position: 'relative', color: 'white', textShadow: '1px 1px 6px #000',
+      }}
+      >
         <TypographyHeader variant="h1">
           2022 Partners
         </TypographyHeader>
@@ -72,9 +77,9 @@ function PartnersPage() {
           Interested in becoming a partner? Contact us for more details.
         </Typography>
       </Box>
-      {orderedPartners.map((o) => (
+      {orderedPartners.map((o, i) => (
         <Box sx={{ paddingBottom: '4rem' }}>
-          <hr />
+          {i !== 0 ? (<hr />) : null}
           <TypographyHeader variant="h3" sx={{ marginTop: '2rem', marginBottom: '2rem' }}>
             {o.header}
           </TypographyHeader>

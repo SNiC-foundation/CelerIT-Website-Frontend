@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { Partner } from '../../clients/server.generated';
+import { apiImageUrl } from '../../helpers/apiHelper';
 
 interface Props {
   location: string;
@@ -103,7 +104,7 @@ function LandingComponent({ location, partners }: Props) {
             <Box>
               <a href={p.url} target="_blank" rel="noreferrer">
                 <img
-                  src={`/api/static/${p.logoFilename!.replace('\\', '/')}`}
+                  src={apiImageUrl(p.logoFilename)}
                   style={{ maxHeight: '100%', maxWidth: '100%' }}
                   alt={p.name}
                 />

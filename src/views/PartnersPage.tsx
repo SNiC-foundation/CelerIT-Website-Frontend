@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  Box, CircularProgress, styled, Typography,
+  Box, CircularProgress, styled,
 } from '@mui/material';
 import { Client, Partner, SponsorPackage } from '../clients/server.generated';
 import PartnerLogo from '../components/partner/PartnerLogo';
 import TypographyHeader from '../components/TypographyHeader';
-import HeaderBackground from '../components/HeaderBackground';
+import PageHeader from '../components/PageHeader';
 
 function shuffleArray<T>(array: T[]): T[] {
   const result = [...array];
@@ -64,19 +64,11 @@ function PartnersPage() {
 
   return (
     <Box sx={{ width: '100%', textAlign: 'center' }}>
-      <HeaderBackground lines={1} />
-      <Box sx={{
-        marginBottom: '9rem', zIndex: 10, position: 'relative', color: 'white', textShadow: '1px 1px 6px #000',
-      }}
-      >
-        <TypographyHeader variant="h1">
-          2022 Partners
-        </TypographyHeader>
-        <Typography variant="body1">
-          Without it&lsquo;s partners, SNiC 2022: CelerIT could not take place.
-          Interested in becoming a partner? Contact us for more details.
-        </Typography>
-      </Box>
+      <PageHeader
+        title="2022 Partners"
+        text="Without its partners, SNiC 2022: CelerIT could not take place. Interested in becoming a partner? Contact us for more details."
+        lines={1}
+      />
       {orderedPartners.map((o, i) => (
         <Box sx={{ paddingBottom: '4rem' }}>
           {i !== 0 ? (<hr />) : null}

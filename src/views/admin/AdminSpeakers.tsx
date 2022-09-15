@@ -24,6 +24,13 @@ function AdminSpeakers() {
   }, []);
 
   const entityColumns: AdminPropField<Speaker>[] = [{
+    attribute: 'imageFilename',
+    label: '',
+    width: 50,
+    fieldType: 'image',
+    canBeUpdated: false,
+    initial: '',
+  }, {
     attribute: 'name',
     label: 'Name',
     width: 200,

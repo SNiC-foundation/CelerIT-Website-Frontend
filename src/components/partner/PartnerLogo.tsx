@@ -5,6 +5,7 @@ import { Info, Public } from '@mui/icons-material';
 import { Partner } from '../../clients/server.generated';
 import PartnerModal from './PartnerModal';
 import TypographyHeader from '../TypographyHeader';
+import { apiImageUrl } from '../../helpers/apiHelper';
 
 interface Props {
   partner: Partner;
@@ -13,8 +14,6 @@ interface Props {
 
 function PartnerLogo({ partner, size }: Props) {
   const [modalOpen, setModalOpen] = React.useState(false);
-
-  const logoFilename = partner.logoFilename != null ? partner.logoFilename.replace('\\', '/') : '';
 
   return (
     <Paper
@@ -32,7 +31,7 @@ function PartnerLogo({ partner, size }: Props) {
       }}
       >
         <img
-          src={`/api/static/${logoFilename}`}
+          src={apiImageUrl(partner.logoFilename)}
           alt="logo"
           style={{ maxHeight: size, maxWidth: '100%' }}
         />

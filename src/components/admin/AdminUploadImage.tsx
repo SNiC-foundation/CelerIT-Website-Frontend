@@ -29,6 +29,7 @@ function AdminUploadImage({ id, entity }: Props) {
         await client.uploadPartnerLogo(id, { fileName, data });
         break;
       case 'speaker':
+        await client.uploadSpeakerImage(id, { fileName, data });
         break;
       default:
         throw new Error(`Unknown entity: ${entity}`);

@@ -10,6 +10,7 @@ import AdminTableButton from './AdminTableButton';
 import AdminTableExpandableCell from './AdminTableExpandableCell';
 import TypographyHeader from '../TypographyHeader';
 import AdminUploadImage from './AdminUploadImage';
+import { apiImageUrl } from '../../helpers/apiHelper';
 
 interface Props<T, P> {
   entities?: T[];
@@ -54,7 +55,7 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
           width: c.width,
           renderCell: (params: GridRenderCellParams<any, T>) => {
             if (params.value === null) return null;
-            return (<img alt="logo" src={`/api/static/${params.value.replaceAll('\\', '/')}`} style={{ maxHeight: '1rem', maxWidth: '2rem' }} />);
+            return (<img alt="logo" src={apiImageUrl(params.value)} style={{ maxHeight: '1rem', maxWidth: '2rem' }} />);
           },
         });
       } else {

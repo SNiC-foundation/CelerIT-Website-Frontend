@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, CardContent, Paper } from '@mui/material';
 import { Client, Partner } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
-import TypographyHeader from '../../components/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, Typography } from '@mui/material';
 import Container from '@mui/material/Container';
-import TypographyHeader from '../TypographyHeader';
+import TypographyHeader from '../layout/TypographyHeader';
 
 const Paragraph = styled(Typography)({
   paddingTop: '1.5rem',

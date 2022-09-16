@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { Info, Public } from '@mui/icons-material';
 import { Partner } from '../../clients/server.generated';
 import PartnerModal from './PartnerModal';
-import TypographyHeader from '../TypographyHeader';
+import TypographyHeader from '../layout/TypographyHeader';
 import { apiImageUrl } from '../../helpers/apiHelper';
 
 interface Props {

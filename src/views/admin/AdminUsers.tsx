@@ -3,7 +3,7 @@ import validator from 'validator';
 import { CardContent, Paper } from '@mui/material';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
-import TypographyHeader from '../../components/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 import AdminTable from '../../components/admin/AdminTable';
 import { Client, Participant, User } from '../../clients/server.generated';
 

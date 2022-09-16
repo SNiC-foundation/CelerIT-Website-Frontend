@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Container, styled, Typography, Box, Link,
 } from '@mui/material';
-import TypographyHeader from '../components/TypographyHeader';
+import TypographyHeader from '../components/layout/TypographyHeader';
 
 const Paragraph = styled(Typography)(() => ({
   marginBottom: '2rem',

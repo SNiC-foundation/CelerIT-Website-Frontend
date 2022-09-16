@@ -4,8 +4,8 @@ import {
 } from '@mui/material';
 import { Client, Partner, SponsorPackage } from '../clients/server.generated';
 import PartnerLogo from '../components/partner/PartnerLogo';
-import TypographyHeader from '../components/TypographyHeader';
-import PageHeader from '../components/PageHeader';
+import TypographyHeader from '../components/layout/TypographyHeader';
+import PageHeader from '../components/layout/PageHeader';
 
 function shuffleArray<T>(array: T[]): T[] {
   const result = [...array];

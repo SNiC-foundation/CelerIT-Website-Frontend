@@ -8,7 +8,7 @@ import { AdminPropField } from './AdminProps';
 import AdminUpdateEntityModal from './AdminUpdateEntityModal';
 import AdminTableButton from './AdminTableButton';
 import AdminTableExpandableCell from './AdminTableExpandableCell';
-import TypographyHeader from '../TypographyHeader';
+import TypographyHeader from '../layout/TypographyHeader';
 import AdminUploadImage from './AdminUploadImage';
 import { apiImageUrl } from '../../helpers/apiHelper';
 

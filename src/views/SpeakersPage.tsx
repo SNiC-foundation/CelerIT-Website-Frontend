@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, CircularProgress, Grid } from '@mui/material';
 import { Client, Speaker } from '../clients/server.generated';
-import PageHeader from '../components/PageHeader';
+import PageHeader from '../components/layout/PageHeader';
 import SpeakerCard from '../components/speaker/SpeakerCard';
 
 function SpeakersPage() {
@@ -10,7 +10,7 @@ function SpeakersPage() {
   React.useEffect(() => {
     const client = new Client();
     client.getAllSpeakers(true).then((s) => setSpeakers(s));
-  });
+  }, []);
 
   if (speakers === undefined) {
     return (

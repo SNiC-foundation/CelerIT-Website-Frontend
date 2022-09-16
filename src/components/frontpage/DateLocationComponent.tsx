@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { Place } from '@mui/icons-material';
-import TypographyHeader from '../TypographyHeader';
+import TypographyHeader from '../layout/TypographyHeader';
 
 function DateLocationComponent() {
   return (

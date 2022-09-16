@@ -1,12 +1,6 @@
 import React from 'react';
-import { Box, styled } from '@mui/material';
-
-const ColoredBox = styled(Box)(({ theme }) => ({
-  width: '120%',
-  backgroundImage: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.light})`,
-  position: 'absolute',
-  boxShadow: '1px 1px 20px #000',
-}));
+import { Box } from '@mui/material';
+import HeaderBackgroundColorBox from './HeaderBackgroundColorBox';
 
 interface Props {
   lines: number;
@@ -44,19 +38,19 @@ function HeaderBackground({ lines }: Props) {
         overflow: 'hidden',
       }}
     >
-      <ColoredBox
-        sx={() => ({
-          transform: 'rotate(8.5deg)',
-          height: `${height - 22.5}rem`,
-          marginLeft: '-5%',
-        })}
+      <HeaderBackgroundColorBox
+        rotate={8.5}
+        height={`${height - 22.5}rem`}
+        marginLeft="-5%"
+        time={7}
+        offset={-4}
       />
-      <ColoredBox
-        sx={() => ({
-          transform: 'rotate(-6deg)',
-          height: `${height - 22.5}rem`,
-          marginLeft: '-10%',
-        })}
+      <HeaderBackgroundColorBox
+        rotate={-6}
+        height={`${height - 22.5}rem`}
+        marginLeft="-10%"
+        time={11}
+        offset={0}
       />
     </Box>
   );

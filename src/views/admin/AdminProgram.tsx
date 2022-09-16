@@ -4,7 +4,7 @@ import {
   Activity, Client, ProgramPart, Speaker, SubscribeActivity,
 } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
-import TypographyHeader from '../../components/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 import { AdminPropDropdownOptions, AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString, validDate } from '../../components/admin/defaultValidators';
 

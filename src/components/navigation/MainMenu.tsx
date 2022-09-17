@@ -23,7 +23,6 @@ function MainMenu({ children }: Props) {
         display: 'flex',
         flexFlow: 'column',
         minHeight: '100vh',
-        backgroundColor: '#eee',
       })}
       >
         <Box sx={() => ({

@@ -20,6 +20,9 @@ function SNiCTheme({ children }: Props) {
         light: '#e4502f',
       },
       mode: 'light',
+      background: {
+        default: '#eee',
+      },
     },
   });
 

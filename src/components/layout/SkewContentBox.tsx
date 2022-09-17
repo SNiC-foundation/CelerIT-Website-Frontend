@@ -8,16 +8,20 @@ const ContextBoxElement = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     flexBasis: '50%',
   },
-  overflow: 'hidden',
   zIndex: 2,
 }));
 
 interface Props {
   image: string;
   children: React.ReactNode | React.ReactNode[];
+  inverse?: boolean;
+  supportBarHeight?: number;
+  supportBarAngle?: number;
 }
 
-function SkewContentBox({ image, children }: Props) {
+function SkewContentBox({
+  image, children, inverse, supportBarHeight, supportBarAngle,
+}: Props) {
   const [width, setWidth] = React.useState(document.body.scrollWidth);
 
   const ref = React.useRef(null);
@@ -46,7 +50,6 @@ function SkewContentBox({ image, children }: Props) {
           position: 'absolute',
           left: 0,
           transform: 'skewY(5deg)',
-          overflow: 'hidden',
           width,
           backgroundColor: theme.palette.primary.main,
           color: 'white',
@@ -59,16 +62,27 @@ function SkewContentBox({ image, children }: Props) {
           flexWrap: 'wrap',
         })}
         >
+          <Box sx={(theme) => ({
+            width: '50%',
+            overflow: 'hidden',
+            position: 'absolute',
+            left: '50%',
+            transform: `skewY(-${5 + (supportBarAngle || 0)}deg) translateY(-4rem)`,
+            backgroundColor: theme.palette.secondary.main,
+            height: supportBarHeight,
+          })}
+          />
           <ContextBoxElement sx={(theme) => ({
             [theme.breakpoints.down('md')]: {
               order: 1,
             },
+            order: inverse ? 1 : undefined,
           })}
           >
             <Box sx={{
               maxWidth: '768px',
-              float: 'right',
-              padding: '2rem 24px 4rem',
+              float: inverse ? 'left' : 'right',
+              padding: '3rem 48px 4rem',
               width: '100%',
               transform: 'skewY(-5.1deg)',
             }}
@@ -97,5 +111,11 @@ function SkewContentBox({ image, children }: Props) {
     </>
   );
 }
+
+SkewContentBox.defaultProps = ({
+  inverse: false,
+  supportBarHeight: 125,
+  supportBarAngle: 8,
+});
 
 export default SkewContentBox;

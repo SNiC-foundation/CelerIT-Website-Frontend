@@ -62,6 +62,7 @@ function App() {
           in lorem augue. Aliquam porttitor nibh nec urna maximus luctus at eu augue.
         </Typography>
       </SkewContentBox>
+      <UniversitiesComponent />
       <Box>
         <TypographyHeader variant="h3">
           Wie dit leest trekt een bak
@@ -95,7 +96,6 @@ function App() {
           in lorem augue. Aliquam porttitor nibh nec urna maximus luctus at eu augue.
         </Typography>
       </Box>
-      <UniversitiesComponent />
     </>
   );
 }

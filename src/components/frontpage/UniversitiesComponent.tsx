@@ -6,7 +6,7 @@ import { shuffleArray } from '../../helpers/array';
 
 const logos = shuffleArray([
   {
-    image: './universities/Eindhoven_University_of_Technology_logo_new.png',
+    image: './universities/TUe-logo-descriptor-line-scarlet-L.png',
     name: 'Eindhoven University of Technology',
   },
   {
@@ -14,7 +14,7 @@ const logos = shuffleArray([
     name: 'Universiteit van Amsterdam',
   },
   {
-    image: './universities/Radboud-University.webp',
+    image: './universities/ru-icis.svg',
     name: 'Radboud University',
   },
   {
@@ -22,13 +22,19 @@ const logos = shuffleArray([
     name: 'Eindhoven Artificial Intelligence Systems Institute',
   },
   {
-    image: './universities/UniversiteitLeidenLogo.svg.png',
+    image: './universities/Liacs_logo_liggend_RGB-scaled.jpg',
     name: 'Universiteit Leiden',
+  },
+  {
+    image: './universities/logo-balk-bernoulli.png',
+    name: 'Rijksuniversiteit Groningen',
   },
 ]);
 
 function UniversitiesComponent() {
   const [width, setWidth] = React.useState(document.body.scrollWidth);
+
+  const ref = React.useRef(null);
 
   const getWidth = () => {
     const viewportWidth = document.body.scrollWidth;
@@ -44,9 +50,11 @@ function UniversitiesComponent() {
     };
   }, []);
 
+  const height = ref && ref.current ? (ref.current as any).scrollHeight : 0;
+
   return (
-    <>
-      <Container maxWidth="md" sx={{ textAlign: 'center' }}>
+    <Box sx={{ marginBottom: '4rem' }}>
+      <Container maxWidth="md" sx={{ textAlign: 'center', marginBottom: '1rem' }}>
         <TypographyHeader variant="h3">
           Educational & Research institutes
         </TypographyHeader>
@@ -55,14 +63,15 @@ function UniversitiesComponent() {
           , educational institutes and research institutes support SNiC 2022: CelerIT.
         </Typography>
       </Container>
-      <Box sx={{ position: 'absolute', left: 0, width }}>
+      <Box sx={{ position: 'absolute', left: 0, width }} ref={ref}>
         <Marquee gradientColor={[238, 238, 238]}>
           {logos.concat(logos).concat(logos).concat(logos).map((l) => (
             <img src={l.image} alt={l.name} style={{ height: '80px', margin: '1rem' }} />
           ))}
         </Marquee>
       </Box>
-    </>
+      <Box sx={{ height }} />
+    </Box>
   );
 }
 

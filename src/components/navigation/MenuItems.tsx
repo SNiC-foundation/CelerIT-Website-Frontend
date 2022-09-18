@@ -7,12 +7,18 @@ import AdminUsers from '../../views/admin/AdminUsers';
 import About from '../../views/About';
 import PartnersPage from '../../views/PartnersPage';
 import SpeakersPage from '../../views/SpeakersPage';
+import { IAuthContext } from '../../auth/AuthContextProvider';
+import Login from '../../views/auth/Login';
+import Logout from '../../views/auth/Logout';
+import { authorized } from '../../auth/Authorize';
 
 export interface MenuItem {
   name: string;
   icon?: React.ReactNode;
   target: string;
   component: React.ReactNode;
+  // eslint-disable-next-line no-unused-vars
+  disabled?: (auth: IAuthContext) => boolean;
 }
 
 export const generalPages: MenuItem[] = [
@@ -43,18 +49,22 @@ export const adminMenuPages: MenuItem[] = [
     name: 'Speakers',
     target: '/admin/speakers',
     component: <AdminSpeakers />,
+    disabled: (auth) => (!authorized(auth, ['Admin'])),
   }, {
     name: 'Partners',
     target: '/admin/partners',
     component: <AdminPartners />,
+    disabled: (auth) => (!authorized(auth, ['Admin'])),
   }, {
     name: 'Program',
     target: '/admin/program',
     component: <AdminProgram />,
+    disabled: (auth) => (!authorized(auth, ['Admin'])),
   }, {
     name: 'Users',
     target: '/admin/users',
     component: <AdminUsers />,
+    disabled: (auth) => (!authorized(auth, ['Admin'])),
   },
 ];
 
@@ -62,7 +72,14 @@ export const userMenuPages: MenuItem[] = [
   {
     name: 'Login',
     target: '/login',
-    component: null,
+    component: <Login />,
+    disabled: (auth) => (auth.user !== undefined),
+  },
+  {
+    name: 'Logout',
+    target: '/logout',
+    component: <Logout />,
+    disabled: (auth) => (auth.user === undefined),
   },
   {
     name: 'Account',

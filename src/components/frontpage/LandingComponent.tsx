@@ -1,14 +1,14 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { Partner } from '../../clients/server.generated';
-import { apiImageUrl } from '../../helpers/apiHelper';
+import LandingPartnersComponent from './LandingPartnersComponent';
 
 interface Props {
   location: string;
-  partners: Partner[];
+  shuffledPartners: Partner[];
 }
 
-function LandingComponent({ location, partners }: Props) {
+function LandingComponent({ location, shuffledPartners }: Props) {
   const [width, setWidth] = React.useState(document.body.scrollWidth);
   const [outerHeight, setOuterHeight] = React.useState(window.innerHeight);
   const [innerHeight, setInnerHeight] = React.useState(window.innerHeight);
@@ -96,22 +96,7 @@ function LandingComponent({ location, partners }: Props) {
         }}
         ref={partnerBarRef}
       >
-        {partners.map((p) => (
-          <Box sx={{
-            height: '92px', width: '92px', display: 'flex', alignItems: 'center', padding: '0.25rem',
-          }}
-          >
-            <Box>
-              <a href={p.url} target="_blank" rel="noreferrer">
-                <img
-                  src={apiImageUrl(p.logoFilename)}
-                  style={{ maxHeight: '100%', maxWidth: '100%' }}
-                  alt={p.name}
-                />
-              </a>
-            </Box>
-          </Box>
-        ))}
+        <LandingPartnersComponent shuffledPartners={shuffledPartners} />
       </Box>
     </Box>
   );

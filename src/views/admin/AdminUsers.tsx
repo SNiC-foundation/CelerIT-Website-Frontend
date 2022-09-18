@@ -1,9 +1,9 @@
 import React from 'react';
 import validator from 'validator';
-import { Card, CardContent } from '@mui/material';
+import { CardContent, Paper } from '@mui/material';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
-import TypographyHeader from '../../components/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 import AdminTable from '../../components/admin/AdminTable';
 import { Client, Participant, User } from '../../clients/server.generated';
 
@@ -115,7 +115,7 @@ function AdminUsers() {
   return (
     <>
       <TypographyHeader variant="h2">Users</TypographyHeader>
-      <Card sx={{ marginBottom: '2rem' }}>
+      <Paper elevation={3}>
         <CardContent>
           <AdminTable
             entityName="user"
@@ -127,7 +127,7 @@ function AdminUsers() {
             handleDelete={handleDeleteUser}
           />
         </CardContent>
-      </Card>
+      </Paper>
     </>
   );
 }

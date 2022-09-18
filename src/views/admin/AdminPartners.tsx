@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardContent } from '@mui/material';
+import { Box, CardContent, Paper } from '@mui/material';
 import { Client, Partner } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
-import TypographyHeader from '../../components/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
 
@@ -24,17 +24,44 @@ function AdminPartners() {
   }, []);
 
   const entityColumns: AdminPropField<Partner>[] = [{
+    attribute: 'logoFilename',
+    label: '',
+    width: 50,
+    fieldType: 'image',
+    canBeUpdated: false,
+    initial: '',
+  }, {
     attribute: 'name',
     label: 'Name',
-    width: 200,
+    width: 150,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
     canBeUpdated: true,
   }, {
+    attribute: 'package',
+    label: 'Package',
+    width: 90,
+    fieldType: 'dropdown',
+    initial: 'bronze',
+    options: [{
+      key: 'bronze',
+      value: 'Bronze',
+    }, {
+      key: 'silver',
+      value: 'Silver',
+    }, {
+      key: 'gold',
+      value: 'Gold',
+    }, {
+      key: 'platinum',
+      value: 'Platinum',
+    }],
+    canBeUpdated: true,
+  }, {
     attribute: 'location',
     label: 'Location',
-    width: 200,
+    width: 120,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
@@ -42,15 +69,22 @@ function AdminPartners() {
   }, {
     attribute: 'specialization',
     label: 'Specialization',
-    width: 200,
+    width: 180,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
     canBeUpdated: true,
   }, {
+    attribute: 'shortDescription',
+    label: 'Description (short)',
+    width: 300,
+    fieldType: 'text',
+    initial: '',
+    canBeUpdated: true,
+  }, {
     attribute: 'description',
     label: 'Description',
-    width: 400,
+    width: 300,
     fieldType: 'text',
     initial: '',
     canBeUpdated: true,
@@ -90,9 +124,9 @@ function AdminPartners() {
   };
 
   return (
-    <>
+    <Box sx={{ width: '100%', minHeight: '100%' }}>
       <TypographyHeader variant="h2">All Partners</TypographyHeader>
-      <Card>
+      <Paper elevation={3}>
         <CardContent>
           <AdminTable
             entityColumns={entityColumns}
@@ -104,8 +138,8 @@ function AdminPartners() {
             handleDelete={handleDelete}
           />
         </CardContent>
-      </Card>
-    </>
+      </Paper>
+    </Box>
   );
 }
 

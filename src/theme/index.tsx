@@ -1,6 +1,6 @@
 import React from 'react';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
-import { createTheme, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 
 interface Props {
   children: React.ReactNode | React.ReactNode[];
@@ -12,17 +12,23 @@ function SNiCTheme({ children }: Props) {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#df421d',
-      },
-      secondary: {
         main: '#072b4e',
       },
-      mode: 'dark',
+      secondary: {
+        dark: '#c7391a',
+        main: '#df421d',
+        light: '#e4502f',
+      },
+      mode: 'light',
+      background: {
+        default: '#eee',
+      },
     },
   });
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       {children}
     </ThemeProvider>
   );

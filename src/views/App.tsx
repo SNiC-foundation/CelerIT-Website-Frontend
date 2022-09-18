@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import { ArrowForward, Place } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import LandingComponent from '../components/frontpage/LandingComponent';
 import { Client, Partner } from '../clients/server.generated';
 import ThemeComponent from '../components/frontpage/ThemeComponent';
@@ -8,6 +10,7 @@ import SkewContentBox from '../components/layout/SkewContentBox';
 import TypographyHeader from '../components/layout/TypographyHeader';
 import UniversitiesComponent from '../components/frontpage/UniversitiesComponent';
 import { shuffleArray } from '../helpers/array';
+import PartnerGrid from '../components/partner/PartnerGrid';
 
 function App() {
   const [partners, setPartners] = React.useState<Partner[] | null>(null);
@@ -95,6 +98,49 @@ function App() {
           {' '}
           in lorem augue. Aliquam porttitor nibh nec urna maximus luctus at eu augue.
         </Typography>
+      </Box>
+      <SkewContentBox image="./parktheater.jpg" verticalImageHeight={500}>
+        <Box sx={(theme) => ({
+          [theme.breakpoints.up('sm')]: {
+            marginY: '4rem',
+          },
+        })}
+        >
+          <TypographyHeader variant="h3">
+            Location
+          </TypographyHeader>
+          <Typography variant="body1" sx={{ marginBottom: '1.5rem' }}>
+            This year&apos;s SNiC takes place in the Parktheater in Eindhoven.
+            Previously known as the City Theater, it is situated around the edge of the
+            Stadwandelpark in the city centre of Eindhoven.
+            With two large rooms, one smaller, cozier room, and many foyers and seating areas,
+            it is the perfect host for an event the size of SNiC.
+          </Typography>
+          <Box sx={{ width: '100%', textAlign: 'center' }}>
+            <Button variant="contained" color="secondary" href="https://g.page/parktheatereindhoven?share" target="_blank" startIcon={<Place />}>
+              Parktheater
+            </Button>
+          </Box>
+        </Box>
+      </SkewContentBox>
+      <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ marginBottom: '2rem' }}>
+          <TypographyHeader variant="h2">
+            2022 Partners
+          </TypographyHeader>
+          <Typography variant="body1" sx={{ marginBottom: '1rem' }}>
+            Interested in becoming a partner or speaker?
+            {' '}
+            <a href="/about">Contact us</a>
+            {' '}
+            for details.
+          </Typography>
+          <Button component={Link} to="/partners" variant="contained" size="large" startIcon={<ArrowForward />}>
+            More about the 2022 partners
+          </Button>
+        </Box>
+        <hr />
+        <PartnerGrid partners={partners} scaleFactor={0.7} extensive={false} />
       </Box>
     </>
   );

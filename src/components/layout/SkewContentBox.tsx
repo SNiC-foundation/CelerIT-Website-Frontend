@@ -17,10 +17,11 @@ interface Props {
   inverse?: boolean;
   supportBarHeight?: number;
   supportBarAngle?: number;
+  verticalImageHeight?: number;
 }
 
 function SkewContentBox({
-  image, children, inverse, supportBarHeight, supportBarAngle,
+  image, children, inverse, supportBarHeight, supportBarAngle, verticalImageHeight,
 }: Props) {
   const [width, setWidth] = React.useState(document.body.scrollWidth);
 
@@ -92,7 +93,7 @@ function SkewContentBox({
           </ContextBoxElement>
           <ContextBoxElement sx={(theme) => ({
             [theme.breakpoints.down('md')]: {
-              height: '200px',
+              height: verticalImageHeight,
             },
           })}
           >
@@ -116,6 +117,7 @@ SkewContentBox.defaultProps = ({
   inverse: false,
   supportBarHeight: 125,
   supportBarAngle: 8,
+  verticalImageHeight: 200,
 });
 
 export default SkewContentBox;

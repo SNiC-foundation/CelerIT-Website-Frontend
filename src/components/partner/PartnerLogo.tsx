@@ -9,10 +9,11 @@ import { apiImageUrl } from '../../helpers/apiHelper';
 
 interface Props {
   partner: Partner;
-  size: string;
+  size: number;
+  extensive?: boolean;
 }
 
-function PartnerLogo({ partner, size }: Props) {
+function PartnerLogo({ partner, size, extensive }: Props) {
   const [modalOpen, setModalOpen] = React.useState(false);
 
   return (
@@ -36,37 +37,43 @@ function PartnerLogo({ partner, size }: Props) {
           style={{ maxHeight: size, maxWidth: '100%' }}
         />
       </Box>
-      <Box>
-        <TypographyHeader variant="h6" sx={{ paddingTop: '1rem', color: 'darkgrey', fontStyle: 'italic' }}>
-          {partner.specialization}
-        </TypographyHeader>
-        {partner.shortDescription ? (
-          <Box sx={{ marginTop: '0.5rem' }}>
-            <Typography variant="body1">
-              {partner.shortDescription}
-            </Typography>
-          </Box>
-        ) : null}
-        <Box sx={{ paddingTop: '1rem' }}>
-          <Button href={partner.url} target="_blank" variant="contained" sx={{ marginRight: partner.description ? '1rem' : '' }}>
-            <Public />
-          </Button>
-          {partner.description ? (
-            <>
-              <Button variant="contained" onClick={() => setModalOpen(true)}>
-                <Info />
-              </Button>
-              <PartnerModal
-                partner={partner}
-                open={modalOpen}
-                handleClose={() => setModalOpen(false)}
-              />
-            </>
+      {extensive ? (
+        <Box>
+          <TypographyHeader variant="h6" sx={{ paddingTop: '1rem', color: 'darkgrey', fontStyle: 'italic' }}>
+            {partner.specialization}
+          </TypographyHeader>
+          {partner.shortDescription ? (
+            <Box sx={{ marginTop: '0.5rem' }}>
+              <Typography variant="body1">
+                {partner.shortDescription}
+              </Typography>
+            </Box>
           ) : null}
+          <Box sx={{ paddingTop: '1rem' }}>
+            <Button href={partner.url} target="_blank" variant="contained" sx={{ marginRight: partner.description ? '1rem' : '' }}>
+              <Public />
+            </Button>
+            {partner.description ? (
+              <>
+                <Button variant="contained" onClick={() => setModalOpen(true)}>
+                  <Info />
+                </Button>
+                <PartnerModal
+                  partner={partner}
+                  open={modalOpen}
+                  handleClose={() => setModalOpen(false)}
+                />
+              </>
+            ) : null}
+          </Box>
         </Box>
-      </Box>
+      ) : null}
     </Paper>
   );
 }
+
+PartnerLogo.defaultProps = ({
+  extensive: false,
+});
 
 export default PartnerLogo;

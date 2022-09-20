@@ -32,11 +32,11 @@ export const generalPages: MenuItem[] = [
     target: '/partners',
     component: <PartnersPage />,
   },
-  {
-    name: 'Program',
-    target: '/program',
-    component: null,
-  },
+  // {
+  //   name: 'Program',
+  //   target: '/program',
+  //   component: null,
+  // },
   {
     name: 'About',
     target: '/about',

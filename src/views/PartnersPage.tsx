@@ -24,7 +24,7 @@ function PartnersPage() {
     <Box sx={{ width: '100%', textAlign: 'center' }}>
       <PageHeader
         title="2022 Partners"
-        text="Without its partners, SNiC 2022: CelerIT could not take place. Interested in becoming a partner? Contact us for more details."
+        text="We are proud to present you our partners for the SNiC 2022: CelerIT conference. Without their generous efforts, it would be impossible to organize this event."
         lines={1}
       />
       <PartnerGrid partners={partners} extensive />

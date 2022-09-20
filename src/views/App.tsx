@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import {
+  Box, Button, Container, Paper, Typography,
+} from '@mui/material';
 import { ArrowForward, Place } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import LandingComponent from '../components/frontpage/LandingComponent';
@@ -34,7 +36,7 @@ function App() {
       <ThemeComponent />
       <SkewContentBox image="./windowsxp.jpg">
         <TypographyHeader variant="h3">
-          Wie dit leest trekt een bak
+          Speakers
         </TypographyHeader>
         <Typography variant="body1">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ornare ut lectus
@@ -64,41 +66,34 @@ function App() {
           {' '}
           in lorem augue. Aliquam porttitor nibh nec urna maximus luctus at eu augue.
         </Typography>
+        <Box sx={{ width: '100%', textAlign: 'center' }}>
+          <Button component={Link} to="/speakers" variant="contained" color="secondary" size="large" startIcon={<ArrowForward />}>
+            See the list of speakers
+          </Button>
+        </Box>
       </SkewContentBox>
       <UniversitiesComponent />
-      <Box>
-        <TypographyHeader variant="h3">
-          Wie dit leest trekt een bak
-        </TypographyHeader>
-        <Typography variant="body1">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ornare ut lectus
-          {' '}
-          id ullamcorper. Pellentesque id dictum odio. Nunc sed quam eu risus blandit
-          {' '}
-          lobortis vestibulum sit amet ex. Praesent maximus consectetur pharetra. Integer
-          {' '}
-          finibus velit malesuada sapien venenatis consequat et nec libero. Vivamus a diam
-          {' '}
-          dui. Duis vitae diam neque. Morbi ut congue nisl. Quisque sodales volutpat maximus.
-        </Typography>
-        <Typography variant="body1">
-          Integer imperdiet elit vitae posuere efficitur. In sodales placerat augue. Vivamus
-          {' '}
-          sodales nulla a quam porta, nec blandit lorem consectetur. Sed at urna blandit,
-          {' '}
-          eleifend ipsum sodales, porta enim. Nulla non nulla laoreet, tempus risus non,
-          {' '}
-          ultrices odio. Morbi dictum pellentesque sapien at imperdiet. Pellentesque habitant
-          {' '}
-          morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec eu ex
-          {' '}
-          rutrum, ultricies ex ut, dapibus lorem. Class aptent taciti sociosqu ad litora
-          {' '}
-          torquent per conubia nostra, per inceptos himenaeos. Vivamus quis dapibus elit. Nunc
-          {' '}
-          in lorem augue. Aliquam porttitor nibh nec urna maximus luctus at eu augue.
-        </Typography>
-      </Box>
+      <Container maxWidth="md" sx={{ textAlign: 'center' }}>
+        <Paper sx={{ padding: '1rem 2rem' }}>
+          <TypographyHeader variant="h3">
+            Your ticket
+          </TypographyHeader>
+          <Typography variant="body1" sx={{ marginBottom: '1rem' }}>
+            With your SNiC 2022: CelerIT ticket, you get full access to everyting the congress has
+            to offer. From the necessary bus trip from and to your university campus, to lunch and
+            dinner. From an amazing spectrum of different speakers, to a free goodiebag. Even the
+            social drink afterwards is included!
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: '1rem' }}>
+            You can buy tickets for the SNiC 2022: CelerIT congress at
+            {' '}
+            <a href="https://stichting.snic.nl/about.html" target="_blank" rel="noreferrer">participating study associations.</a>
+            {' '}
+            Visit their website or their office/room for more information about where
+            to get your ticket.
+          </Typography>
+        </Paper>
+      </Container>
       <SkewContentBox image="./parktheater.jpg" verticalImageHeight={500}>
         <Box sx={(theme) => ({
           [theme.breakpoints.up('sm')]: {

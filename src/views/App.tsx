@@ -31,7 +31,7 @@ function App() {
       <LandingComponent location="./CelerIT_animatie.mp4" shuffledPartners={shuffledPartners} />
       <DateLocationComponent />
       <ThemeComponent />
-      <SkewContentBox image="./windowsxp.jpg">
+      <SkewContentBox image="./paneldiscussie.jpg">
         <SpeakersComponent />
       </SkewContentBox>
       <UniversitiesComponent />

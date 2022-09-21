@@ -14,7 +14,7 @@ function ThemeComponent() {
         Theme
       </TypographyHeader>
       <Typography variant="body1">
-        This edition’s theme of the congress is
+        This edition&apos;s theme of the conference is
         {' '}
         <span style={{ fontWeight: 'bold' }}>CelerIT</span>
         , Swiftness of Technology, the speed at which the IT sector has evolved and developed in

@@ -37,9 +37,9 @@ function AboutPage() {
           </Paragraph>
           <Paragraph variant="body1">
             Visitors are enthusiastic Computer Science and Artificial Intelligence bachelor and
-            master students from all over the country. Over the past years the congress has grown
-            considerably. Where in 2017 the congress was visited by 450 students, we expect around
-            700 visitors in 2021. Various talks will be held at the congress by speakers from both
+            master students from all over the country. Over the past years the conference has grown
+            considerably. Where in 2017 the conference was visited by 450 students, we expect around
+            700 visitors in 2021. Various talks will be held at the conference by speakers from both
             the business world and the academic world. The students are challenged to dive into a
             specific topic from different perspectives. We want to inspire them and invite them to
             think further than their current views.

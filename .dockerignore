@@ -1,0 +1,11 @@
+build
+build/*
+
+node_modules
+node_modules/*
+
+.git
+.git/*
+
+.idea
+.idea/*

@@ -1,0 +1,53 @@
+version: '2'
+services:
+  frontend:
+    build:
+      context: ../SNiC-Congress-Frontend
+      dockerfile: Dockerfile
+    image: celerit.docker-registry.gewis.nl/snic-congress-frontend:latest
+    restart: 'unless-stopped'
+    ports:
+      - '9639:80'
+    networks:
+      - snic-congress
+    volumes:
+      - partners:/usr/src/app/data/logos
+      - speakers:/usr/src/app/data/backgrounds
+  backend:
+    build: ../SNiC-Congress-Backend
+    image: celerit.docker-registry.gewis.nl/snic-congress-backend:latest
+    restart: 'unless-stopped'
+    networks:
+      - snic-congress
+    volumes:
+      - partners:/usr/src/app/data/partners
+      - speakers:/usr/src/app/data/speakers
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - USE_HTTPS=false
+      - SERVER_HOST=localhost:9639
+      - TZ=Europe/Amsterdam
+      - TYPEORM_CONNECTION=mysql
+      - TYPEORM_HOST=localhost
+      - TYPEORM_PORT=3306
+      - TYPEORM_DATABASE=snic2022
+      - TYPEORM_USERNAME=svc-celerit
+      - TYPEORM_PASSWORD=
+      - TYPEORM_SYNCHRONIZE=true
+      - TYPEORM_LOGGING=false
+      - SESSION_SECRET=Snic2022
+      - MAIL_HOST=mail.example.com
+      - MAIL_PORT=465
+      - MAIL_USER=snic@example.com
+      - MAIL_PASSWORD=password
+      - MAIL_FROM=SNiC 2022 <snic@example.com>
+volumes:
+  partners:
+    driver: local
+  speakers:
+    driver: local
+networks:
+  snic-congress:
+    driver: bridge
+

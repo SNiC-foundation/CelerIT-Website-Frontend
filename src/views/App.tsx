@@ -1,18 +1,15 @@
 import React from 'react';
-import {
-  Box, Button, Container, Paper, Typography,
-} from '@mui/material';
-import { ArrowForward, Place } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
 import LandingComponent from '../components/frontpage/LandingComponent';
 import { Client, Partner } from '../clients/server.generated';
 import ThemeComponent from '../components/frontpage/ThemeComponent';
 import DateLocationComponent from '../components/frontpage/DateLocationComponent';
 import SkewContentBox from '../components/layout/SkewContentBox';
-import TypographyHeader from '../components/layout/TypographyHeader';
 import UniversitiesComponent from '../components/frontpage/UniversitiesComponent';
 import { shuffleArray } from '../helpers/array';
-import PartnerGrid from '../components/partner/PartnerGrid';
+import SpeakersComponent from '../components/frontpage/SpeakersComponent';
+import TicketComponent from '../components/frontpage/TicketComponent';
+import LocationComponent from '../components/frontpage/LocationComponent';
+import PartnersComponent from '../components/frontpage/PartnersComponent';
 
 function App() {
   const [partners, setPartners] = React.useState<Partner[] | null>(null);
@@ -35,108 +32,14 @@ function App() {
       <DateLocationComponent />
       <ThemeComponent />
       <SkewContentBox image="./windowsxp.jpg">
-        <TypographyHeader variant="h3">
-          Speakers
-        </TypographyHeader>
-        <Typography variant="body1">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ornare ut lectus
-          {' '}
-          id ullamcorper. Pellentesque id dictum odio. Nunc sed quam eu risus blandit
-          {' '}
-          lobortis vestibulum sit amet ex. Praesent maximus consectetur pharetra. Integer
-          {' '}
-          finibus velit malesuada sapien venenatis consequat et nec libero. Vivamus a diam
-          {' '}
-          dui. Duis vitae diam neque. Morbi ut congue nisl. Quisque sodales volutpat maximus.
-        </Typography>
-        <Typography variant="body1">
-          Integer imperdiet elit vitae posuere efficitur. In sodales placerat augue. Vivamus
-          {' '}
-          sodales nulla a quam porta, nec blandit lorem consectetur. Sed at urna blandit,
-          {' '}
-          eleifend ipsum sodales, porta enim. Nulla non nulla laoreet, tempus risus non,
-          {' '}
-          ultrices odio. Morbi dictum pellentesque sapien at imperdiet. Pellentesque habitant
-          {' '}
-          morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec eu ex
-          {' '}
-          rutrum, ultricies ex ut, dapibus lorem. Class aptent taciti sociosqu ad litora
-          {' '}
-          torquent per conubia nostra, per inceptos himenaeos. Vivamus quis dapibus elit. Nunc
-          {' '}
-          in lorem augue. Aliquam porttitor nibh nec urna maximus luctus at eu augue.
-        </Typography>
-        <Box sx={{ width: '100%', textAlign: 'center' }}>
-          <Button component={Link} to="/speakers" variant="contained" color="secondary" size="large" startIcon={<ArrowForward />}>
-            See the list of speakers
-          </Button>
-        </Box>
+        <SpeakersComponent />
       </SkewContentBox>
       <UniversitiesComponent />
-      <Container maxWidth="md" sx={{ textAlign: 'center' }}>
-        <Paper sx={{ padding: '1rem 2rem' }}>
-          <TypographyHeader variant="h3">
-            Your ticket
-          </TypographyHeader>
-          <Typography variant="body1" sx={{ marginBottom: '1rem' }}>
-            With your SNiC 2022: CelerIT ticket, you get full access to everyting the congress has
-            to offer. From the necessary bus trip from and to your university campus, to lunch and
-            dinner. From an amazing spectrum of different speakers, to a free goodiebag. Even the
-            social drink afterwards is included!
-          </Typography>
-          <Typography variant="body1" sx={{ marginBottom: '1rem' }}>
-            You can buy tickets for the SNiC 2022: CelerIT congress at
-            {' '}
-            <a href="https://stichting.snic.nl/about.html" target="_blank" rel="noreferrer">participating study associations.</a>
-            {' '}
-            Visit their website or their office/room for more information about where
-            to get your ticket.
-          </Typography>
-        </Paper>
-      </Container>
+      <TicketComponent />
       <SkewContentBox image="./parktheater.jpg" verticalImageHeight={500}>
-        <Box sx={(theme) => ({
-          [theme.breakpoints.up('sm')]: {
-            marginY: '4rem',
-          },
-        })}
-        >
-          <TypographyHeader variant="h3">
-            Location
-          </TypographyHeader>
-          <Typography variant="body1" sx={{ marginBottom: '1.5rem' }}>
-            This year&apos;s SNiC takes place in the Parktheater in Eindhoven.
-            Previously known as the City Theater, it is situated around the edge of the
-            Stadwandelpark in the city centre of Eindhoven.
-            With two large rooms, one smaller, cozier room, and many foyers and seating areas,
-            it is the perfect host for an event the size of SNiC.
-          </Typography>
-          <Box sx={{ width: '100%', textAlign: 'center' }}>
-            <Button variant="contained" color="secondary" href="https://g.page/parktheatereindhoven?share" target="_blank" startIcon={<Place />}>
-              Parktheater
-            </Button>
-          </Box>
-        </Box>
+        <LocationComponent />
       </SkewContentBox>
-      <Box sx={{ textAlign: 'center' }}>
-        <Box sx={{ marginBottom: '2rem' }}>
-          <TypographyHeader variant="h2">
-            2022 Partners
-          </TypographyHeader>
-          <Typography variant="body1" sx={{ marginBottom: '1rem' }}>
-            Interested in becoming a partner or speaker?
-            {' '}
-            <a href="/about">Contact us</a>
-            {' '}
-            for details.
-          </Typography>
-          <Button component={Link} to="/partners" variant="contained" size="large" startIcon={<ArrowForward />}>
-            More about the 2022 partners
-          </Button>
-        </Box>
-        <hr />
-        <PartnerGrid partners={partners} scaleFactor={0.7} extensive={false} />
-      </Box>
+      <PartnersComponent partners={partners} />
     </>
   );
 }

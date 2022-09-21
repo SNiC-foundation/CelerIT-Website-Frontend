@@ -50,7 +50,8 @@ function UniversitiesComponent() {
     };
   }, []);
 
-  const height = ref && ref.current ? (ref.current as any).scrollHeight : 200;
+  let height = ref && ref.current ? (ref.current as any).scrollHeight : 200;
+  if (height === 0) height = 200;
 
   return (
     <Box sx={{ marginBottom: '4rem' }}>

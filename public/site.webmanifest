@@ -1,0 +1,19 @@
+{
+    "name": "SNiC 2022 CelerIT",
+    "short_name": "CelerIT",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#072b4e",
+    "background_color": "#072b4e",
+    "display": "standalone"
+}

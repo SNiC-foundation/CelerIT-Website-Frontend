@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, CircularProgress, Grid } from '@mui/material';
-import { Client, Speaker } from '../clients/server.generated';
-import PageHeader from '../components/layout/PageHeader';
-import SpeakerCard from '../components/speaker/SpeakerCard';
+import { Client, Speaker } from '../../clients/server.generated';
+import PageHeader from '../../components/layout/PageHeader';
+import SpeakerCard from '../../components/speaker/SpeakerCard';
 
 function SpeakersPage() {
   const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);

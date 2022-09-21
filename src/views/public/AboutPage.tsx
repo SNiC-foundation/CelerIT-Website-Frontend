@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Container, styled, Typography, Box, Link,
 } from '@mui/material';
-import TypographyHeader from '../components/layout/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 
 const Paragraph = styled(Typography)(() => ({
   marginBottom: '2rem',
@@ -17,7 +17,7 @@ const ContactInfoField = styled(Typography)({
   paddingLeft: '3rem',
 });
 
-function About() {
+function AboutPage() {
   return (
     <Box sx={{
       width: '100%', display: 'flex', textAlign: 'center', alignItems: 'center', justifyContent: 'center',
@@ -50,6 +50,16 @@ function About() {
             <Link href="https://www.gewis.nl" variant="inherit">GEWIS</Link>
             .
           </Paragraph>
+
+          <Box>
+            <TypographyHeader variant="h4">
+              Committee 2022
+            </TypographyHeader>
+            <img src="./Groepsfoto_celerit_scaled.jpg" alt="Groepsfoto" style={{ width: '100%' }} />
+            <span style={{ fontStyle: 'italic' }}>
+              From left to right: Samuel, Sanne, Irne, Wouter, Wouter, Leon, Susan, and Roy.
+            </span>
+          </Box>
         </Box>
         <Box sx={{
           display: 'flex', flexFlow: 'column', alignItems: 'center', justifyContent: 'center',
@@ -81,4 +91,4 @@ function About() {
   );
 }
 
-export default About;
+export default AboutPage;

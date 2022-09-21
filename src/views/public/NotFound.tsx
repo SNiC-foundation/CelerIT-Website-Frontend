@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import TypographyHeader from '../components/layout/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 
 function NotFound() {
   return (

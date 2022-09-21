@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import App from './views/App';
 import { allPages } from './components/navigation/MenuItems';
 import { AuthContext } from './auth/AuthContextProvider';
-import NotFound from './views/NotFound';
+import NotFound from './views/public/NotFound';
 
 function Router() {
   const authContext = React.useContext(AuthContext);

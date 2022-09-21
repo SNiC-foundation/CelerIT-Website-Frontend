@@ -4,9 +4,9 @@ import ParticipantHome from '../../views/homes/ParticipantHome';
 import AdminPartners from '../../views/admin/AdminPartners';
 import AdminProgram from '../../views/admin/AdminProgram';
 import AdminUsers from '../../views/admin/AdminUsers';
-import About from '../../views/About';
-import PartnersPage from '../../views/PartnersPage';
-import SpeakersPage from '../../views/SpeakersPage';
+import AboutPage from '../../views/public/AboutPage';
+import PartnersPage from '../../views/public/PartnersPage';
+import SpeakersPage from '../../views/public/SpeakersPage';
 import { IAuthContext } from '../../auth/AuthContextProvider';
 import Login from '../../views/auth/Login';
 import Logout from '../../views/auth/Logout';
@@ -40,7 +40,7 @@ export const generalPages: MenuItem[] = [
   {
     name: 'About',
     target: '/about',
-    component: <About />,
+    component: <AboutPage />,
   },
 ];
 

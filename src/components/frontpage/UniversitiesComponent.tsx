@@ -67,7 +67,7 @@ function UniversitiesComponent() {
       <Box sx={{ position: 'absolute', left: 0, width }} ref={ref}>
         <Marquee gradientColor={[238, 238, 238]}>
           {logos.concat(logos).concat(logos).concat(logos).map((l) => (
-            <img src={l.image} alt={l.name} style={{ height: '80px', margin: '1rem' }} />
+            <img src={l.image} alt={l.name} style={{ height: '80px', margin: '1rem' }} key={l.image} />
           ))}
         </Marquee>
       </Box>

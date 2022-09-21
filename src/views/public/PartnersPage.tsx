@@ -2,9 +2,9 @@ import React from 'react';
 import {
   Box, CircularProgress,
 } from '@mui/material';
-import { Client, Partner } from '../clients/server.generated';
-import PageHeader from '../components/layout/PageHeader';
-import PartnerGrid from '../components/partner/PartnerGrid';
+import { Client, Partner } from '../../clients/server.generated';
+import PageHeader from '../../components/layout/PageHeader';
+import PartnerGrid from '../../components/partner/PartnerGrid';
 
 function PartnersPage() {
   const [partners, setPartners] = React.useState<Partner[] | undefined>(undefined);

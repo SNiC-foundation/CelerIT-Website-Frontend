@@ -55,7 +55,7 @@ function AboutPage() {
             <TypographyHeader variant="h4">
               Committee 2022
             </TypographyHeader>
-            <img src="./Groepsfoto_celerit_scaled.jpg" alt="Groepsfoto" style={{ width: '100%' }} />
+            <img src="/Groepsfoto_celerit_scaled.jpg" alt="Groepsfoto" style={{ width: '100%' }} />
             <span style={{ fontStyle: 'italic' }}>
               From left to right: Samuel, Sanne, Irne, Wouter, Wouter, Leon, Susan, and Roy.
             </span>

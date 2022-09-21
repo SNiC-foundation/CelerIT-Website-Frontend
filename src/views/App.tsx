@@ -28,15 +28,15 @@ function App() {
 
   return (
     <>
-      <LandingComponent location="./CelerIT_animatie.mp4" shuffledPartners={shuffledPartners} />
+      <LandingComponent location="/CelerIT_animatie.mp4" shuffledPartners={shuffledPartners} />
       <DateLocationComponent />
       <ThemeComponent />
-      <SkewContentBox image="./paneldiscussie.jpg">
+      <SkewContentBox image="/paneldiscussie.jpg">
         <SpeakersComponent />
       </SkewContentBox>
       <UniversitiesComponent />
       <TicketComponent />
-      <SkewContentBox image="./parktheater.jpg" verticalImageHeight={500}>
+      <SkewContentBox image="/parktheater.jpg" verticalImageHeight={500}>
         <LocationComponent />
       </SkewContentBox>
       <PartnersComponent partners={partners} />

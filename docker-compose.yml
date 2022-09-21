@@ -4,7 +4,7 @@ services:
     build:
       context: ../SNiC-Congress-Frontend
       dockerfile: Dockerfile
-    image: celerit.docker-registry.gewis.nl/snic-congress-frontend:latest
+    image: default.docker-registry.gewis.nl/snic-congress-frontend:latest
     restart: 'unless-stopped'
     ports:
       - '9639:80'
@@ -15,7 +15,7 @@ services:
       - speakers:/usr/src/app/data/backgrounds
   backend:
     build: ../SNiC-Congress-Backend
-    image: celerit.docker-registry.gewis.nl/snic-congress-backend:latest
+    image: default.docker-registry.gewis.nl/snic-congress-backend:latest
     restart: 'unless-stopped'
     networks:
       - snic-congress

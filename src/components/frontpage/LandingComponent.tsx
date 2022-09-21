@@ -81,7 +81,7 @@ function LandingComponent({ location, shuffledPartners }: Props) {
         })}
         >
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video style={{ width: '100%', height: '100%', objectFit: 'cover' }} autoPlay>
+          <video style={{ width: '100%', height: '100%', objectFit: 'cover' }} autoPlay muted playsInline>
             <source
               src={location}
               type="video/mp4"

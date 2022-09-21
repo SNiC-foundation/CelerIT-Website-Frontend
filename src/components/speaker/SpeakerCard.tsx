@@ -21,7 +21,7 @@ function SpeakerCard({ speaker }: Props) {
         ref={ref}
         component="img"
         alt={speaker.name}
-        image={apiImageUrl(speaker.imageFilename)}
+        image={speaker.imageFilename ? apiImageUrl(speaker.imageFilename) : './speaker-placeholder.png'}
         height={width}
       />
       <CardContent>
@@ -29,7 +29,11 @@ function SpeakerCard({ speaker }: Props) {
           {speaker.name}
         </Typography>
         <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-          {speaker.description}
+          {speaker.description !== '' ? speaker.description : (
+            <span style={{ fontStyle: 'italic', color: 'darkgray' }}>
+              More information about this speaker will be added soon.
+            </span>
+          )}
         </Typography>
         {speaker.activities.length > 0 ? (
           <>

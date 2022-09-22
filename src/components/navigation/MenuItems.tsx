@@ -85,12 +85,13 @@ export const userMenuPages: MenuItem[] = [
     name: 'Account',
     target: '/user/:id',
     component: <ParticipantHome />,
+    disabled: (auth) => (auth.user === undefined),
   },
-  {
-    name: 'My program',
-    target: '/user/:id/program',
-    component: null,
-  },
+  // {
+  //   name: 'My program',
+  //   target: '/user/:id/program',
+  //   component: null,
+  // },
 ];
 
 export const allPages: MenuItem[] = [

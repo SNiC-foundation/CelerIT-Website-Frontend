@@ -22,9 +22,10 @@ function HeaderBackgroundColorBox({
   `);
 
   const ColoredBox = styled(Box)(({ theme }) => ({
-    width: 'calc(120% + 200px)',
+    width: 'calc(100% + 400px)',
     backgroundImage: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.light})`,
     position: 'absolute',
+    left: '-100px',
     boxShadow: '1px 1px 20px #000',
     animation: `${shuffle()} ${time}s ease ${offset}s infinite alternate`,
   }));

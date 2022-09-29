@@ -50,6 +50,13 @@ function UniversitiesComponent() {
     };
   }, []);
 
+  React.useEffect(() => {
+    const viewportWidth = document.body.scrollWidth;
+    if (viewportWidth !== width) {
+      getWidth();
+    }
+  });
+
   let height = ref && ref.current ? (ref.current as any).scrollHeight : 200;
   if (height === 0) height = 200;
 
@@ -65,9 +72,13 @@ function UniversitiesComponent() {
         </Typography>
       </Container>
       <Box sx={{ position: 'absolute', left: 0, width }} ref={ref}>
-        <Marquee gradientColor={[238, 238, 238]}>
-          {logos.concat(logos).concat(logos).concat(logos).map((l) => (
-            <img src={l.image} alt={l.name} style={{ height: '80px', margin: '1rem' }} key={l.image} />
+        <Marquee
+          gradientColor={[238, 238, 238]}
+          gradientWidth={width < 600 ? width / 4 : undefined}
+        >
+          {logos.concat(logos).concat(logos).concat(logos).map((l, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <img src={l.image} alt={l.name} style={{ height: '80px', margin: '1rem' }} key={index} />
           ))}
         </Marquee>
       </Box>

@@ -36,7 +36,7 @@ function App() {
       </SkewContentBox>
       <UniversitiesComponent />
       <TicketComponent />
-      <SkewContentBox image="/parktheater.jpg" verticalImageHeight={500}>
+      <SkewContentBox image="/parktheater.jpg" verticalImageHeight={500} inverse bottomBar>
         <LocationComponent />
       </SkewContentBox>
       <PartnersComponent partners={partners} />

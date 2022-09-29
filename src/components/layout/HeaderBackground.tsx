@@ -25,6 +25,13 @@ function HeaderBackground({ lines }: Props) {
     };
   }, []);
 
+  React.useEffect(() => {
+    const viewportWidth = document.body.scrollWidth;
+    if (viewportWidth !== width) {
+      getWidth();
+    }
+  });
+
   return (
     <Box
       id="header-background"

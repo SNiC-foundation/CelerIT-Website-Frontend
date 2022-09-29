@@ -15,13 +15,14 @@ interface Props {
   image: string;
   children: React.ReactNode | React.ReactNode[];
   inverse?: boolean;
+  bottomBar?: boolean;
   supportBarHeight?: number;
   supportBarAngle?: number;
   verticalImageHeight?: number;
 }
 
 function SkewContentBox({
-  image, children, inverse, supportBarHeight, supportBarAngle, verticalImageHeight,
+  image, children, inverse, supportBarHeight, supportBarAngle, verticalImageHeight, bottomBar,
 }: Props) {
   const [width, setWidth] = React.useState(document.body.scrollWidth);
 
@@ -41,38 +42,59 @@ function SkewContentBox({
     };
   }, []);
 
+  React.useEffect(() => {
+    const viewportWidth = document.body.scrollWidth;
+    if (viewportWidth !== width) {
+      getWidth();
+    }
+  });
+
   const height = ref && ref.current ? (ref.current as any).scrollHeight : 0;
 
   return (
     <>
       <Box
-        ref={ref}
-        sx={(theme) => ({
+        sx={() => ({
           position: 'absolute',
           left: 0,
           transform: 'skewY(5deg)',
           width,
-          backgroundColor: theme.palette.primary.main,
-          color: 'white',
           marginTop: '6rem',
         })}
       >
-        <Box sx={() => ({
-          width: '100%',
-          display: 'flex',
-          flexWrap: 'wrap',
+        <Box sx={(theme) => ({
+          width: '50%',
+          overflow: 'hidden',
+          position: 'fixed',
+          left: '50%',
+          transform: `skewY(-${5 + (supportBarAngle || 0)}deg) translateY(-5vw)`,
+          backgroundColor: theme.palette.secondary.main,
+          height: supportBarHeight,
         })}
-        >
+        />
+        {bottomBar ? (
           <Box sx={(theme) => ({
             width: '50%',
             overflow: 'hidden',
-            position: 'absolute',
-            left: '50%',
-            transform: `skewY(-${5 + (supportBarAngle || 0)}deg) translateY(-4rem)`,
+            position: 'fixed',
+            left: '0',
+            transform: `skewY(-${30 + (supportBarAngle || 0)}deg) translateY(20vw)`,
             backgroundColor: theme.palette.secondary.main,
             height: supportBarHeight,
           })}
           />
+        ) : null}
+        <Box
+          ref={ref}
+          sx={(theme) => ({
+            width: '100%',
+            display: 'flex',
+            flexWrap: 'wrap',
+            backgroundColor: theme.palette.primary.main,
+            color: 'white',
+            position: 'relative',
+          })}
+        >
           <ContextBoxElement sx={(theme) => ({
             [theme.breakpoints.down('md')]: {
               order: 1,
@@ -118,6 +140,7 @@ SkewContentBox.defaultProps = ({
   supportBarHeight: 125,
   supportBarAngle: 8,
   verticalImageHeight: 200,
+  bottomBar: false,
 });
 
 export default SkewContentBox;

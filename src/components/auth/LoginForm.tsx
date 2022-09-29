@@ -7,15 +7,16 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Client, LoginParams } from '../../clients/server.generated';
+import { AuthContext } from '../../auth/AuthContextProvider';
 
 function LoginForm() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = React.useState(false);
 
   const navigate = useNavigate();
+  const authContext = React.useContext(AuthContext);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -27,7 +28,8 @@ function LoginForm() {
     client.login(new LoginParams({
       email, password,
     }))
-      .then(() => {
+      .then(async () => {
+        await authContext.updateProfile();
         navigate('/');
       })
       .catch(() => {

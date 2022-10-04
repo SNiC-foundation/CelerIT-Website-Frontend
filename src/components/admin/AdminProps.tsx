@@ -21,7 +21,7 @@ export type BasePropField<T> = {
 }
 
 export type GeneralPropField<T> = BasePropField<T> & {
-  fieldType: 'string' | 'text' | 'number' | 'datetime',
+  fieldType: 'string' | 'text' | 'number' | 'datetime' | 'image',
 }
 
 export type DropdownPropField<T> = BasePropField<T> & {

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardContent } from '@mui/material';
+import { CardContent, Paper } from '@mui/material';
 import { Client, Speaker } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
-import TypographyHeader from '../../components/TypographyHeader';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
 
@@ -12,7 +12,7 @@ function AdminSpeakers() {
 
   const getSpeakers = () => {
     const client = new Client();
-    client.getAllSpeakers()
+    client.getAllSpeakers(false)
       .then((s) => {
         setSpeakers(s);
         setLoading(false);
@@ -24,6 +24,13 @@ function AdminSpeakers() {
   }, []);
 
   const entityColumns: AdminPropField<Speaker>[] = [{
+    attribute: 'imageFilename',
+    label: '',
+    width: 50,
+    fieldType: 'image',
+    canBeUpdated: false,
+    initial: '',
+  }, {
     attribute: 'name',
     label: 'Name',
     width: 200,
@@ -68,7 +75,7 @@ function AdminSpeakers() {
   return (
     <>
       <TypographyHeader variant="h2">All Speakers</TypographyHeader>
-      <Card>
+      <Paper elevation={3}>
         <CardContent>
           <AdminTable
             entityColumns={entityColumns}
@@ -80,7 +87,7 @@ function AdminSpeakers() {
             handleDelete={handleDelete}
           />
         </CardContent>
-      </Card>
+      </Paper>
     </>
   );
 }

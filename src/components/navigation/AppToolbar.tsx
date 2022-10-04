@@ -13,11 +13,15 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import { adminMenuPages, generalPages, userMenuPages } from './MenuItems';
+import Authorize from '../../auth/Authorize';
+import { AuthContext } from '../../auth/AuthContextProvider';
 
 function AppToolbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [anchorElAdmin, setAnchorElAdmin] = React.useState<null | HTMLElement>(null);
+
+  const authContext = React.useContext(AuthContext);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -42,7 +46,7 @@ function AppToolbar() {
   };
 
   return (
-    <AppBar position="static" enableColorOnDark sx={{ position: 'absolute', zIndex: 100 }}>
+    <AppBar id="main-menu" position="static" enableColorOnDark sx={{ position: 'absolute', zIndex: 100 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -141,50 +145,52 @@ function AppToolbar() {
                 {page.name}
               </Button>
             ))}
-            <Button
-              sx={{
-                color: 'white', display: 'block', marginY: '13.75px',
-              }}
-              onClick={handleOpenAdminMenu}
-            >
-              Admin
-            </Button>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-admin-appbar"
-              anchorEl={anchorElAdmin}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElAdmin)}
-              onClose={handleCloseAdminMenu}
-            >
-              {adminMenuPages.map((page) => (
-                <MenuItem
-                  key={page.name}
-                  component={Link}
-                  to={page.target}
-                  onClick={() => {
-                    handleCloseAdminMenu();
-                    handleCloseNavMenu();
-                  }}
-                >
-                  <Typography textAlign="center">{page.name}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            <Authorize roles={['Admin']}>
+              <Button
+                sx={{
+                  color: 'white', display: 'block', marginY: '13.75px',
+                }}
+                onClick={handleOpenAdminMenu}
+              >
+                Admin
+              </Button>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-admin-appbar"
+                anchorEl={anchorElAdmin}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElAdmin)}
+                onClose={handleCloseAdminMenu}
+              >
+                {adminMenuPages.map((page) => (
+                  <MenuItem
+                    key={page.name}
+                    component={Link}
+                    to={page.target}
+                    onClick={() => {
+                      handleCloseAdminMenu();
+                      handleCloseNavMenu();
+                    }}
+                  >
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Authorize>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar />
               </IconButton>
             </Tooltip>
             <Menu
@@ -203,16 +209,18 @@ function AppToolbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {userMenuPages.map((page) => (
-                <MenuItem
-                  key={page.name}
-                  component={Link}
-                  to={page.target}
-                  onClick={handleCloseUserMenu}
-                >
-                  <Typography textAlign="center">{page.name}</Typography>
-                </MenuItem>
-              ))}
+              {userMenuPages
+                .filter((m) => (m.disabled === undefined || !m.disabled(authContext)))
+                .map((page) => (
+                  <MenuItem
+                    key={page.name}
+                    component={Link}
+                    to={page.target}
+                    onClick={handleCloseUserMenu}
+                  >
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </MenuItem>
+                ))}
             </Menu>
           </Box>
         </Toolbar>

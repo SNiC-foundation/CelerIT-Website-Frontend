@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  DataGrid, GridColDef, GridRowsProp, GridRenderCellParams,
+  DataGrid, GridColDef, GridRowsProp, GridRenderCellParams, GridToolbar,
 } from '@mui/x-data-grid';
 import { Box, LinearProgress } from '@mui/material';
 import { Delete } from '@mui/icons-material';
@@ -166,6 +166,7 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
       <DataGrid
         components={{
           LoadingOverlay: LinearProgress,
+          Toolbar: GridToolbar,
         }}
         rows={rows}
         columns={columns}

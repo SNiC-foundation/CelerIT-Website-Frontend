@@ -1,8 +1,8 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import LoginForm from '../../components/auth/LoginForm';
+import PasswordResetForm from '../../components/auth/PasswordResetForm';
 
-function Login() {
+function ResetPassword() {
   return (
     <Grid
       container
@@ -13,10 +13,10 @@ function Login() {
       style={{ minHeight: 'calc(100vh - 128px)' }}
     >
       <Grid item xs={12} md={6} lg={4}>
-        <LoginForm />
+        <PasswordResetForm />
       </Grid>
     </Grid>
   );
 }
 
-export default Login;
+export default ResetPassword;

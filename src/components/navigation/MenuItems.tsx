@@ -11,6 +11,7 @@ import { IAuthContext } from '../../auth/AuthContextProvider';
 import Login from '../../views/auth/Login';
 import Logout from '../../views/auth/Logout';
 import { authorized } from '../../auth/Authorize';
+import Register from '../../views/auth/Register';
 
 export interface MenuItem {
   name: string;
@@ -73,6 +74,12 @@ export const userMenuPages: MenuItem[] = [
     name: 'Login',
     target: '/login',
     component: <Login />,
+    disabled: (auth) => (auth.user !== undefined),
+  },
+  {
+    name: 'Activate ticket',
+    target: '/register',
+    component: <Register />,
     disabled: (auth) => (auth.user !== undefined),
   },
   {

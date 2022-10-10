@@ -87,7 +87,7 @@ function LoginForm() {
           />
         </FormControl>
 
-        <Button variant="contained" sx={{ mt: 2 }} onClick={handleLogin}>Login</Button>
+        <Button type="submit" variant="contained" sx={{ mt: 2 }} onClick={handleLogin}>Login</Button>
         <Button sx={{ color: 'text.disabled', mt: 2 }}>Forgot password</Button>
       </Box>
     </Paper>

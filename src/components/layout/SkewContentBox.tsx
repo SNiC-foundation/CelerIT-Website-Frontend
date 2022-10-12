@@ -36,9 +36,13 @@ function SkewContentBox({
   React.useEffect(() => {
     getWidth();
     window.addEventListener('resize', getWidth);
+    // Somehow, some devices still fail to render to the correct height.
+    // This dirty hack should fix it.
+    const timeout = setTimeout(getWidth, 500);
 
     return () => {
       window.removeEventListener('resize', getWidth);
+      clearTimeout(timeout);
     };
   }, []);
 

@@ -1,15 +1,18 @@
 import React from 'react';
 import {
-  Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography,
+  Box,
+  Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, Paper, Typography,
 } from '@mui/material';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import RegisterForm from '../../components/auth/RegisterForm';
 import { Client, RegisterUserParams } from '../../clients/server.generated';
+import TypographyHeader from '../../components/layout/TypographyHeader';
 
 function Register() {
   const [registered, setRegistered] = React.useState(false);
   const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const navigate = useNavigate();
 
@@ -22,12 +25,15 @@ function Register() {
   };
 
   const handleRegister = async (params: RegisterUserParams) => {
+    setLoading(true);
     const client = new Client();
     try {
       await client.registerUser(params);
       setRegistered(true);
     } catch (e) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,7 +47,25 @@ function Register() {
       style={{ minHeight: 'calc(100vh - 128px)' }}
     >
       <Grid item xs={12} md={8} lg={6}>
-        <RegisterForm handleRegister={handleRegister} />
+        <Paper elevation={3}>
+          {loading ? (<LinearProgress color="primary" />) : null}
+          <Box
+            sx={{
+              p: 3, width: 'auto', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
+            }}
+            component="form"
+          >
+            <TypographyHeader variant="h5">
+              Activate your SNiC 2022: CelerIT ticket
+            </TypographyHeader>
+            <Typography variant="body1">
+              With this form, you can activate your ticket for SNiC 2022: CelerIT on November 30th.
+              If you have not yet received a ticket, but you think you should have one, please
+              contact your study association.
+            </Typography>
+            <RegisterForm handleRegister={handleRegister} />
+          </Box>
+        </Paper>
       </Grid>
 
       <Dialog open={error} onClose={closeErrorDialog}>

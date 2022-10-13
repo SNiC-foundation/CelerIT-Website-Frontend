@@ -6,19 +6,16 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { Client, ForgotPasswordRequest } from '../../clients/server.generated';
 import PasswordForgotForm from '../../components/auth/PasswordForgotForm';
+import { AlertContext } from '../../alerts/AlertContextProvider';
 
 function ForgotPassword() {
   const [sent, setSent] = React.useState(false);
-  const [error, setError] = React.useState(false);
 
   const navigate = useNavigate();
+  const { showAlert } = React.useContext(AlertContext);
 
   const closeRegisteredDialog = () => {
     navigate('/');
-  };
-
-  const closeErrorDialog = () => {
-    setError(false);
   };
 
   const handleForgotPassword = async (params: ForgotPasswordRequest) => {
@@ -27,7 +24,11 @@ function ForgotPassword() {
       await client.forgotPassword(params);
       setSent(true);
     } catch (e) {
-      setError(true);
+      showAlert({
+        message: 'Something went wrong resetting your password. Please try again later. If it still does not work, please contact your study association.',
+        severity: 'error',
+        time: 8000,
+      });
     }
   };
 
@@ -43,21 +44,6 @@ function ForgotPassword() {
       <Grid item xs={12} md={6} lg={4}>
         <PasswordForgotForm handleForgotPassword={handleForgotPassword} />
       </Grid>
-
-      <Dialog open={error} onClose={closeErrorDialog}>
-        <DialogTitle>
-          Error
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">
-            Something went wrong resetting your password. Please try again later.
-            If it still does not work, please contact your study assocation.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={closeErrorDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog open={sent} onClose={closeRegisteredDialog}>
         <DialogTitle>

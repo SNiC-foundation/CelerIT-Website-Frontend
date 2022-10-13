@@ -8,20 +8,17 @@ import { useNavigate } from 'react-router-dom';
 import RegisterForm from '../../components/auth/RegisterForm';
 import { Client, RegisterUserParams } from '../../clients/server.generated';
 import TypographyHeader from '../../components/layout/TypographyHeader';
+import { AlertContext } from '../../alerts/AlertContextProvider';
 
 function Register() {
   const [registered, setRegistered] = React.useState(false);
-  const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const navigate = useNavigate();
+  const { showAlert } = React.useContext(AlertContext);
 
   const closeRegisteredDialog = () => {
     navigate('/');
-  };
-
-  const closeErrorDialog = () => {
-    setError(false);
   };
 
   const handleRegister = async (params: RegisterUserParams) => {
@@ -31,7 +28,7 @@ function Register() {
       await client.registerUser(params);
       setRegistered(true);
     } catch (e) {
-      setError(true);
+      showAlert({ message: 'Something went wrong registering your ticket. Please try again later. If it still does not work, please contact your study assocation.', severity: 'error', time: 8000 });
     } finally {
       setLoading(false);
     }
@@ -67,21 +64,6 @@ function Register() {
           </Box>
         </Paper>
       </Grid>
-
-      <Dialog open={error} onClose={closeErrorDialog}>
-        <DialogTitle>
-          Error
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">
-            Something went wrong registering your ticket. Please try again later.
-            If it still does not work, please contact your study assocation.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={closeErrorDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog open={registered} onClose={closeRegisteredDialog}>
         <DialogTitle>

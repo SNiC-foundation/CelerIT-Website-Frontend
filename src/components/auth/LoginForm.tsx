@@ -5,7 +5,7 @@ import {
 import {
   Lock, Person, Visibility, VisibilityOff,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Client, LoginParams } from '../../clients/server.generated';
 import { AuthContext } from '../../auth/AuthContextProvider';
 
@@ -88,7 +88,13 @@ function LoginForm() {
         </FormControl>
 
         <Button type="submit" variant="contained" sx={{ mt: 2 }} onClick={handleLogin}>Login</Button>
-        <Button sx={{ color: 'text.disabled', mt: 2 }}>Forgot password</Button>
+        <Button
+          component={Link}
+          sx={{ color: 'text.disabled', mt: 2, marginLeft: 1 }}
+          to="/forgot-password"
+        >
+          Forgot password
+        </Button>
       </Box>
     </Paper>
   );

@@ -16,7 +16,7 @@ function AlertItem({ alert }: Props) {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={alert.time ? alert.time : 500}
+      autoHideDuration={alert.time ? alert.time : 5000}
       onClose={handleClose}
       sx={{ maxWidth: 600 }}
     >

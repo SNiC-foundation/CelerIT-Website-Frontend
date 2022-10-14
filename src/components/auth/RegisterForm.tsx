@@ -1,35 +1,47 @@
 import React from 'react';
 import {
   Alert,
-  Button, Checkbox, Collapse, FormControl, FormControlLabel,
+  Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel,
   TextField, Typography,
 } from '@mui/material';
 import validator from 'validator';
 import {
-  CreateParticipantUserParams, ParticipantInfo, RegisterUserParams, Ticket,
+  CreateParticipantUserParams, ParticipantInfo, RegisterUserParams, Ticket, User,
 } from '../../clients/server.generated';
 import TicketFormField from './TicketFormField';
 
 interface Props {
   // eslint-disable-next-line no-unused-vars
-  handleRegister: (params: RegisterUserParams) => Promise<void>;
+  handleSubmit: (params: RegisterUserParams) => Promise<void>;
+  user?: User;
 }
 
-function RegisterForm({ handleRegister }: Props) {
-  const [ticket, setTicket] = React.useState<Ticket | undefined>(undefined);
-  const [ticketValid, setTicketValid] = React.useState(false);
-  const [email, setEmail] = React.useState('');
-  const [name, setName] = React.useState('');
-  const [dietaryWishes, setDietaryWishes] = React.useState('');
-  const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = React.useState(false);
-  const [agreeToSharingWithCompanies, setAgreeToSharingWithCompanies] = React.useState(true);
-  const [studyProgram, setStudyProgram] = React.useState('');
+function RegisterForm({ user, handleSubmit }: Props) {
+  const [ticket, setTicket] = React.useState<Ticket | undefined>(user ? user.ticket : undefined);
+  const [ticketValid, setTicketValid] = React.useState(!!(user && user.ticket));
+  const [email, setEmail] = React.useState(user ? user.email : '');
+  const [name, setName] = React.useState(user ? user.name : '');
+  const [dietaryWishes, setDietaryWishes] = React.useState(user ? user.dietaryWishes : '');
+  const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = React.useState(
+    user ? user.agreeToPrivacyPolicy : false,
+  );
+  const [agreeToSharingWithCompanies, setAgreeToSharingWithCompanies] = React.useState(
+    user && user.participantInfo ? user.participantInfo.agreeToSharingWithCompanies : true,
+  );
+  const [studyProgram, setStudyProgram] = React.useState(
+    user && user.participantInfo ? user.participantInfo.studyProgram : '',
+  );
+
+  const [loading, setLoading] = React.useState(false);
 
   const my = 0.5;
 
-  const handleSubmit = async () => {
-    if (ticket === undefined) return;
-    await handleRegister(new RegisterUserParams({
+  const disabled = user !== undefined;
+
+  const handleSubmitButton = async () => {
+    if (ticket === undefined && user == null) return;
+    setLoading(true);
+    await handleSubmit(new RegisterUserParams({
       user: new CreateParticipantUserParams({
         email,
         name,
@@ -40,18 +52,21 @@ function RegisterForm({ handleRegister }: Props) {
           studyProgram,
         }),
       }),
-      token: ticket.code,
+      token: ticket?.code ?? '',
     }));
+    setLoading(false);
   };
 
-  return (
-    <>
+  const ticketField = () => {
+    if (user && !user.ticket) return null;
+    return (
       <FormControl variant="standard" sx={{ my, width: '100%' }} error={!ticketValid}>
         <TicketFormField
           ticket={ticket}
           setTicket={setTicket}
           ticketValid={ticketValid}
           setTicketValid={setTicketValid}
+          disabled={disabled}
         />
         <Collapse in={ticket !== undefined}>
           <Alert severity="info" sx={{ my: '1rem' }}>
@@ -62,6 +77,58 @@ function RegisterForm({ handleRegister }: Props) {
           </Alert>
         </Collapse>
       </FormControl>
+    );
+  };
+
+  const studyProgramField = () => {
+    if (user && !user.participantInfo) return null;
+    return (
+      <FormControl variant="standard" sx={{ my, width: '100%' }}>
+        <TextField
+          id="study-program"
+          onChange={(event) => setStudyProgram(event.target.value)}
+          value={studyProgram}
+          required
+          variant="standard"
+          label="Study program"
+          placeholder="Study program (please include Bachelor or Master)"
+          error={validator.isEmpty(studyProgram)}
+        />
+      </FormControl>
+    );
+  };
+
+  const dataSharingField = () => {
+    if (user && !user.participantInfo) return null;
+    return (
+      <>
+        <Typography variant="body1" sx={{ textAlign: 'left', marginTop: my * 4 }}>
+          During the SNiC 2022: CelerIT conference, we will use a QR-code system to share
+          contact information of participants with this year&apos;s partners.
+          Every participant will receive a personal QR code on their badge.
+          When you have talked with a company, they may request to scan your QR code for
+          your contact details. If the toggle below is checked, the company will receive
+          your contact details after the conference. If you do not check the toggle below,
+          a company can still scan your code, but they will not receive your contact information.
+        </Typography>
+        <FormControl variant="standard" sx={{ my, width: '100%' }}>
+          <FormControlLabel
+            control={(
+              <Checkbox
+                value={agreeToSharingWithCompanies}
+                onChange={(event) => setAgreeToSharingWithCompanies(event.target.checked)}
+              />
+            )}
+            label="I agree with sharing my contact information with companies"
+          />
+        </FormControl>
+      </>
+    );
+  };
+
+  return (
+    <>
+      {ticketField()}
       <FormControl variant="standard" sx={{ my, width: '100%' }}>
         <TextField
           id="email"
@@ -71,6 +138,7 @@ function RegisterForm({ handleRegister }: Props) {
           required
           label="Email address"
           error={!validator.isEmail(email)}
+          disabled={disabled}
         />
       </FormControl>
       <FormControl variant="standard" sx={{ my, width: '100%' }}>
@@ -84,18 +152,7 @@ function RegisterForm({ handleRegister }: Props) {
           error={validator.isEmpty(name)}
         />
       </FormControl>
-      <FormControl variant="standard" sx={{ my, width: '100%' }}>
-        <TextField
-          id="study-program"
-          onChange={(event) => setStudyProgram(event.target.value)}
-          value={studyProgram}
-          required
-          variant="standard"
-          label="Study program"
-          placeholder="Study program (please include Bachelor or Master)"
-          error={validator.isEmpty(studyProgram)}
-        />
-      </FormControl>
+      {studyProgramField()}
       <FormControl variant="standard" sx={{ my, width: '100%' }}>
         <TextField
           id="diet"
@@ -109,9 +166,10 @@ function RegisterForm({ handleRegister }: Props) {
         <FormControlLabel
           control={(
             <Checkbox
-              value={agreeToPrivacyPolicy}
+              checked={agreeToPrivacyPolicy}
               onChange={(event) => setAgreeToPrivacyPolicy(event.target.checked)}
               required
+              disabled={disabled}
             />
             )}
           label="I agree with the privacy policy*"
@@ -121,45 +179,43 @@ function RegisterForm({ handleRegister }: Props) {
           })}
         />
       </FormControl>
-      <Typography variant="body1" sx={{ textAlign: 'left', marginTop: my * 4 }}>
-        During the SNiC 2022: CelerIT conference, we will use a QR-code system to share
-        contact information of participants with this year&apos;s partners.
-        Every participant will receive a personal QR code on their badge.
-        When you have talked with a company, they may request to scan your QR code for
-        your contact details. If the toggle below is checked, the company will receive
-        your contact details after the conference. If you do not check the toggle below,
-        a company can still scan your code, but they will not receive your contact information.
-      </Typography>
-      <FormControl variant="standard" sx={{ my, width: '100%' }}>
-        <FormControlLabel
-          control={(
-            <Checkbox
-              value={agreeToSharingWithCompanies}
-              onChange={(event) => setAgreeToSharingWithCompanies(event.target.checked)}
-            />
-            )}
-          label="I agree with sharing my contact information with companies"
-        />
-      </FormControl>
+      {dataSharingField()}
       <Button
         type="submit"
         variant="contained"
         sx={{ mt: 2 }}
         onClick={async (e) => {
           e.preventDefault();
-          await handleSubmit();
+          await handleSubmitButton();
         }}
-        disabled={ticket === undefined
+        disabled={(ticket === undefined && user === undefined)
           || validator.isEmpty(email)
           || !validator.isEmail(email)
           || validator.isEmpty(name)
-          || validator.isEmpty(studyProgram)
-          || !agreeToPrivacyPolicy}
+          || (validator.isEmpty(studyProgram) && user === undefined)
+          || !agreeToPrivacyPolicy
+          || loading}
       >
         Submit
+        {loading && (
+          <CircularProgress
+            size={24}
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+        )}
       </Button>
     </>
   );
 }
+
+RegisterForm.defaultProps = ({
+  user: undefined,
+});
 
 export default RegisterForm;

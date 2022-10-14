@@ -1,6 +1,5 @@
 import React from 'react';
 import AdminSpeakers from '../../views/admin/AdminSpeakers';
-import ParticipantHome from '../../views/homes/ParticipantHome';
 import AdminPartners from '../../views/admin/AdminPartners';
 import AdminProgram from '../../views/admin/AdminProgram';
 import AdminUsers from '../../views/admin/AdminUsers';
@@ -12,6 +11,7 @@ import Login from '../../views/auth/Login';
 import Logout from '../../views/auth/Logout';
 import { authorized } from '../../auth/Authorize';
 import Register from '../../views/auth/Register';
+import UserHome from '../../views/homes/UserHome';
 
 export interface MenuItem {
   name: string;
@@ -90,8 +90,8 @@ export const userMenuPages: MenuItem[] = [
   },
   {
     name: 'Account',
-    target: '/user/:id',
-    component: <ParticipantHome />,
+    target: '/home',
+    component: <UserHome />,
     disabled: (auth) => (auth.user === undefined),
   },
   // {

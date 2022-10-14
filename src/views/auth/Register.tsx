@@ -60,7 +60,7 @@ function Register() {
               If you have not yet received a ticket, but you think you should have one, please
               contact your study association.
             </Typography>
-            <RegisterForm handleRegister={handleRegister} />
+            <RegisterForm handleSubmit={handleRegister} />
           </Box>
         </Paper>
       </Grid>

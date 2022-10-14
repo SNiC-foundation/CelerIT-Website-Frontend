@@ -13,10 +13,11 @@ interface Props {
   ticketValid: boolean;
   // eslint-disable-next-line no-unused-vars
   setTicketValid: (valid: boolean) => void;
+  disabled?: boolean;
 }
 
 function TicketFromField({
-  ticket, setTicket, ticketValid, setTicketValid,
+  ticket, setTicket, ticketValid, setTicketValid, disabled,
 }: Props) {
   const [loading, setLoading] = React.useState(false);
   const [ticketCode, setTicketCode] = React.useState('');
@@ -69,9 +70,14 @@ function TicketFromField({
             {icon}
           </InputAdornment>
         )}
+        disabled={disabled}
       />
     </>
   );
 }
+
+TicketFromField.defaultProps = ({
+  disabled: false,
+});
 
 export default TicketFromField;

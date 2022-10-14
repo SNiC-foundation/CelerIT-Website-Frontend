@@ -12,6 +12,7 @@ import {
   RegisterUserParams,
 } from '../../clients/server.generated';
 import TypographyHeader from '../../components/layout/TypographyHeader';
+import ParticipantQrCode from '../../components/user/ParticipantQrCode';
 
 function UserHome() {
   const { user } = React.useContext(AuthContext);
@@ -42,19 +43,36 @@ function UserHome() {
   };
 
   return (
-    <Paper elevation={3}>
-      <Box sx={{ p: 3 }}>
-        <TypographyHeader variant="h4" sx={{ marginBottom: '2rem', marginLeft: 0 }}>
-          Update your personal information
-        </TypographyHeader>
-        <Typography variant="body1" sx={{ marginBottom: '2rem' }}>
-          Below you can update your personal information. If you wish to
-          change your email address (for example because you gave your
-          ticket to someone else), please contact your study association.
-        </Typography>
-        <RegisterForm user={user} handleSubmit={handleSubmit} />
-      </Box>
-    </Paper>
+    <Box>
+      <Paper elevation={3}>
+        <Box sx={{ p: 3 }}>
+          <TypographyHeader variant="h4" sx={{ marginBottom: '2rem', marginLeft: 0 }}>
+            Update your personal information
+          </TypographyHeader>
+          <Typography variant="body1" sx={{ marginBottom: '2rem' }}>
+            Below you can update your personal information. If you wish to
+            change your email address (for example because you gave your
+            ticket to someone else), please contact your study association.
+          </Typography>
+          <RegisterForm user={user} handleSubmit={handleSubmit} />
+        </Box>
+      </Paper>
+
+      {user.participantInfo && (
+      <Paper elevation={3} sx={{ my: '3rem' }}>
+        <Box sx={{ p: 3 }}>
+          <TypographyHeader variant="h4" sx={{ marginBottom: '2rem', marginLeft: 0 }}>
+            QR Code
+          </TypographyHeader>
+          <Typography variant="body1" sx={{ marginBottom: '2rem' }}>
+            The QR code below can be scanned by companies to share your contact
+            information with them.
+          </Typography>
+          <ParticipantQrCode participant={user.participantInfo} />
+        </Box>
+      </Paper>
+      )}
+    </Box>
   );
 }
 

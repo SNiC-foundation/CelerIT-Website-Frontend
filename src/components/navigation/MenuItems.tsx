@@ -11,6 +11,7 @@ import { IAuthContext } from '../../auth/AuthContextProvider';
 import Login from '../../views/auth/Login';
 import Logout from '../../views/auth/Logout';
 import { authorized } from '../../auth/Authorize';
+import ProgramComponent from '../program/ProgramComponent';
 
 export interface MenuItem {
   name: string;
@@ -32,11 +33,11 @@ export const generalPages: MenuItem[] = [
     target: '/partners',
     component: <PartnersPage />,
   },
-  // {
-  //   name: 'Program',
-  //   target: '/program',
-  //   component: null,
-  // },
+  {
+    name: 'Program',
+    target: '/program',
+    component: <ProgramComponent />,
+  },
   {
     name: 'About',
     target: '/about',

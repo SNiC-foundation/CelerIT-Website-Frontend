@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import {
-  Box, Grid, Paper, styled, Typography,
+  Box, Container, Grid, Paper, styled, Typography,
 } from '@mui/material';
+import { Activity, Client, ProgramPart } from '../../clients/server.generated';
 import ActivityComponent from './ActivityComponent';
-import { Activity, Client, ProgramPart } from '../clients/server.generated';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -45,8 +45,8 @@ function ProgramComponent() {
       return (
         <>
           <Grid item xs={1}>
-            <Item>
-              <h1>{programPart.name}</h1>
+            <Item sx={{ backgroundColor: '#df421d' }}>
+              <h1 style={{ color: '#ffffff' }}>{programPart.name}</h1>
             </Item>
           </Grid>
 
@@ -54,9 +54,8 @@ function ProgramComponent() {
             const activity = activitiesInProgramPart.filter((ac) => ac.location === location);
             if (activity[0] === undefined) {
               return (
-                <Grid item xs={1}>
-                  {/* TODO: think off something to put for the empty activities
-                  (maybe just a box with background colour) */}
+                <Grid item xs={1} sx={{ display: { xs: 'none', md: 'flex' } }}>
+                  {/* Adds an empty item for the table-view, but it is hidden on mobile */}
                 </Grid>
               );
             }
@@ -81,8 +80,8 @@ function ProgramComponent() {
     const locationsHtml = locations.map((location) => (
       <Grid item xs={1}>
         <Box>
-          <Item>
-            <h1>{location}</h1>
+          <Item sx={{ backgroundColor: '#df421d' }}>
+            <h1 style={{ color: '#ffffff' }}>{location}</h1>
           </Item>
         </Box>
       </Grid>
@@ -90,13 +89,18 @@ function ProgramComponent() {
 
     return (
       // TODO: fix the blocks such that they are all the same length
-      // TODO: add a mobile layout :(
-      <Grid container direction="row" spacing={2} columns={locations.length + 1} sx={{ alignItems: 'center' }}>
-        {/* This is an empty box to make the table look nicer */}
-        <Grid item xs={1} />
-        {locationsHtml}
-        {activitiesHtml}
-      </Grid>
+      <Container maxWidth="xl">
+        <Grid container direction="row" spacing={2} columns={locations.length + 1} sx={{ alignItems: 'center', display: { xs: 'none', md: 'flex' } }}>
+          {/* This is an empty box to make the table look nicer */}
+          <Grid item xs={1} />
+          {locationsHtml}
+          {activitiesHtml}
+        </Grid>
+
+        <Grid container direction="row" spacing={2} columns={1} sx={{ display: { xs: 'flex', md: 'none' } }}>
+          {activitiesHtml}
+        </Grid>
+      </Container>
     );
   }
 

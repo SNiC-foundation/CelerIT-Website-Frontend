@@ -149,6 +149,7 @@ function RegisterForm({ user, handleSubmit }: Props) {
           variant="standard"
           required
           label="Name"
+          placeholder="John Doe"
           error={validator.isEmpty(name)}
         />
       </FormControl>

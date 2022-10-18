@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Paper, Typography } from '@mui/material';
+import Container from '@mui/material/Container';
 import { AuthContext } from '../../auth/AuthContextProvider';
 import RegisterForm from '../../components/auth/RegisterForm';
 import {
@@ -59,18 +60,20 @@ function UserHome() {
       </Paper>
 
       {user.participantInfo && (
-      <Paper elevation={3} sx={{ my: '3rem' }}>
-        <Box sx={{ p: 3 }}>
-          <TypographyHeader variant="h4" sx={{ marginBottom: '2rem', marginLeft: 0 }}>
-            QR Code
-          </TypographyHeader>
-          <Typography variant="body1" sx={{ marginBottom: '2rem' }}>
-            The QR code below can be scanned by companies to share your contact
-            information with them.
-          </Typography>
-          <ParticipantQrCode participant={user.participantInfo} />
-        </Box>
-      </Paper>
+        <Container maxWidth="sm">
+          <Paper elevation={3} sx={{ my: '3rem' }}>
+            <Box sx={{ p: 3 }}>
+              <TypographyHeader variant="h4" sx={{ marginBottom: '2rem', marginLeft: 0 }}>
+                QR Code
+              </TypographyHeader>
+              <Typography variant="body1" sx={{ marginBottom: '2rem' }}>
+                The QR code below can be scanned by companies to share your contact
+                information with them.
+              </Typography>
+              <ParticipantQrCode participant={user.participantInfo} />
+            </Box>
+          </Paper>
+        </Container>
       )}
     </Box>
   );

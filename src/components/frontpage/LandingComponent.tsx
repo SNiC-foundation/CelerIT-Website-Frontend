@@ -1,7 +1,9 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import { useElementSize, useWindowSize } from 'usehooks-ts';
 import { Partner } from '../../clients/server.generated';
 import LandingPartnersComponent from './LandingPartnersComponent';
+import { useBodyScrollSize } from '../../hooks';
 
 interface Props {
   location: string;
@@ -9,57 +11,24 @@ interface Props {
 }
 
 function LandingComponent({ location, shuffledPartners }: Props) {
-  const [width, setWidth] = React.useState(document.body.scrollWidth);
-  const [outerHeight, setOuterHeight] = React.useState(window.innerHeight);
-  const [innerHeight, setInnerHeight] = React.useState(window.innerHeight);
-  const [partnerBarHeight, setPartnerBarHeight] = React.useState(0);
+  // Height of the outer box containing the animation and the partners
+  const [outerRef, outerSizes] = useElementSize();
+  const innerHeight = outerSizes.height;
+
+  // Height of the window
+  const windowSize = useWindowSize();
+  const outerHeight = windowSize.height;
+
+  // Height of the partners bar
+  const [partnerBarRef, partnerSizes] = useElementSize();
+  const partnerBarHeight = partnerSizes.height;
+
+  // Width of the page
+  const { width } = useBodyScrollSize();
 
   const calcHeight = innerHeight + 32;
   const estimatedLogoHeight = (outerHeight - partnerBarHeight - 64);
   const fixedHeight = (estimatedLogoHeight * 3) < width || estimatedLogoHeight * 1.1 > width;
-
-  const outerRef = React.useRef(null);
-  const partnerBarRef = React.useRef(null);
-
-  const recalcSizes = () => {
-    const viewportWidth = document.body.scrollWidth;
-    setWidth(viewportWidth);
-    const viewportHeight = window.innerHeight;
-    setOuterHeight(viewportHeight);
-  };
-
-  const getOuterRefHeight = () => {
-    if (!outerRef.current) return;
-    const h = (outerRef.current as any).scrollHeight;
-    setInnerHeight(h);
-  };
-
-  const getPartnerBarHeight = () => {
-    if (!partnerBarRef.current) return;
-    const h = (partnerBarRef.current as any).scrollHeight;
-    setPartnerBarHeight(h);
-  };
-
-  React.useEffect(() => {
-    recalcSizes();
-    getOuterRefHeight();
-    getPartnerBarHeight();
-
-    const ob = new ResizeObserver(getOuterRefHeight);
-    ob.observe(outerRef.current as any);
-
-    window.addEventListener('resize', recalcSizes);
-
-    return () => {
-      window.removeEventListener('resize', recalcSizes);
-      ob.disconnect();
-    };
-  }, []);
-
-  React.useEffect(() => {
-    getOuterRefHeight();
-    getPartnerBarHeight();
-  }, [outerRef, outerRef.current]);
 
   let calculatedHeightIfWidth = width / 2.5;
   if (width <= 386) calculatedHeightIfWidth -= 32;

@@ -12,6 +12,7 @@ import Logout from '../../views/auth/Logout';
 import { authorized } from '../../auth/Authorize';
 import Register from '../../views/auth/Register';
 import UserHome from '../../views/homes/UserHome';
+import AdminTickets from '../../views/admin/AdminTickets';
 
 export interface MenuItem {
   name: string;
@@ -60,6 +61,11 @@ export const adminMenuPages: MenuItem[] = [
     name: 'Program',
     target: '/admin/program',
     component: <AdminProgram />,
+    disabled: (auth) => (!authorized(auth, ['Admin'])),
+  }, {
+    name: 'Tickets',
+    target: '/admin/tickets',
+    component: <AdminTickets />,
     disabled: (auth) => (!authorized(auth, ['Admin'])),
   }, {
     name: 'Users',

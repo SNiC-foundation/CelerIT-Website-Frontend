@@ -18,9 +18,9 @@ interface Props<T, P> {
   loading: boolean;
   entityColumns: AdminPropField<T, P>[];
   // eslint-disable-next-line no-unused-vars
-  handleUpdate: (entity: T) => void;
+  handleUpdate?: (entity: T) => void;
   // eslint-disable-next-line no-unused-vars
-  handleCreate: (entity: T) => void;
+  handleCreate?: (entity: T) => void;
   // eslint-disable-next-line no-unused-vars
   handleDelete: (entity: T) => void;
   // eslint-disable-next-line no-unused-vars
@@ -53,6 +53,8 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
           field: c.attribute as string,
           headerName: c.label,
           width: c.width,
+          filterable: false,
+          sortable: false,
           renderCell: (params: GridRenderCellParams<any, T>) => {
             if (params.value === null) return null;
             return (<img alt="logo" src={apiImageUrl(params.value)} style={{ maxHeight: '1rem', maxWidth: '2rem' }} />);
@@ -93,22 +95,26 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
 
   const columns = getColumns(entityColumns);
   columns.push({
-    field: 'action',
+    field: 'Actions',
     headerName: '',
     width: 200,
     disableColumnMenu: true,
+    filterable: false,
+    sortable: false,
     renderCell: (params: GridRenderCellParams<any, T>) => (
       <div>
         <AdminUploadImage
           id={(params.row as any).id}
           entity={entityName}
         />
-        <AdminUpdateEntityModal
-          entity={params.row}
-          entityName={entityName}
-          fields={propFields}
-          handleSave={handleUpdate}
-        />
+        {(handleUpdate && entityColumns.some((c) => c.canBeUpdated)) && (
+          <AdminUpdateEntityModal
+            entity={params.row}
+            entityName={entityName}
+            fields={propFields}
+            handleSave={handleUpdate}
+          />
+        )}
         <AdminTableButton
           color="error"
           title={`Delete ${entityName}`}
@@ -156,11 +162,13 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
           </Box>
         ) : null}
         <Box sx={{ flex: 1 }}>
-          <AdminUpdateEntityModal
-            fields={propFields}
-            entityName={entityName}
-            handleSave={handleCreate}
-          />
+          {(handleCreate && entityColumns.some((c) => c.canBeUpdated)) && (
+            <AdminUpdateEntityModal
+              fields={propFields}
+              entityName={entityName}
+              handleSave={handleCreate}
+            />
+          )}
         </Box>
       </Box>
       <DataGrid
@@ -189,6 +197,8 @@ AdminTable.defaultProps = ({
   entities: undefined,
   canDelete: undefined,
   subHeader: undefined,
+  handleCreate: undefined,
+  handleUpdate: undefined,
 });
 
 export default AdminTable;

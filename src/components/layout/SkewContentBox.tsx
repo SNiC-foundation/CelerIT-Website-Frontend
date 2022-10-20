@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, styled } from '@mui/material';
+import { useElementSize } from 'usehooks-ts';
+import { useBodyScrollSize } from '../../hooks';
 
 const ContextBoxElement = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -24,32 +26,8 @@ interface Props {
 function SkewContentBox({
   image, children, inverse, supportBarHeight, supportBarAngle, verticalImageHeight, bottomBar,
 }: Props) {
-  const [width, setWidth] = React.useState(document.body.scrollWidth);
-
-  const ref = React.useRef(null);
-
-  const getWidth = () => {
-    const viewportWidth = document.body.scrollWidth;
-    setWidth(viewportWidth);
-  };
-
-  React.useEffect(() => {
-    getWidth();
-    window.addEventListener('resize', getWidth);
-
-    return () => {
-      window.removeEventListener('resize', getWidth);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const viewportWidth = document.body.scrollWidth;
-    if (viewportWidth !== width) {
-      getWidth();
-    }
-  });
-
-  const height = ref && ref.current ? (ref.current as any).scrollHeight : 0;
+  const [ref, { height }] = useElementSize();
+  const { width } = useBodyScrollSize();
 
   return (
     <>

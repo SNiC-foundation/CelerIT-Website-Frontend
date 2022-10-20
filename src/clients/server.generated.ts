@@ -653,6 +653,48 @@ export class Client {
     }
 
     /**
+     * @param id ID of the participant to encrypt
+     * @return Ok
+     */
+    getEncryptedParticipantId(id: number): Promise<string> {
+        let url_ = this.baseUrl + "/participant/{id}/qrcode";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetEncryptedParticipantId(_response);
+        });
+    }
+
+    protected processGetEncryptedParticipantId(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /**
      * @return Ok
      */
     getAllPartners(): Promise<Partner[]> {
@@ -892,6 +934,46 @@ export class Client {
     }
 
     protected processUploadPartnerLogo(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No content
+     */
+    requestScan(id: number, body: QRParams): Promise<void> {
+        let url_ = this.baseUrl + "/partner/{id}/scanqr";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRequestScan(_response);
+        });
+    }
+
+    protected processRequestScan(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -1982,6 +2064,43 @@ export class Client {
     }
 
     /**
+     * @param id ID of the user to delete
+     * @return No content
+     */
+    deleteTicket(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/ticket/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteTicket(_response);
+        });
+    }
+
+    protected processDeleteTicket(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return Ok
      */
     getAllUsers(): Promise<User[]> {
@@ -2473,6 +2592,7 @@ export class User implements IUser {
     agreeToPrivacyPolicy!: boolean;
     participantInfo?: Participant;
     roles!: Role[];
+    ticket?: Ticket;
 
     constructor(data?: IUser) {
         if (data) {
@@ -2502,6 +2622,7 @@ export class User implements IUser {
                 for (let item of _data["roles"])
                     this.roles!.push(Role.fromJS(item));
             }
+            this.ticket = _data["ticket"] ? Ticket.fromJS(_data["ticket"]) : <any>undefined;
         }
     }
 
@@ -2528,6 +2649,7 @@ export class User implements IUser {
             for (let item of this.roles)
                 data["roles"].push(item.toJSON());
         }
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -2543,6 +2665,7 @@ export interface IUser {
     agreeToPrivacyPolicy: boolean;
     participantInfo?: Participant;
     roles: Role[];
+    ticket?: Ticket;
 }
 
 export class Participant implements IParticipant {
@@ -2666,6 +2789,73 @@ export interface IRole {
     updatedAt: Date;
     version: number;
     name: string;
+}
+
+export class Ticket implements ITicket {
+    id!: number;
+    createdAt!: Date;
+    updatedAt!: Date;
+    version!: number;
+    userId!: number;
+    user!: User;
+    association!: string;
+    code!: string;
+
+    constructor(data?: ITicket) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.user = new User();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+            this.version = _data["version"];
+            this.userId = _data["userId"];
+            this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
+            this.association = _data["association"];
+            this.code = _data["code"];
+        }
+    }
+
+    static fromJS(data: any): Ticket {
+        data = typeof data === 'object' ? data : {};
+        let result = new Ticket();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+        data["version"] = this.version;
+        data["userId"] = this.userId;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["association"] = this.association;
+        data["code"] = this.code;
+        return data;
+    }
+}
+
+export interface ITicket {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+    userId: number;
+    user: User;
+    association: string;
+    code: string;
 }
 
 export class SubscribeActivity implements ISubscribeActivity {
@@ -3235,6 +3425,7 @@ export class Partner implements IPartner {
     url!: string;
     package!: SponsorPackage;
     logoFilename?: string;
+    participants!: Participant[];
 
     constructor(data?: IPartner) {
         if (data) {
@@ -3242,6 +3433,9 @@ export class Partner implements IPartner {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
+        }
+        if (!data) {
+            this.participants = [];
         }
     }
 
@@ -3259,6 +3453,11 @@ export class Partner implements IPartner {
             this.url = _data["url"];
             this.package = _data["package"];
             this.logoFilename = _data["logoFilename"];
+            if (Array.isArray(_data["participants"])) {
+                this.participants = [] as any;
+                for (let item of _data["participants"])
+                    this.participants!.push(Participant.fromJS(item));
+            }
         }
     }
 
@@ -3283,6 +3482,11 @@ export class Partner implements IPartner {
         data["url"] = this.url;
         data["package"] = this.package;
         data["logoFilename"] = this.logoFilename;
+        if (Array.isArray(this.participants)) {
+            data["participants"] = [];
+            for (let item of this.participants)
+                data["participants"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -3300,6 +3504,7 @@ export interface IPartner {
     url: string;
     package: SponsorPackage;
     logoFilename?: string;
+    participants: Participant[];
 }
 
 export class PartnerParams implements IPartnerParams {
@@ -3422,6 +3627,42 @@ export interface IPartial_PartnerParams_ {
     description?: string;
     url?: string;
     package?: SponsorPackage;
+}
+
+export class QRParams implements IQRParams {
+    encryptedId!: string;
+
+    constructor(data?: IQRParams) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.encryptedId = _data["encryptedId"];
+        }
+    }
+
+    static fromJS(data: any): QRParams {
+        data = typeof data === 'object' ? data : {};
+        let result = new QRParams();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["encryptedId"] = this.encryptedId;
+        return data;
+    }
+}
+
+export interface IQRParams {
+    encryptedId: string;
 }
 
 export class ProgramPartParams implements IProgramPartParams {
@@ -3762,73 +4003,6 @@ export interface IPartial_UpdateSubscribeActivityParams_ {
     maxParticipants?: number;
     subscriptionListOpenDate?: Date;
     subscriptionListCloseDate?: Date;
-}
-
-export class Ticket implements ITicket {
-    id!: number;
-    createdAt!: Date;
-    updatedAt!: Date;
-    version!: number;
-    userId!: number;
-    user!: User;
-    association!: string;
-    code!: string;
-
-    constructor(data?: ITicket) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.user = new User();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
-            this.version = _data["version"];
-            this.userId = _data["userId"];
-            this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
-            this.association = _data["association"];
-            this.code = _data["code"];
-        }
-    }
-
-    static fromJS(data: any): Ticket {
-        data = typeof data === 'object' ? data : {};
-        let result = new Ticket();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
-        data["version"] = this.version;
-        data["userId"] = this.userId;
-        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
-        data["association"] = this.association;
-        data["code"] = this.code;
-        return data;
-    }
-}
-
-export interface ITicket {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    version: number;
-    userId: number;
-    user: User;
-    association: string;
-    code: string;
 }
 
 export class CreateTicketPrams implements ICreateTicketPrams {

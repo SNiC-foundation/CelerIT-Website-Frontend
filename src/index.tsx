@@ -8,7 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import Router from './Router';
 import SNiCTheme from './theme';
 import MainMenu from './components/navigation/MainMenu';
-import AuthContextProvider from './auth/AuthContextProvider';
+import ContextProviders from './contexts/ContextProviders';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -17,13 +17,13 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <AuthContextProvider>
+        <ContextProviders>
           <SNiCTheme>
             <MainMenu>
               <Router />
             </MainMenu>
           </SNiCTheme>
-        </AuthContextProvider>
+        </ContextProviders>
       </LocalizationProvider>
     </BrowserRouter>
   </React.StrictMode>,

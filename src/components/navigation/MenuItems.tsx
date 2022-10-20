@@ -1,6 +1,5 @@
 import React from 'react';
 import AdminSpeakers from '../../views/admin/AdminSpeakers';
-import ParticipantHome from '../../views/homes/ParticipantHome';
 import AdminPartners from '../../views/admin/AdminPartners';
 import AdminProgram from '../../views/admin/AdminProgram';
 import AdminUsers from '../../views/admin/AdminUsers';
@@ -11,6 +10,9 @@ import { IAuthContext } from '../../auth/AuthContextProvider';
 import Login from '../../views/auth/Login';
 import Logout from '../../views/auth/Logout';
 import { authorized } from '../../auth/Authorize';
+import Register from '../../views/auth/Register';
+import UserHome from '../../views/homes/UserHome';
+import AdminTickets from '../../views/admin/AdminTickets';
 import ProgramComponent from '../program/ProgramComponent';
 
 export interface MenuItem {
@@ -62,6 +64,11 @@ export const adminMenuPages: MenuItem[] = [
     component: <AdminProgram />,
     disabled: (auth) => (!authorized(auth, ['Admin'])),
   }, {
+    name: 'Tickets',
+    target: '/admin/tickets',
+    component: <AdminTickets />,
+    disabled: (auth) => (!authorized(auth, ['Admin'])),
+  }, {
     name: 'Users',
     target: '/admin/users',
     component: <AdminUsers />,
@@ -77,6 +84,12 @@ export const userMenuPages: MenuItem[] = [
     disabled: (auth) => (auth.user !== undefined),
   },
   {
+    name: 'Activate ticket',
+    target: '/register',
+    component: <Register />,
+    disabled: (auth) => (auth.user !== undefined),
+  },
+  {
     name: 'Logout',
     target: '/logout',
     component: <Logout />,
@@ -84,8 +97,8 @@ export const userMenuPages: MenuItem[] = [
   },
   {
     name: 'Account',
-    target: '/user/:id',
-    component: <ParticipantHome />,
+    target: '/home',
+    component: <UserHome />,
     disabled: (auth) => (auth.user === undefined),
   },
   // {

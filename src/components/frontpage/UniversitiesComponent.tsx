@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import Marquee from 'react-fast-marquee';
+import { useElementSize } from 'usehooks-ts';
 import TypographyHeader from '../layout/TypographyHeader';
 import { shuffleArray } from '../../helpers/array';
+import { useBodyScrollSize } from '../../hooks';
 
 const logos = shuffleArray([
   {
@@ -32,33 +34,8 @@ const logos = shuffleArray([
 ]);
 
 function UniversitiesComponent() {
-  const [width, setWidth] = React.useState(document.body.scrollWidth);
-
-  const ref = React.useRef(null);
-
-  const getWidth = () => {
-    const viewportWidth = document.body.scrollWidth;
-    setWidth(viewportWidth);
-  };
-
-  React.useEffect(() => {
-    getWidth();
-    window.addEventListener('resize', getWidth);
-
-    return () => {
-      window.removeEventListener('resize', getWidth);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const viewportWidth = document.body.scrollWidth;
-    if (viewportWidth !== width) {
-      getWidth();
-    }
-  });
-
-  let height = ref && ref.current ? (ref.current as any).scrollHeight : 200;
-  if (height === 0) height = 200;
+  const [ref, { height }] = useElementSize();
+  const { width } = useBodyScrollSize();
 
   return (
     <Box sx={{ marginBottom: '4rem' }}>
@@ -82,7 +59,7 @@ function UniversitiesComponent() {
           ))}
         </Marquee>
       </Box>
-      <Box sx={{ height }} />
+      <Box sx={{ height: height > 0 ? height : 200 }} />
     </Box>
   );
 }

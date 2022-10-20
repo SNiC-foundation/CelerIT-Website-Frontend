@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { adminMenuPages, generalPages, userMenuPages } from './MenuItems';
 import Authorize from '../../auth/Authorize';
 import { AuthContext } from '../../auth/AuthContextProvider';
+import AlertContainer from '../../alerts/AlertContainer';
 
 function AppToolbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -46,7 +47,7 @@ function AppToolbar() {
   };
 
   return (
-    <AppBar id="main-menu" position="static" enableColorOnDark sx={{ position: 'absolute', zIndex: 100 }}>
+    <AppBar id="main-menu" position="fixed" enableColorOnDark sx={{ zIndex: 100, top: 0 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -224,6 +225,7 @@ function AppToolbar() {
             </Menu>
           </Box>
         </Toolbar>
+        <AlertContainer />
       </Container>
     </AppBar>
   );

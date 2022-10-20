@@ -1,36 +1,16 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import HeaderBackgroundColorBox from './HeaderBackgroundColorBox';
+import { useBodyScrollSize } from '../../hooks';
 
 interface Props {
   lines: number;
 }
 
 function HeaderBackground({ lines }: Props) {
-  const [width, setWidth] = React.useState(document.body.scrollWidth);
-
-  const getWidth = () => {
-    const viewportWidth = document.body.scrollWidth;
-    setWidth(viewportWidth);
-  };
+  const { width } = useBodyScrollSize();
 
   const height = 50 + lines;
-
-  React.useEffect(() => {
-    getWidth();
-    window.addEventListener('resize', getWidth);
-
-    return () => {
-      window.removeEventListener('resize', getWidth);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const viewportWidth = document.body.scrollWidth;
-    if (viewportWidth !== width) {
-      getWidth();
-    }
-  });
 
   return (
     <Box

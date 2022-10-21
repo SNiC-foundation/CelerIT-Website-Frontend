@@ -4,6 +4,7 @@ import {
   Grid, InputLabel, MenuItem, Select, TextField,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import { GridColDef } from '@mui/x-data-grid';
 
 export interface AdminPropDropdownOptions<T> {
   key: T[keyof T] | '';
@@ -39,15 +40,28 @@ export type NestedPropField<T, P> = BasePropField<T> & {
   fields: AdminPropField<P>[]
 }
 
-export type AdminPropField<T, P = {}> = NestedPropField<T, P>
+export type AutomaticPropField<T, P = {}> = NestedPropField<T, P>
   | GeneralPropField<T>
   | DropdownPropField<T>
   | BooleanPropField<T>;
 
+export type CustomPropField<T> = {
+  attribute: string,
+  label: string,
+  width: number,
+  column: GridColDef,
+  // eslint-disable-next-line no-unused-vars
+  getRowValue: (ent: T) => string,
+  canBeUpdated: false,
+  fieldType: 'custom',
+}
+
+export type AdminPropField<T, P = {}> = AutomaticPropField<T, P> | CustomPropField<T>;
+
 export interface AdminPropsProps<T, P> {
   entity?: T;
   entityName: string;
-  fields: AdminPropField<T, P>[];
+  fields: AutomaticPropField<T, P>[];
   // eslint-disable-next-line no-unused-vars
   handleSave: (entity: T) => void;
 }
@@ -57,7 +71,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
     entity, entityName, fields, handleSave,
   } = props;
 
-  const constructNewEntity = (fs: AdminPropField<T, P>[]): T => {
+  const constructNewEntity = (fs: AutomaticPropField<T, P>[]): T => {
     let newEntity: T = {} as T;
     fs.forEach((f) => {
       if (f.fieldType === 'nested') {
@@ -128,7 +142,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
     }
   };
 
-  const error = (field: AdminPropField<T>, parentAttribute?: keyof T) => {
+  const error = (field: AutomaticPropField<T>, parentAttribute?: keyof T) => {
     if (parentAttribute) {
       return field.validationError !== undefined
         ? field.validationError(
@@ -142,7 +156,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
       : false;
   };
 
-  const getInputField = (field: AdminPropField<T, P>, parentField?: keyof T) => {
+  const getInputField = (field: AutomaticPropField<T, P>, parentField?: keyof T) => {
     const currentValue = parentField
       // @ts-ignore
       ? (updatedEntity[parentField])[field.attribute]
@@ -294,7 +308,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
   };
 
   const inputHasErrors = (
-    inputFields: AdminPropField<T>[],
+    inputFields: AutomaticPropField<T>[],
     parentField?: string,
   ): boolean => inputFields
     .some((f) => {

@@ -1,21 +1,19 @@
 import React from 'react';
 import { CardContent, Paper } from '@mui/material';
 import {
-  Activity, Client, ProgramPart, Speaker, SubscribeActivity,
+  Activity, ActivityParams, Client, ProgramPart, SubscribeActivity,
 } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/layout/TypographyHeader';
-import { AdminPropDropdownOptions, AdminPropField } from '../../components/admin/AdminProps';
+import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString, validDate } from '../../components/admin/defaultValidators';
+import ActivitySpeakerModal from '../../components/admin/ActivitySpeakerModal';
 
 function AdminProgram() {
   const [programParts, setProgramParts] = React.useState<ProgramPart[] | undefined>(undefined);
   const [activities, setActivities] = React.useState<Activity[] | undefined>(undefined);
-  const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
-  // eslint-disable-next-line no-unused-vars
   const [programPartsLoading, setProgramPartsLoading] = React.useState(true);
   const [activityLoading, setActivityLoading] = React.useState(true);
-  const [speakerLoading, setSpeakerLoading] = React.useState(true);
 
   const getProgramParts = () => {
     const client = new Client();
@@ -35,19 +33,9 @@ function AdminProgram() {
       });
   };
 
-  const getSpeakers = () => {
-    const client = new Client();
-    client.getAllSpeakers(true)
-      .then((s) => {
-        setSpeakers(s);
-        setSpeakerLoading(false);
-      });
-  };
-
   React.useEffect(() => {
     getProgramParts();
     getActivities();
-    getSpeakers();
   }, []);
 
   const pEntityColumns: AdminPropField<ProgramPart>[] = [{
@@ -77,15 +65,6 @@ function AdminProgram() {
     canBeUpdated: true,
   }];
 
-  const noSpeakerOption: AdminPropDropdownOptions<Activity> = {
-    key: '',
-    value: (<i>No speaker</i>),
-  };
-  const speakerOptions = speakers ? [noSpeakerOption, ...speakers.map((s) => ({
-    key: s.id,
-    value: s.name,
-  }))] : [noSpeakerOption];
-
   const aEntityColumns: AdminPropField<Activity, SubscribeActivity>[] = [{
     attribute: 'name',
     label: 'Name',
@@ -114,13 +93,15 @@ function AdminProgram() {
     validationError: notEmptyString,
     canBeUpdated: true,
   }, {
-    attribute: 'speakerId',
-    label: 'Speaker',
+    attribute: 'speakers',
+    label: 'Speakers',
     width: 150,
-    fieldType: 'dropdown',
-    initial: undefined,
-    options: speakerOptions,
-    canBeUpdated: true,
+    fieldType: 'custom',
+    column: {
+      field: 'speakers',
+    },
+    canBeUpdated: false,
+    getRowValue: (act) => act.speakers.map((s) => s.name).join(', '),
   }, {
     attribute: 'description',
     label: 'Description',
@@ -195,13 +176,20 @@ function AdminProgram() {
   const handleCreateActivity = async (activity: Activity) => {
     setActivityLoading(true);
     const client = new Client();
-    await client.createActivity(activity);
+    await client.createActivity(new ActivityParams({
+      name: activity.name,
+      location: activity.location,
+      programPartId: activity.programPartId,
+      description: activity.description,
+      subscribe: activity.subscribe,
+    }));
     getActivities();
   };
 
-  const handleUpdateActivity = async (activity: Activity) => {
+  const handleUpdateActivity = async (ac: Activity) => {
     setActivityLoading(true);
     const client = new Client();
+    const { speakers: sp, ...activity } = ac;
     await client.updateActivity(activity.id, {
       ...activity,
       subscribe: activity.subscribe ? {
@@ -245,12 +233,13 @@ function AdminProgram() {
           <AdminTable
             entityColumns={aEntityColumns}
             entityName="activity"
-            loading={activityLoading || speakerLoading}
+            loading={activityLoading}
             entities={activities}
             handleCreate={handleCreateActivity}
             handleUpdate={handleUpdateActivity}
             handleDelete={handleDeleteActivity}
             subHeader="All activities"
+            customButtons={[ActivitySpeakerModal]}
           />
         </CardContent>
       </Paper>

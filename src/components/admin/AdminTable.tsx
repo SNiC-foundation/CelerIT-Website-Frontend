@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-  DataGrid, GridColDef, GridRowsProp, GridRenderCellParams, GridToolbar,
+  DataGrid, GridColDef, GridRenderCellParams, GridRowsProp, GridToolbar,
 } from '@mui/x-data-grid';
 import { Box, LinearProgress } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import { AdminPropField } from './AdminProps';
+import { AdminPropField, AutomaticPropField } from './AdminProps';
 import AdminUpdateEntityModal from './AdminUpdateEntityModal';
 import AdminTableButton from './AdminTableButton';
 import AdminTableExpandableCell from './AdminTableExpandableCell';
@@ -26,6 +26,8 @@ interface Props<T, P> {
   // eslint-disable-next-line no-unused-vars
   canDelete?: (entity: T) => boolean;
   subHeader?: string;
+  // eslint-disable-next-line no-unused-vars
+  customButtons?: ((props: { entity: T }) => JSX.Element)[];
 }
 
 function AdminTable<T, P = {}>(props: Props<T, P>) {
@@ -33,14 +35,15 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
     entities, entityName, loading, entityColumns,
     handleUpdate, handleCreate, handleDelete, canDelete,
     subHeader,
+    customButtons,
   } = props;
 
   if (!entities) {
     return null;
   }
 
-  const propFields: AdminPropField<T, P>[] = entityColumns
-    .filter((c) => c.canBeUpdated);
+  const propFields: AutomaticPropField<T, P>[] = entityColumns
+    .filter((c) => c.fieldType !== 'custom' && c.canBeUpdated) as AutomaticPropField<T, P>[];
 
   const getColumns = (columns: AdminPropField<T, P>[], parentFields: string[] = [])
     : GridColDef[] => {
@@ -107,6 +110,9 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
           id={(params.row as any).id}
           entity={entityName}
         />
+        {customButtons!.map((c) => React.createElement(c, {
+          entity: entities[entities.findIndex((e) => (params.row as any).id === (e as any).id)],
+        }))}
         {(handleUpdate && entityColumns.some((c) => c.canBeUpdated)) && (
           <AdminUpdateEntityModal
             entity={params.row}
@@ -133,16 +139,22 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
   const getRows = (cs: AdminPropField<T, P>[], e: T): GridRowsProp => {
     let row: any = {};
     cs.forEach((c) => {
-      if (c.fieldType === 'nested') {
-        const nestedRows = e[c.attribute]
-          ? getRows(c.fields as any, e[c.attribute] as any)
-          : {};
-        row = {
-          ...row,
-          [c.attribute]: nestedRows,
-        };
-      } else {
-        row[c.attribute] = e[c.attribute];
+      switch (c.fieldType) {
+        case 'custom':
+          row[c.attribute] = c.getRowValue(e);
+          break;
+        case 'nested':
+          // eslint-disable-next-line no-case-declarations
+          const nestedRows = e[c.attribute]
+            ? getRows(c.fields as any, e[c.attribute] as any)
+            : {};
+          row = {
+            ...row,
+            [c.attribute]: nestedRows,
+          };
+          break;
+        default:
+          row[c.attribute] = e[c.attribute];
       }
     });
     return {
@@ -199,6 +211,7 @@ AdminTable.defaultProps = ({
   subHeader: undefined,
   handleCreate: undefined,
   handleUpdate: undefined,
+  customButtons: [],
 });
 
 export default AdminTable;

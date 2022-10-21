@@ -1,4 +1,7 @@
 module.exports = {
+  globals: {
+    JSX: true,
+  },
   env: {
     browser: true,
     es2021: true,
@@ -24,6 +27,7 @@ module.exports = {
     'linebreak-style': ['error', 'windows'],
     'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
+    camelcase: 'off',
     'import/extensions': ['off', 'ignorePackages', {
       js: 'never',
       ts: 'never',

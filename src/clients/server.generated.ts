@@ -2429,9 +2429,7 @@ export class Activity implements IActivity {
     programPartId!: number;
     programPart!: ProgramPart;
     description?: string;
-    image?: string;
-    speakerId?: number;
-    speaker?: Speaker;
+    speakers!: Speaker[];
     subscribe?: SubscribeActivity;
 
     constructor(data?: IActivity) {
@@ -2443,6 +2441,7 @@ export class Activity implements IActivity {
         }
         if (!data) {
             this.programPart = new ProgramPart();
+            this.speakers = [];
         }
     }
 
@@ -2457,9 +2456,11 @@ export class Activity implements IActivity {
             this.programPartId = _data["programPartId"];
             this.programPart = _data["programPart"] ? ProgramPart.fromJS(_data["programPart"]) : new ProgramPart();
             this.description = _data["description"];
-            this.image = _data["image"];
-            this.speakerId = _data["speakerId"];
-            this.speaker = _data["speaker"] ? Speaker.fromJS(_data["speaker"]) : <any>undefined;
+            if (Array.isArray(_data["speakers"])) {
+                this.speakers = [] as any;
+                for (let item of _data["speakers"])
+                    this.speakers!.push(Speaker.fromJS(item));
+            }
             this.subscribe = _data["subscribe"] ? SubscribeActivity.fromJS(_data["subscribe"]) : <any>undefined;
         }
     }
@@ -2482,9 +2483,11 @@ export class Activity implements IActivity {
         data["programPartId"] = this.programPartId;
         data["programPart"] = this.programPart ? this.programPart.toJSON() : <any>undefined;
         data["description"] = this.description;
-        data["image"] = this.image;
-        data["speakerId"] = this.speakerId;
-        data["speaker"] = this.speaker ? this.speaker.toJSON() : <any>undefined;
+        if (Array.isArray(this.speakers)) {
+            data["speakers"] = [];
+            for (let item of this.speakers)
+                data["speakers"].push(item.toJSON());
+        }
         data["subscribe"] = this.subscribe ? this.subscribe.toJSON() : <any>undefined;
         return data;
     }
@@ -2500,9 +2503,7 @@ export interface IActivity {
     programPartId: number;
     programPart: ProgramPart;
     description?: string;
-    image?: string;
-    speakerId?: number;
-    speaker?: Speaker;
+    speakers: Speaker[];
     subscribe?: SubscribeActivity;
 }
 
@@ -2588,6 +2589,7 @@ export class User implements IUser {
     version!: number;
     email!: string;
     name!: string;
+    emailVerified!: boolean;
     dietaryWishes!: string;
     agreeToPrivacyPolicy!: boolean;
     participantInfo?: Participant;
@@ -2614,6 +2616,7 @@ export class User implements IUser {
             this.version = _data["version"];
             this.email = _data["email"];
             this.name = _data["name"];
+            this.emailVerified = _data["emailVerified"];
             this.dietaryWishes = _data["dietaryWishes"];
             this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
             this.participantInfo = _data["participantInfo"] ? Participant.fromJS(_data["participantInfo"]) : <any>undefined;
@@ -2641,6 +2644,7 @@ export class User implements IUser {
         data["version"] = this.version;
         data["email"] = this.email;
         data["name"] = this.name;
+        data["emailVerified"] = this.emailVerified;
         data["dietaryWishes"] = this.dietaryWishes;
         data["agreeToPrivacyPolicy"] = this.agreeToPrivacyPolicy;
         data["participantInfo"] = this.participantInfo ? this.participantInfo.toJSON() : <any>undefined;
@@ -2661,6 +2665,7 @@ export interface IUser {
     version: number;
     email: string;
     name: string;
+    emailVerified: boolean;
     dietaryWishes: string;
     agreeToPrivacyPolicy: boolean;
     participantInfo?: Participant;
@@ -2796,8 +2801,8 @@ export class Ticket implements ITicket {
     createdAt!: Date;
     updatedAt!: Date;
     version!: number;
-    userId!: number;
-    user!: User;
+    userId?: number;
+    user?: User;
     association!: string;
     code!: string;
 
@@ -2808,9 +2813,6 @@ export class Ticket implements ITicket {
                     (<any>this)[property] = (<any>data)[property];
             }
         }
-        if (!data) {
-            this.user = new User();
-        }
     }
 
     init(_data?: any) {
@@ -2820,7 +2822,7 @@ export class Ticket implements ITicket {
             this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
             this.version = _data["version"];
             this.userId = _data["userId"];
-            this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
+            this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>undefined;
             this.association = _data["association"];
             this.code = _data["code"];
         }
@@ -2852,8 +2854,8 @@ export interface ITicket {
     createdAt: Date;
     updatedAt: Date;
     version: number;
-    userId: number;
-    user: User;
+    userId?: number;
+    user?: User;
     association: string;
     code: string;
 }
@@ -2992,7 +2994,7 @@ export class ActivityParams implements IActivityParams {
     programPartId!: number;
     description?: string;
     image?: string;
-    speakerId?: number;
+    speakerIds?: number[];
     subscribe?: UpdateSubscribeActivityParams;
 
     constructor(data?: IActivityParams) {
@@ -3011,7 +3013,11 @@ export class ActivityParams implements IActivityParams {
             this.programPartId = _data["programPartId"];
             this.description = _data["description"];
             this.image = _data["image"];
-            this.speakerId = _data["speakerId"];
+            if (Array.isArray(_data["speakerIds"])) {
+                this.speakerIds = [] as any;
+                for (let item of _data["speakerIds"])
+                    this.speakerIds!.push(item);
+            }
             this.subscribe = _data["subscribe"] ? UpdateSubscribeActivityParams.fromJS(_data["subscribe"]) : <any>undefined;
         }
     }
@@ -3030,7 +3036,11 @@ export class ActivityParams implements IActivityParams {
         data["programPartId"] = this.programPartId;
         data["description"] = this.description;
         data["image"] = this.image;
-        data["speakerId"] = this.speakerId;
+        if (Array.isArray(this.speakerIds)) {
+            data["speakerIds"] = [];
+            for (let item of this.speakerIds)
+                data["speakerIds"].push(item);
+        }
         data["subscribe"] = this.subscribe ? this.subscribe.toJSON() : <any>undefined;
         return data;
     }
@@ -3042,7 +3052,7 @@ export interface IActivityParams {
     programPartId: number;
     description?: string;
     image?: string;
-    speakerId?: number;
+    speakerIds?: number[];
     subscribe?: UpdateSubscribeActivityParams;
 }
 

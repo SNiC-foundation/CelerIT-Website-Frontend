@@ -4,7 +4,7 @@ import Marquee from 'react-fast-marquee';
 import { useElementSize } from 'usehooks-ts';
 import TypographyHeader from '../layout/TypographyHeader';
 import { shuffleArray } from '../../helpers/array';
-import { useBodyScrollSize } from '../../hooks';
+import { useBodyScrollSize } from '../../hooks/useBodyScrollSize';
 
 const logos = shuffleArray([
   {

@@ -6,6 +6,7 @@ import { notEmptyString } from '../../components/admin/defaultValidators';
 import TypographyHeader from '../../components/layout/TypographyHeader';
 import AdminTable from '../../components/admin/AdminTable';
 import { Client, Participant, User } from '../../clients/server.generated';
+import UserRoleModal from '../../components/admin/UserRoleModal';
 
 function AdminUsers() {
   const [users, setUsers] = React.useState<User[] | undefined>(undefined);
@@ -54,6 +55,16 @@ function AdminUsers() {
     fieldType: 'boolean',
     initial: true,
     canBeUpdated: true,
+  }, {
+    attribute: 'roles',
+    label: 'Roles',
+    width: 150,
+    fieldType: 'custom',
+    canBeUpdated: false,
+    column: {
+      field: 'speakers',
+    },
+    getRowValue: (user) => user.roles.map((r) => r.name).join(', '),
   }, {
     attribute: 'participantInfo',
     label: 'User is a participant',
@@ -118,6 +129,7 @@ function AdminUsers() {
             handleUpdate={handleUpdateUser}
             handleCreate={handleCreateUser}
             handleDelete={handleDeleteUser}
+            customButtons={[UserRoleModal]}
           />
         </CardContent>
       </Paper>

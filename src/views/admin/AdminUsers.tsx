@@ -77,13 +77,6 @@ function AdminUsers() {
       initial: '',
       validationError: notEmptyString,
       canBeUpdated: true,
-    }, {
-      attribute: 'agreeToSharingWithCompanies',
-      label: 'Sharing with Companies',
-      width: 200,
-      fieldType: 'boolean',
-      initial: true,
-      canBeUpdated: true,
     }],
   }];
 

@@ -30,7 +30,6 @@ function UserHome() {
     if (user.participantInfo) {
       await client.updateParticipant(user.participantInfo.id, new Partial_UpdateParticipantParams_({
         studyProgram: params.user.participantInfo.studyProgram,
-        agreeToSharingWithCompanies: params.user.participantInfo.agreeToSharingWithCompanies,
         studyAssociation: user.participantInfo.studyAssociation,
       }));
     }

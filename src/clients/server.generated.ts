@@ -2682,7 +2682,6 @@ export class Participant implements IParticipant {
     user!: User;
     studyAssociation!: string;
     studyProgram!: string;
-    agreeToSharingWithCompanies!: boolean;
 
     constructor(data?: IParticipant) {
         if (data) {
@@ -2706,7 +2705,6 @@ export class Participant implements IParticipant {
             this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
             this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
         }
     }
 
@@ -2727,7 +2725,6 @@ export class Participant implements IParticipant {
         data["user"] = this.user ? this.user.toJSON() : <any>undefined;
         data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         return data;
     }
 }
@@ -2741,7 +2738,6 @@ export interface IParticipant {
     user: User;
     studyAssociation: string;
     studyProgram: string;
-    agreeToSharingWithCompanies: boolean;
 }
 
 export class Role implements IRole {
@@ -3324,7 +3320,6 @@ export interface IResetPasswordRequest {
 export class CreateParticipantParams implements ICreateParticipantParams {
     studyAssociation!: string;
     studyProgram!: string;
-    agreeToSharingWithCompanies!: boolean;
     userId!: number;
 
     constructor(data?: ICreateParticipantParams) {
@@ -3340,7 +3335,6 @@ export class CreateParticipantParams implements ICreateParticipantParams {
         if (_data) {
             this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
             this.userId = _data["userId"];
         }
     }
@@ -3356,7 +3350,6 @@ export class CreateParticipantParams implements ICreateParticipantParams {
         data = typeof data === 'object' ? data : {};
         data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         data["userId"] = this.userId;
         return data;
     }
@@ -3365,7 +3358,6 @@ export class CreateParticipantParams implements ICreateParticipantParams {
 export interface ICreateParticipantParams {
     studyAssociation: string;
     studyProgram: string;
-    agreeToSharingWithCompanies: boolean;
     userId: number;
 }
 
@@ -3373,7 +3365,6 @@ export interface ICreateParticipantParams {
 export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticipantParams_ {
     studyAssociation?: string;
     studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
 
     constructor(data?: IPartial_UpdateParticipantParams_) {
         if (data) {
@@ -3388,7 +3379,6 @@ export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticip
         if (_data) {
             this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
         }
     }
 
@@ -3403,7 +3393,6 @@ export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticip
         data = typeof data === 'object' ? data : {};
         data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         return data;
     }
 }
@@ -3412,7 +3401,6 @@ export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticip
 export interface IPartial_UpdateParticipantParams_ {
     studyAssociation?: string;
     studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
 }
 
 export enum SponsorPackage {
@@ -4058,7 +4046,6 @@ export interface ICreateTicketPrams {
 export class UpdateParticipantParams implements IUpdateParticipantParams {
     studyAssociation!: string;
     studyProgram!: string;
-    agreeToSharingWithCompanies!: boolean;
 
     constructor(data?: IUpdateParticipantParams) {
         if (data) {
@@ -4073,7 +4060,6 @@ export class UpdateParticipantParams implements IUpdateParticipantParams {
         if (_data) {
             this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
         }
     }
 
@@ -4088,7 +4074,6 @@ export class UpdateParticipantParams implements IUpdateParticipantParams {
         data = typeof data === 'object' ? data : {};
         data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         return data;
     }
 }
@@ -4096,7 +4081,6 @@ export class UpdateParticipantParams implements IUpdateParticipantParams {
 export interface IUpdateParticipantParams {
     studyAssociation: string;
     studyProgram: string;
-    agreeToSharingWithCompanies: boolean;
 }
 
 export class UserParams implements IUserParams {
@@ -4246,7 +4230,6 @@ export interface ILoginParams {
 }
 
 export class ParticipantInfo implements IParticipantInfo {
-    agreeToSharingWithCompanies!: boolean;
     studyProgram!: string;
 
     constructor(data?: IParticipantInfo) {
@@ -4260,7 +4243,6 @@ export class ParticipantInfo implements IParticipantInfo {
 
     init(_data?: any) {
         if (_data) {
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
             this.studyProgram = _data["studyProgram"];
         }
     }
@@ -4274,14 +4256,12 @@ export class ParticipantInfo implements IParticipantInfo {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         data["studyProgram"] = this.studyProgram;
         return data;
     }
 }
 
 export interface IParticipantInfo {
-    agreeToSharingWithCompanies: boolean;
     studyProgram: string;
 }
 

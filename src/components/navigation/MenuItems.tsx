@@ -13,6 +13,7 @@ import { authorized } from '../../auth/Authorize';
 import Register from '../../views/auth/Register';
 import UserHome from '../../views/homes/UserHome';
 import AdminTickets from '../../views/admin/AdminTickets';
+import ProgramComponent from '../program/ProgramComponent';
 
 export interface MenuItem {
   name: string;
@@ -34,11 +35,11 @@ export const generalPages: MenuItem[] = [
     target: '/partners',
     component: <PartnersPage />,
   },
-  // {
-  //   name: 'Program',
-  //   target: '/program',
-  //   component: null,
-  // },
+  {
+    name: 'Program',
+    target: '/program',
+    component: <ProgramComponent />,
+  },
   {
     name: 'About',
     target: '/about',

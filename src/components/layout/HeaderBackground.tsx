@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import HeaderBackgroundColorBox from './HeaderBackgroundColorBox';
-import { useBodyScrollSize } from '../../hooks';
+import { useBodyScrollSize } from '../../hooks/useBodyScrollSize';
 
 interface Props {
   lines: number;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, styled } from '@mui/material';
 import { useElementSize } from 'usehooks-ts';
-import { useBodyScrollSize } from '../../hooks';
+import { useBodyScrollSize } from '../../hooks/useBodyScrollSize';
 
 const ContextBoxElement = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {

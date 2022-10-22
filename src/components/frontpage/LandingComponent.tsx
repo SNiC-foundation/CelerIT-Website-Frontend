@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { useElementSize, useWindowSize } from 'usehooks-ts';
 import { Partner } from '../../clients/server.generated';
 import LandingPartnersComponent from './LandingPartnersComponent';
-import { useBodyScrollSize } from '../../hooks';
+import { useBodyScrollSize } from '../../hooks/useBodyScrollSize';
 
 interface Props {
   location: string;

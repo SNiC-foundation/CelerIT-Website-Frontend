@@ -4,14 +4,12 @@ import { Box } from '@mui/material';
 interface Props {
   title: string;
   location: string;
-  startTime: Date;
-  endTime: Date;
   description?: string;
 }
 
 function ActivityComponent(props: Props) {
   const {
-    title, location, startTime, endTime, description,
+    title, location, description,
   } = props;
 
   let newDescription = description;
@@ -25,7 +23,7 @@ function ActivityComponent(props: Props) {
         {`${title}`}
       </h1>
       <h4>
-        {`${location}, ${startTime.getUTCHours().toString().padStart(2, '0')}:${startTime.getUTCMinutes().toString().padStart(2, '0')}-${endTime.getUTCHours().toString().padStart(2, '0')}:${endTime.getUTCMinutes().toString().padStart(2, '0')}`}
+        {`${location}`}
       </h4>
       <p>
         {newDescription}

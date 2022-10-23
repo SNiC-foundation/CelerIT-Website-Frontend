@@ -14,6 +14,8 @@ function ThemeComponent() {
         Theme
       </TypographyHeader>
       <Typography variant="body1">
+        SNiC is the largest national Computer Science and Artificial Intelligence conference,
+        organized for and by students.
         This edition&apos;s theme of the conference is
         {' '}
         <span style={{ fontWeight: 'bold' }}>CelerIT</span>

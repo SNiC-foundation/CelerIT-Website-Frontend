@@ -10,7 +10,7 @@ import {
   Activity, ActivityParams, Client,
 } from '../../clients/server.generated';
 import AdminTableButton from './AdminTableButton';
-import useSpeakers from '../../hooks/useSpeakers';
+import { useSpeakers } from '../../hooks/useEntities';
 
 function ActivitySpeakerModal({ entity } : { entity: Activity; }) {
   const [open, setOpen] = React.useState(false);

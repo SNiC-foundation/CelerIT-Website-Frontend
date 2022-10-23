@@ -5,29 +5,21 @@ import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
 import TypographyHeader from '../../components/layout/TypographyHeader';
 import AdminTable from '../../components/admin/AdminTable';
-import { Client, Participant, User } from '../../clients/server.generated';
+import {
+  Client, Participant, User,
+} from '../../clients/server.generated';
+import UserRoleModal from '../../components/admin/UserRoleModal';
+import { usePartners, useUsers } from '../../hooks/useEntities';
 
 function AdminUsers() {
-  const [users, setUsers] = React.useState<User[] | undefined>(undefined);
-  const [loading, setLoading] = React.useState(true);
-
-  const getUsers = () => {
-    const client = new Client();
-    client.getAllUsers()
-      .then((u) => {
-        setUsers(u);
-        setLoading(false);
-      });
-  };
-
-  React.useEffect(() => {
-    getUsers();
-  }, []);
+  const [loading, setLoading] = React.useState(false);
+  const { users, loading: loadingUsers, getUsers } = useUsers();
+  const { partners, loading: loadingPartners } = usePartners();
 
   const entityColumns: AdminPropField<User, Participant>[] = [{
     attribute: 'name',
     label: 'Name',
-    width: 200,
+    width: 150,
     fieldType: 'string',
     initial: '',
     validationError: notEmptyString,
@@ -55,6 +47,38 @@ function AdminUsers() {
     initial: true,
     canBeUpdated: true,
   }, {
+    attribute: 'roles',
+    label: 'Roles',
+    width: 150,
+    fieldType: 'custom',
+    canBeUpdated: false,
+    column: {
+      field: 'speakers',
+    },
+    getRowValue: (user) => user.roles.map((r) => r.name).join(', '),
+  }, {
+    attribute: 'partnerId',
+    label: 'Partner',
+    width: 150,
+    fieldType: 'dropdown',
+    initial: '',
+    options: partners ? [{
+      key: '',
+      value: 'No partner',
+      // @ts-ignore
+    }, ...partners.map((p) => ({ key: p.id, value: p.name }))] : [],
+    canBeUpdated: true,
+  }, {
+    attribute: 'ticket',
+    label: 'Study association',
+    width: 200,
+    fieldType: 'custom',
+    canBeUpdated: false,
+    column: {
+      field: 'ticket',
+    },
+    getRowValue: (user) => user.ticket?.association || '',
+  }, {
     attribute: 'participantInfo',
     label: 'User is a participant',
     width: 0,
@@ -62,27 +86,12 @@ function AdminUsers() {
     initial: 0,
     canBeUpdated: true,
     fields: [{
-      attribute: 'studyAssociation',
-      label: 'Study Association',
-      width: 200,
-      fieldType: 'string',
-      initial: '',
-      validationError: notEmptyString,
-      canBeUpdated: true,
-    }, {
       attribute: 'studyProgram',
       label: 'Study Program',
       width: 200,
       fieldType: 'string',
       initial: '',
       validationError: notEmptyString,
-      canBeUpdated: true,
-    }, {
-      attribute: 'agreeToSharingWithCompanies',
-      label: 'Sharing with Companies',
-      width: 200,
-      fieldType: 'boolean',
-      initial: true,
       canBeUpdated: true,
     }],
   }];
@@ -92,6 +101,7 @@ function AdminUsers() {
     const client = new Client();
     await client.createUser(user);
     getUsers();
+    setLoading(false);
   };
 
   const handleUpdateUser = async (user: User) => {
@@ -103,6 +113,7 @@ function AdminUsers() {
       id: undefined,
     });
     getUsers();
+    setLoading(false);
   };
 
   const handleDeleteUser = async (user: User) => {
@@ -110,6 +121,7 @@ function AdminUsers() {
     const client = new Client();
     await client.deleteUser(user.id);
     getUsers();
+    setLoading(false);
   };
 
   return (
@@ -119,12 +131,13 @@ function AdminUsers() {
         <CardContent>
           <AdminTable
             entityName="user"
-            loading={loading}
+            loading={loading || loadingUsers || loadingPartners}
             entityColumns={entityColumns}
             entities={users}
             handleUpdate={handleUpdateUser}
             handleCreate={handleCreateUser}
             handleDelete={handleDeleteUser}
+            customButtons={[UserRoleModal]}
           />
         </CardContent>
       </Paper>

@@ -5,11 +5,7 @@ import Container from '@mui/material/Container';
 import { AuthContext } from '../../auth/AuthContextProvider';
 import RegisterForm from '../../components/auth/RegisterForm';
 import {
-  Client,
-  // eslint-disable-next-line camelcase
-  Partial_UpdateParticipantParams_,
-  // eslint-disable-next-line camelcase
-  Partial_UserParams_,
+  Client, Partial_UpdateParticipantParams_, Partial_UserParams_,
   RegisterUserParams,
 } from '../../clients/server.generated';
 import TypographyHeader from '../../components/layout/TypographyHeader';
@@ -30,16 +26,12 @@ function UserHome() {
     if (user.participantInfo) {
       await client.updateParticipant(user.participantInfo.id, new Partial_UpdateParticipantParams_({
         studyProgram: params.user.participantInfo.studyProgram,
-        agreeToSharingWithCompanies: params.user.participantInfo.agreeToSharingWithCompanies,
-        studyAssociation: user.participantInfo.studyAssociation,
       }));
     }
 
-    await client.updateUser(user.id, new Partial_UserParams_({
+    await client.updateUserProfile(user.id, new Partial_UserParams_({
       name: params.user.name,
       dietaryWishes: params.user.dietaryWishes,
-      email: user.email,
-      agreeToPrivacyPolicy: user.agreeToPrivacyPolicy,
     }));
   };
 

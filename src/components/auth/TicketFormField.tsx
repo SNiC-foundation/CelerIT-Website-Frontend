@@ -50,7 +50,7 @@ function TicketFromField({
 
   let icon;
   if (loading) {
-    icon = (<CircularProgress />);
+    icon = (<CircularProgress size={20} />);
   } else if (!ticketValid) {
     icon = (<Clear color="error" />);
   } else {

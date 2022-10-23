@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Alert,
   Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel,
-  TextField, Typography,
+  TextField,
 } from '@mui/material';
 import validator from 'validator';
 import {
@@ -25,9 +25,6 @@ function RegisterForm({ user, handleSubmit }: Props) {
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = React.useState(
     user ? user.agreeToPrivacyPolicy : false,
   );
-  const [agreeToSharingWithCompanies, setAgreeToSharingWithCompanies] = React.useState(
-    user && user.participantInfo ? user.participantInfo.agreeToSharingWithCompanies : true,
-  );
   const [studyProgram, setStudyProgram] = React.useState(
     user && user.participantInfo ? user.participantInfo.studyProgram : '',
   );
@@ -48,7 +45,6 @@ function RegisterForm({ user, handleSubmit }: Props) {
         dietaryWishes,
         agreeToPrivacyPolicy,
         participantInfo: new ParticipantInfo({
-          agreeToSharingWithCompanies,
           studyProgram,
         }),
       }),
@@ -95,34 +91,6 @@ function RegisterForm({ user, handleSubmit }: Props) {
           error={validator.isEmpty(studyProgram)}
         />
       </FormControl>
-    );
-  };
-
-  const dataSharingField = () => {
-    if (user && !user.participantInfo) return null;
-    return (
-      <>
-        <Typography variant="body1" sx={{ textAlign: 'left', marginTop: my * 4 }}>
-          During the SNiC 2022: CelerIT conference, we will use a QR-code system to share
-          contact information of participants with this year&apos;s partners.
-          Every participant will receive a personal QR code on their badge.
-          When you have talked with a company, they may request to scan your QR code for
-          your contact details. If the toggle below is checked, the company will receive
-          your contact details after the conference. If you do not check the toggle below,
-          a company can still scan your code, but they will not receive your contact information.
-        </Typography>
-        <FormControl variant="standard" sx={{ my, width: '100%' }}>
-          <FormControlLabel
-            control={(
-              <Checkbox
-                value={agreeToSharingWithCompanies}
-                onChange={(event) => setAgreeToSharingWithCompanies(event.target.checked)}
-              />
-            )}
-            label="I agree with sharing my contact information with companies"
-          />
-        </FormControl>
-      </>
     );
   };
 
@@ -180,7 +148,6 @@ function RegisterForm({ user, handleSubmit }: Props) {
           })}
         />
       </FormControl>
-      {dataSharingField()}
       <Button
         type="submit"
         variant="contained"

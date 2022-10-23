@@ -1,7 +1,7 @@
 import React from 'react';
-import { Client, Speaker } from '../clients/server.generated';
+import { Client, Speaker } from '../../clients/server.generated';
 
-function useSpeakers({ activities }: { activities?: boolean }) {
+export function useSpeakers({ activities }: { activities?: boolean }) {
   const [loading, setLoading] = React.useState(true);
   const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
 
@@ -18,5 +18,3 @@ function useSpeakers({ activities }: { activities?: boolean }) {
 
   return { loading, speakers, getSpeakers };
 }
-
-export default useSpeakers;

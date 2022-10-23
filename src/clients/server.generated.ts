@@ -21,7 +21,7 @@ export class Client {
     /**
      * @return Ok
      */
-    getAllActivities(): Promise<Activity[]> {
+    getAllActivities(): Promise<ActivityResponse[]> {
         let url_ = this.baseUrl + "/activity";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -37,7 +37,7 @@ export class Client {
         });
     }
 
-    protected processGetAllActivities(response: Response): Promise<Activity[]> {
+    protected processGetAllActivities(response: Response): Promise<ActivityResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -47,7 +47,7 @@ export class Client {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(Activity.fromJS(item));
+                    result200!.push(ActivityResponse.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -59,7 +59,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Activity[]>(null as any);
+        return Promise.resolve<ActivityResponse[]>(null as any);
     }
 
     /**
@@ -214,6 +214,42 @@ export class Client {
     }
 
     protected processDeleteActivity(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No content
+     */
+    subscribeToActivity(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/activity/{id}/subscribe";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubscribeToActivity(_response);
+        });
+    }
+
+    protected processSubscribeToActivity(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -2311,6 +2347,98 @@ export class Client {
     }
 
     /**
+     * @param id ID of user to update
+     * @param body Update subset of parameter of user
+     * @return Ok
+     */
+    updateUserProfile(id: number, body: Partial_PersonalUserParams_): Promise<User> {
+        let url_ = this.baseUrl + "/user/{id}/profile";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateUserProfile(_response);
+        });
+    }
+
+    protected processUpdateUserProfile(response: Response): Promise<User> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = User.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<User>(null as any);
+    }
+
+    /**
+     * @param id ID of user to update
+     * @param body IDs of all roles this user should have
+     * @return Ok
+     */
+    updateUserRoles(id: number, body: number[]): Promise<User> {
+        let url_ = this.baseUrl + "/user/{id}/roles";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateUserRoles(_response);
+        });
+    }
+
+    protected processUpdateUserRoles(response: Response): Promise<User> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = User.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<User>(null as any);
+    }
+
+    /**
      * @return Ok
      */
     login(body: LoginParams): Promise<void> {
@@ -2428,9 +2556,9 @@ export class Activity implements IActivity {
     location!: string;
     programPartId!: number;
     programPart!: ProgramPart;
-    description?: string;
+    description?: string | undefined;
     speakers!: Speaker[];
-    subscribe?: SubscribeActivity;
+    subscribe?: SubscribeActivity | undefined;
 
     constructor(data?: IActivity) {
         if (data) {
@@ -2502,9 +2630,9 @@ export interface IActivity {
     location: string;
     programPartId: number;
     programPart: ProgramPart;
-    description?: string;
+    description?: string | undefined;
     speakers: Speaker[];
-    subscribe?: SubscribeActivity;
+    subscribe?: SubscribeActivity | undefined;
 }
 
 export class Speaker implements ISpeaker {
@@ -2595,6 +2723,9 @@ export class User implements IUser {
     participantInfo?: Participant;
     roles!: Role[];
     ticket?: Ticket;
+    partnerId?: number | undefined;
+    partner?: Partner | undefined;
+    subscriptions!: SubscribeActivity[];
 
     constructor(data?: IUser) {
         if (data) {
@@ -2605,6 +2736,7 @@ export class User implements IUser {
         }
         if (!data) {
             this.roles = [];
+            this.subscriptions = [];
         }
     }
 
@@ -2626,6 +2758,13 @@ export class User implements IUser {
                     this.roles!.push(Role.fromJS(item));
             }
             this.ticket = _data["ticket"] ? Ticket.fromJS(_data["ticket"]) : <any>undefined;
+            this.partnerId = _data["partnerId"];
+            this.partner = _data["partner"] ? Partner.fromJS(_data["partner"]) : <any>undefined;
+            if (Array.isArray(_data["subscriptions"])) {
+                this.subscriptions = [] as any;
+                for (let item of _data["subscriptions"])
+                    this.subscriptions!.push(SubscribeActivity.fromJS(item));
+            }
         }
     }
 
@@ -2654,6 +2793,13 @@ export class User implements IUser {
                 data["roles"].push(item.toJSON());
         }
         data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        data["partnerId"] = this.partnerId;
+        data["partner"] = this.partner ? this.partner.toJSON() : <any>undefined;
+        if (Array.isArray(this.subscriptions)) {
+            data["subscriptions"] = [];
+            for (let item of this.subscriptions)
+                data["subscriptions"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -2671,6 +2817,9 @@ export interface IUser {
     participantInfo?: Participant;
     roles: Role[];
     ticket?: Ticket;
+    partnerId?: number | undefined;
+    partner?: Partner | undefined;
+    subscriptions: SubscribeActivity[];
 }
 
 export class Participant implements IParticipant {
@@ -2680,9 +2829,7 @@ export class Participant implements IParticipant {
     version!: number;
     userId!: number;
     user!: User;
-    studyAssociation!: string;
     studyProgram!: string;
-    agreeToSharingWithCompanies!: boolean;
 
     constructor(data?: IParticipant) {
         if (data) {
@@ -2704,9 +2851,7 @@ export class Participant implements IParticipant {
             this.version = _data["version"];
             this.userId = _data["userId"];
             this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
-            this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
         }
     }
 
@@ -2725,9 +2870,7 @@ export class Participant implements IParticipant {
         data["version"] = this.version;
         data["userId"] = this.userId;
         data["user"] = this.user ? this.user.toJSON() : <any>undefined;
-        data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         return data;
     }
 }
@@ -2739,9 +2882,7 @@ export interface IParticipant {
     version: number;
     userId: number;
     user: User;
-    studyAssociation: string;
     studyProgram: string;
-    agreeToSharingWithCompanies: boolean;
 }
 
 export class Role implements IRole {
@@ -2801,8 +2942,8 @@ export class Ticket implements ITicket {
     createdAt!: Date;
     updatedAt!: Date;
     version!: number;
-    userId?: number;
-    user?: User;
+    userId?: number | undefined;
+    user?: User | undefined;
     association!: string;
     code!: string;
 
@@ -2854,10 +2995,112 @@ export interface ITicket {
     createdAt: Date;
     updatedAt: Date;
     version: number;
-    userId?: number;
-    user?: User;
+    userId?: number | undefined;
+    user?: User | undefined;
     association: string;
     code: string;
+}
+
+export enum SponsorPackage {
+    Bronze = "bronze",
+    Silver = "silver",
+    Gold = "gold",
+    Platinum = "platinum",
+}
+
+export class Partner implements IPartner {
+    id!: number;
+    createdAt!: Date;
+    updatedAt!: Date;
+    version!: number;
+    name!: string;
+    location!: string;
+    specialization!: string;
+    shortDescription?: string;
+    description?: string;
+    url!: string;
+    package!: SponsorPackage;
+    logoFilename?: string;
+    participants!: Participant[];
+
+    constructor(data?: IPartner) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.participants = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+            this.version = _data["version"];
+            this.name = _data["name"];
+            this.location = _data["location"];
+            this.specialization = _data["specialization"];
+            this.shortDescription = _data["shortDescription"];
+            this.description = _data["description"];
+            this.url = _data["url"];
+            this.package = _data["package"];
+            this.logoFilename = _data["logoFilename"];
+            if (Array.isArray(_data["participants"])) {
+                this.participants = [] as any;
+                for (let item of _data["participants"])
+                    this.participants!.push(Participant.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Partner {
+        data = typeof data === 'object' ? data : {};
+        let result = new Partner();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+        data["version"] = this.version;
+        data["name"] = this.name;
+        data["location"] = this.location;
+        data["specialization"] = this.specialization;
+        data["shortDescription"] = this.shortDescription;
+        data["description"] = this.description;
+        data["url"] = this.url;
+        data["package"] = this.package;
+        data["logoFilename"] = this.logoFilename;
+        if (Array.isArray(this.participants)) {
+            data["participants"] = [];
+            for (let item of this.participants)
+                data["participants"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IPartner {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+    name: string;
+    location: string;
+    specialization: string;
+    shortDescription?: string;
+    description?: string;
+    url: string;
+    package: SponsorPackage;
+    logoFilename?: string;
+    participants: Participant[];
 }
 
 export class SubscribeActivity implements ISubscribeActivity {
@@ -2942,6 +3185,49 @@ export interface ISubscribeActivity {
     subscriptionListOpenDate: Date;
     subscriptionListCloseDate: Date;
     subscribers: User[];
+}
+
+export class ActivityResponse implements IActivityResponse {
+    activity!: Activity;
+    nrOfSubscribers!: number;
+
+    constructor(data?: IActivityResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.activity = new Activity();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.activity = _data["activity"] ? Activity.fromJS(_data["activity"]) : new Activity();
+            this.nrOfSubscribers = _data["nrOfSubscribers"];
+        }
+    }
+
+    static fromJS(data: any): ActivityResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
+        data["nrOfSubscribers"] = this.nrOfSubscribers;
+        return data;
+    }
+}
+
+export interface IActivityResponse {
+    activity: Activity;
+    nrOfSubscribers: number;
 }
 
 export class UpdateSubscribeActivityParams implements IUpdateSubscribeActivityParams {
@@ -3322,9 +3608,7 @@ export interface IResetPasswordRequest {
 }
 
 export class CreateParticipantParams implements ICreateParticipantParams {
-    studyAssociation!: string;
     studyProgram!: string;
-    agreeToSharingWithCompanies!: boolean;
     userId!: number;
 
     constructor(data?: ICreateParticipantParams) {
@@ -3338,9 +3622,7 @@ export class CreateParticipantParams implements ICreateParticipantParams {
 
     init(_data?: any) {
         if (_data) {
-            this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
             this.userId = _data["userId"];
         }
     }
@@ -3354,26 +3636,20 @@ export class CreateParticipantParams implements ICreateParticipantParams {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         data["userId"] = this.userId;
         return data;
     }
 }
 
 export interface ICreateParticipantParams {
-    studyAssociation: string;
     studyProgram: string;
-    agreeToSharingWithCompanies: boolean;
     userId: number;
 }
 
 /** Make all properties in T optional */
 export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticipantParams_ {
-    studyAssociation?: string;
     studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
 
     constructor(data?: IPartial_UpdateParticipantParams_) {
         if (data) {
@@ -3386,9 +3662,7 @@ export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticip
 
     init(_data?: any) {
         if (_data) {
-            this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
         }
     }
 
@@ -3401,120 +3675,14 @@ export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticip
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         return data;
     }
 }
 
 /** Make all properties in T optional */
 export interface IPartial_UpdateParticipantParams_ {
-    studyAssociation?: string;
     studyProgram?: string;
-    agreeToSharingWithCompanies?: boolean;
-}
-
-export enum SponsorPackage {
-    Bronze = "bronze",
-    Silver = "silver",
-    Gold = "gold",
-    Platinum = "platinum",
-}
-
-export class Partner implements IPartner {
-    id!: number;
-    createdAt!: Date;
-    updatedAt!: Date;
-    version!: number;
-    name!: string;
-    location!: string;
-    specialization!: string;
-    shortDescription?: string;
-    description?: string;
-    url!: string;
-    package!: SponsorPackage;
-    logoFilename?: string;
-    participants!: Participant[];
-
-    constructor(data?: IPartner) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.participants = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
-            this.version = _data["version"];
-            this.name = _data["name"];
-            this.location = _data["location"];
-            this.specialization = _data["specialization"];
-            this.shortDescription = _data["shortDescription"];
-            this.description = _data["description"];
-            this.url = _data["url"];
-            this.package = _data["package"];
-            this.logoFilename = _data["logoFilename"];
-            if (Array.isArray(_data["participants"])) {
-                this.participants = [] as any;
-                for (let item of _data["participants"])
-                    this.participants!.push(Participant.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): Partner {
-        data = typeof data === 'object' ? data : {};
-        let result = new Partner();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
-        data["version"] = this.version;
-        data["name"] = this.name;
-        data["location"] = this.location;
-        data["specialization"] = this.specialization;
-        data["shortDescription"] = this.shortDescription;
-        data["description"] = this.description;
-        data["url"] = this.url;
-        data["package"] = this.package;
-        data["logoFilename"] = this.logoFilename;
-        if (Array.isArray(this.participants)) {
-            data["participants"] = [];
-            for (let item of this.participants)
-                data["participants"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IPartner {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    version: number;
-    name: string;
-    location: string;
-    specialization: string;
-    shortDescription?: string;
-    description?: string;
-    url: string;
-    package: SponsorPackage;
-    logoFilename?: string;
-    participants: Participant[];
 }
 
 export class PartnerParams implements IPartnerParams {
@@ -4056,9 +4224,7 @@ export interface ICreateTicketPrams {
 }
 
 export class UpdateParticipantParams implements IUpdateParticipantParams {
-    studyAssociation!: string;
     studyProgram!: string;
-    agreeToSharingWithCompanies!: boolean;
 
     constructor(data?: IUpdateParticipantParams) {
         if (data) {
@@ -4071,9 +4237,7 @@ export class UpdateParticipantParams implements IUpdateParticipantParams {
 
     init(_data?: any) {
         if (_data) {
-            this.studyAssociation = _data["studyAssociation"];
             this.studyProgram = _data["studyProgram"];
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
         }
     }
 
@@ -4086,25 +4250,22 @@ export class UpdateParticipantParams implements IUpdateParticipantParams {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["studyAssociation"] = this.studyAssociation;
         data["studyProgram"] = this.studyProgram;
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         return data;
     }
 }
 
 export interface IUpdateParticipantParams {
-    studyAssociation: string;
     studyProgram: string;
-    agreeToSharingWithCompanies: boolean;
 }
 
 export class UserParams implements IUserParams {
-    email!: string;
     name!: string;
     dietaryWishes!: string;
-    agreeToPrivacyPolicy!: boolean;
     participantInfo?: UpdateParticipantParams;
+    email!: string;
+    agreeToPrivacyPolicy!: boolean;
+    partnerId?: number | undefined;
 
     constructor(data?: IUserParams) {
         if (data) {
@@ -4117,11 +4278,12 @@ export class UserParams implements IUserParams {
 
     init(_data?: any) {
         if (_data) {
-            this.email = _data["email"];
             this.name = _data["name"];
             this.dietaryWishes = _data["dietaryWishes"];
-            this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
             this.participantInfo = _data["participantInfo"] ? UpdateParticipantParams.fromJS(_data["participantInfo"]) : <any>undefined;
+            this.email = _data["email"];
+            this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
+            this.partnerId = _data["partnerId"];
         }
     }
 
@@ -4134,29 +4296,32 @@ export class UserParams implements IUserParams {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["email"] = this.email;
         data["name"] = this.name;
         data["dietaryWishes"] = this.dietaryWishes;
-        data["agreeToPrivacyPolicy"] = this.agreeToPrivacyPolicy;
         data["participantInfo"] = this.participantInfo ? this.participantInfo.toJSON() : <any>undefined;
+        data["email"] = this.email;
+        data["agreeToPrivacyPolicy"] = this.agreeToPrivacyPolicy;
+        data["partnerId"] = this.partnerId;
         return data;
     }
 }
 
 export interface IUserParams {
-    email: string;
     name: string;
     dietaryWishes: string;
-    agreeToPrivacyPolicy: boolean;
     participantInfo?: UpdateParticipantParams;
+    email: string;
+    agreeToPrivacyPolicy: boolean;
+    partnerId?: number | undefined;
 }
 
 /** Make all properties in T optional */
 export class Partial_UserParams_ implements IPartial_UserParams_ {
     email?: string;
+    agreeToPrivacyPolicy?: boolean;
+    partnerId?: number | undefined;
     name?: string;
     dietaryWishes?: string;
-    agreeToPrivacyPolicy?: boolean;
     participantInfo?: UpdateParticipantParams;
 
     constructor(data?: IPartial_UserParams_) {
@@ -4171,9 +4336,10 @@ export class Partial_UserParams_ implements IPartial_UserParams_ {
     init(_data?: any) {
         if (_data) {
             this.email = _data["email"];
+            this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
+            this.partnerId = _data["partnerId"];
             this.name = _data["name"];
             this.dietaryWishes = _data["dietaryWishes"];
-            this.agreeToPrivacyPolicy = _data["agreeToPrivacyPolicy"];
             this.participantInfo = _data["participantInfo"] ? UpdateParticipantParams.fromJS(_data["participantInfo"]) : <any>undefined;
         }
     }
@@ -4188,9 +4354,10 @@ export class Partial_UserParams_ implements IPartial_UserParams_ {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["email"] = this.email;
+        data["agreeToPrivacyPolicy"] = this.agreeToPrivacyPolicy;
+        data["partnerId"] = this.partnerId;
         data["name"] = this.name;
         data["dietaryWishes"] = this.dietaryWishes;
-        data["agreeToPrivacyPolicy"] = this.agreeToPrivacyPolicy;
         data["participantInfo"] = this.participantInfo ? this.participantInfo.toJSON() : <any>undefined;
         return data;
     }
@@ -4199,9 +4366,56 @@ export class Partial_UserParams_ implements IPartial_UserParams_ {
 /** Make all properties in T optional */
 export interface IPartial_UserParams_ {
     email?: string;
+    agreeToPrivacyPolicy?: boolean;
+    partnerId?: number | undefined;
     name?: string;
     dietaryWishes?: string;
-    agreeToPrivacyPolicy?: boolean;
+    participantInfo?: UpdateParticipantParams;
+}
+
+/** Make all properties in T optional */
+export class Partial_PersonalUserParams_ implements IPartial_PersonalUserParams_ {
+    name?: string;
+    dietaryWishes?: string;
+    participantInfo?: UpdateParticipantParams;
+
+    constructor(data?: IPartial_PersonalUserParams_) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.dietaryWishes = _data["dietaryWishes"];
+            this.participantInfo = _data["participantInfo"] ? UpdateParticipantParams.fromJS(_data["participantInfo"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Partial_PersonalUserParams_ {
+        data = typeof data === 'object' ? data : {};
+        let result = new Partial_PersonalUserParams_();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["dietaryWishes"] = this.dietaryWishes;
+        data["participantInfo"] = this.participantInfo ? this.participantInfo.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+/** Make all properties in T optional */
+export interface IPartial_PersonalUserParams_ {
+    name?: string;
+    dietaryWishes?: string;
     participantInfo?: UpdateParticipantParams;
 }
 
@@ -4246,7 +4460,6 @@ export interface ILoginParams {
 }
 
 export class ParticipantInfo implements IParticipantInfo {
-    agreeToSharingWithCompanies!: boolean;
     studyProgram!: string;
 
     constructor(data?: IParticipantInfo) {
@@ -4260,7 +4473,6 @@ export class ParticipantInfo implements IParticipantInfo {
 
     init(_data?: any) {
         if (_data) {
-            this.agreeToSharingWithCompanies = _data["agreeToSharingWithCompanies"];
             this.studyProgram = _data["studyProgram"];
         }
     }
@@ -4274,14 +4486,12 @@ export class ParticipantInfo implements IParticipantInfo {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["agreeToSharingWithCompanies"] = this.agreeToSharingWithCompanies;
         data["studyProgram"] = this.studyProgram;
         return data;
     }
 }
 
 export interface IParticipantInfo {
-    agreeToSharingWithCompanies: boolean;
     studyProgram: string;
 }
 

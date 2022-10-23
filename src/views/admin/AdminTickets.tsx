@@ -72,7 +72,7 @@ function AdminTickets() {
 
   return (
     <Box sx={{ width: '100%', minHeight: '100%' }}>
-      <TypographyHeader variant="h2">All Partners</TypographyHeader>
+      <TypographyHeader variant="h2">All Tickets</TypographyHeader>
       <Paper elevation={3}>
         <CardContent>
           <Box sx={{ textAlign: 'right', marginBottom: '1em' }}>

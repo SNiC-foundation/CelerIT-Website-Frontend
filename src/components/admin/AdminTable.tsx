@@ -112,6 +112,7 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
         />
         {customButtons!.map((c) => React.createElement(c, {
           entity: entities[entities.findIndex((e) => (params.row as any).id === (e as any).id)],
+          key: c.name,
         }))}
         {(handleUpdate && entityColumns.some((c) => c.canBeUpdated)) && (
           <AdminUpdateEntityModal

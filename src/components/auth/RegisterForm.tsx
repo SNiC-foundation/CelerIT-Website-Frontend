@@ -141,7 +141,15 @@ function RegisterForm({ user, handleSubmit }: Props) {
               disabled={disabled}
             />
             )}
-          label="I agree with the privacy policy*"
+          label={(
+            <span>
+              I agree with the
+              {' '}
+              <a target="_blank" href="/celerit-privacy-policy.pdf">privacy policy</a>
+              {' '}
+              of SNiC 2022: CelerIT*
+            </span>
+          )}
           sx={(theme) => ({
             color: !agreeToPrivacyPolicy
               ? theme.palette.error.main : undefined,

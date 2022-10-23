@@ -19,7 +19,7 @@ function HeaderBackground({ lines }: Props) {
         position: 'absolute',
         left: 0,
         width,
-        zIndex: 0,
+        zIndex: -1,
         height: `${height}rem`,
         top: '-10rem',
         overflow: 'hidden',

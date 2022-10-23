@@ -76,9 +76,7 @@ function ProgramComponent() {
               <Grid item xs={1}>
                 <Item>
                   <ActivityComponent
-                    title={activity[0].name}
-                    location={activity[0].location}
-                    description={activity[0].description}
+                    activity={activity[0]}
                   />
                 </Item>
               </Grid>

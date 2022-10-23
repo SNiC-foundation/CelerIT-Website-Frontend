@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import {
   Box, Container, Grid, Paper, styled, Typography,
 } from '@mui/material';
-import { Activity, Client, ProgramPart } from '../../clients/server.generated';
+import {
+  Activity, Client, ProgramPart,
+} from '../../clients/server.generated';
 import ActivityComponent from './ActivityComponent';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -21,7 +23,7 @@ function ProgramComponent() {
   useEffect(() => {
     async function fetchActivities() {
       const res = await client.getAllActivities();
-      setActivities(res);
+      setActivities(res.map((act) => act.activity));
     }
 
     async function fetchProgramParts() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { CardContent, Paper } from '@mui/material';
 import {
-  Activity, ActivityParams, Client, ProgramPart, SubscribeActivity,
+  Activity, ActivityParams, Client, CreateSubscribeActivityParams, ProgramPart, SubscribeActivity,
 } from '../../clients/server.generated';
 import AdminTable from '../../components/admin/AdminTable';
 import TypographyHeader from '../../components/layout/TypographyHeader';
@@ -28,7 +28,7 @@ function AdminProgram() {
     const client = new Client();
     client.getAllActivities()
       .then((a) => {
-        setActivities(a);
+        setActivities(a.map((act) => act.activity));
         setActivityLoading(false);
       });
   };
@@ -181,7 +181,7 @@ function AdminProgram() {
       location: activity.location,
       programPartId: activity.programPartId,
       description: activity.description,
-      subscribe: activity.subscribe,
+      subscribe: new CreateSubscribeActivityParams(activity.subscribe),
     }));
     getActivities();
   };

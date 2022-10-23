@@ -21,7 +21,7 @@ export class Client {
     /**
      * @return Ok
      */
-    getAllActivities(): Promise<Activity[]> {
+    getAllActivities(): Promise<ActivityResponse[]> {
         let url_ = this.baseUrl + "/activity";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -37,7 +37,7 @@ export class Client {
         });
     }
 
-    protected processGetAllActivities(response: Response): Promise<Activity[]> {
+    protected processGetAllActivities(response: Response): Promise<ActivityResponse[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -47,7 +47,7 @@ export class Client {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(Activity.fromJS(item));
+                    result200!.push(ActivityResponse.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -59,7 +59,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Activity[]>(null as any);
+        return Promise.resolve<ActivityResponse[]>(null as any);
     }
 
     /**
@@ -214,6 +214,42 @@ export class Client {
     }
 
     protected processDeleteActivity(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No content
+     */
+    subscribeToActivity(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/activity/{id}/subscribe";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubscribeToActivity(_response);
+        });
+    }
+
+    protected processSubscribeToActivity(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -2520,9 +2556,9 @@ export class Activity implements IActivity {
     location!: string;
     programPartId!: number;
     programPart!: ProgramPart;
-    description?: string;
+    description?: string | undefined;
     speakers!: Speaker[];
-    subscribe?: SubscribeActivity;
+    subscribe?: SubscribeActivity | undefined;
 
     constructor(data?: IActivity) {
         if (data) {
@@ -2594,9 +2630,9 @@ export interface IActivity {
     location: string;
     programPartId: number;
     programPart: ProgramPart;
-    description?: string;
+    description?: string | undefined;
     speakers: Speaker[];
-    subscribe?: SubscribeActivity;
+    subscribe?: SubscribeActivity | undefined;
 }
 
 export class Speaker implements ISpeaker {
@@ -2689,6 +2725,7 @@ export class User implements IUser {
     ticket?: Ticket;
     partnerId?: number | undefined;
     partner?: Partner | undefined;
+    subscriptions!: SubscribeActivity[];
 
     constructor(data?: IUser) {
         if (data) {
@@ -2699,6 +2736,7 @@ export class User implements IUser {
         }
         if (!data) {
             this.roles = [];
+            this.subscriptions = [];
         }
     }
 
@@ -2722,6 +2760,11 @@ export class User implements IUser {
             this.ticket = _data["ticket"] ? Ticket.fromJS(_data["ticket"]) : <any>undefined;
             this.partnerId = _data["partnerId"];
             this.partner = _data["partner"] ? Partner.fromJS(_data["partner"]) : <any>undefined;
+            if (Array.isArray(_data["subscriptions"])) {
+                this.subscriptions = [] as any;
+                for (let item of _data["subscriptions"])
+                    this.subscriptions!.push(SubscribeActivity.fromJS(item));
+            }
         }
     }
 
@@ -2752,6 +2795,11 @@ export class User implements IUser {
         data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
         data["partnerId"] = this.partnerId;
         data["partner"] = this.partner ? this.partner.toJSON() : <any>undefined;
+        if (Array.isArray(this.subscriptions)) {
+            data["subscriptions"] = [];
+            for (let item of this.subscriptions)
+                data["subscriptions"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -2771,6 +2819,7 @@ export interface IUser {
     ticket?: Ticket;
     partnerId?: number | undefined;
     partner?: Partner | undefined;
+    subscriptions: SubscribeActivity[];
 }
 
 export class Participant implements IParticipant {
@@ -2893,8 +2942,8 @@ export class Ticket implements ITicket {
     createdAt!: Date;
     updatedAt!: Date;
     version!: number;
-    userId?: number;
-    user?: User;
+    userId?: number | undefined;
+    user?: User | undefined;
     association!: string;
     code!: string;
 
@@ -2946,8 +2995,8 @@ export interface ITicket {
     createdAt: Date;
     updatedAt: Date;
     version: number;
-    userId?: number;
-    user?: User;
+    userId?: number | undefined;
+    user?: User | undefined;
     association: string;
     code: string;
 }
@@ -3136,6 +3185,49 @@ export interface ISubscribeActivity {
     subscriptionListOpenDate: Date;
     subscriptionListCloseDate: Date;
     subscribers: User[];
+}
+
+export class ActivityResponse implements IActivityResponse {
+    activity!: Activity;
+    nrOfSubscribers!: number;
+
+    constructor(data?: IActivityResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.activity = new Activity();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.activity = _data["activity"] ? Activity.fromJS(_data["activity"]) : new Activity();
+            this.nrOfSubscribers = _data["nrOfSubscribers"];
+        }
+    }
+
+    static fromJS(data: any): ActivityResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
+        data["nrOfSubscribers"] = this.nrOfSubscribers;
+        return data;
+    }
+}
+
+export interface IActivityResponse {
+    activity: Activity;
+    nrOfSubscribers: number;
 }
 
 export class UpdateSubscribeActivityParams implements IUpdateSubscribeActivityParams {

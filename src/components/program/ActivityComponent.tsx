@@ -1,10 +1,16 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import {
+  Box, Typography, Divider,
+} from '@mui/material';
 import ProgramModal from './ProgramModal';
 import { Activity } from '../../clients/server.generated';
 
+type ActivityWithParticipantAmount = Activity & {
+  nrOfSubscribers: number;
+}
+
 interface Props {
-  activity: Activity,
+  activity: ActivityWithParticipantAmount,
 }
 
 function ActivityComponent(props: Props) {
@@ -20,16 +26,25 @@ function ActivityComponent(props: Props) {
 
   return (
     <>
+      {/* TODO: Visualise currently subscribed activities by user */}
       <Box onClick={() => setModalOpen(true)} sx={{ cursor: 'pointer' }}>
-        <h1>
+        <Typography variant="h4">
           {`${activity.name}`}
-        </h1>
-        <h4>
+        </Typography>
+        <Typography variant="h6">
           {`${activity.location}`}
-        </h4>
-        <p>
+        </Typography>
+        <Typography variant="body1">
           {newDescription}
-        </p>
+        </Typography>
+        <Divider />
+        <Typography variant="body1" sx={{ textAlign: 'right' }}>
+          {activity.nrOfSubscribers}
+          /
+          {activity.subscribe?.maxParticipants}
+          {' '}
+          subscribed
+        </Typography>
       </Box>
       <ProgramModal
         activity={activity}

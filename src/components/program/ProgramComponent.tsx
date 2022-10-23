@@ -16,15 +16,22 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+// TODO: Find a way to declare this ones for all children
+type ActivityWithParticipantAmount = Activity & {
+  nrOfSubscribers: number;
+}
+
 function ProgramComponent() {
-  const [activities, setActivities] = React.useState<Activity[] | null>(null);
+  const [activities, setActivities] = React.useState<ActivityWithParticipantAmount[] | null>(null);
   const [programParts, setProgramParts] = React.useState<ProgramPart[] | null>(null);
   const client = new Client();
 
   useEffect(() => {
     async function fetchActivities() {
       const res = await client.getAllActivities();
-      setActivities(res.map((act) => act.activity));
+      setActivities(res.map((act) => Object.assign(act.activity, {
+        nrOfSubscribers: act.nrOfSubscribers,
+      })));
     }
 
     async function fetchProgramParts() {
@@ -50,8 +57,10 @@ function ProgramComponent() {
           <Grid item xs={1}>
             {/* TODO: get the colours to work properly from the palette */}
             <Item sx={{ backgroundColor: '#072b4e' }}>
-              <h1 style={{ color: 'white' }}>{programPart.name}</h1>
-              <h4 style={{ color: 'white' }}>
+              <Typography variant="h4" sx={{ color: 'white' }}>
+                {programPart.name}
+              </Typography>
+              <Typography variant="subtitle1" sx={{ color: 'white' }}>
                 {programPart.beginTime.getUTCHours().toString().padStart(2, '0')}
                 :
                 {programPart.beginTime.getUTCMinutes().toString().padStart(2, '0')}
@@ -59,7 +68,7 @@ function ProgramComponent() {
                 {programPart.endTime.getUTCHours().toString().padStart(2, '0')}
                 :
                 {programPart.endTime.getUTCMinutes().toString().padStart(2, '0')}
-              </h4>
+              </Typography>
             </Item>
           </Grid>
 
@@ -90,7 +99,7 @@ function ProgramComponent() {
       <Grid item xs={1}>
         <Box>
           <Item sx={{ backgroundColor: '#072b4e' }}>
-            <h1 style={{ color: 'white' }}>{location}</h1>
+            <Typography variant="h4" sx={{ color: 'white' }}>{location}</Typography>
           </Item>
         </Box>
       </Grid>

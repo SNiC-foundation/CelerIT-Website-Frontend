@@ -22,6 +22,7 @@ services:
     volumes:
       - partners:/usr/src/app/data/partners
       - speakers:/usr/src/app/data/speakers
+      - barcodes:/usr/src/app/data/barcodes
     environment:
       - NODE_ENV=production
       - PORT=3001
@@ -46,6 +47,8 @@ volumes:
   partners:
     driver: local
   speakers:
+    driver: local
+  barcodes:
     driver: local
 networks:
   snic-congress:

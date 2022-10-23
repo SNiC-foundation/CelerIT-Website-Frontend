@@ -2100,6 +2100,46 @@ export class Client {
     }
 
     /**
+     * @return Ok
+     */
+    scanSingleTicket(code: string): Promise<Ticket | null> {
+        let url_ = this.baseUrl + "/ticket/{code}/scan";
+        if (code === undefined || code === null)
+            throw new Error("The parameter 'code' must be defined.");
+        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processScanSingleTicket(_response);
+        });
+    }
+
+    protected processScanSingleTicket(response: Response): Promise<Ticket | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? Ticket.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Ticket | null>(null as any);
+    }
+
+    /**
      * @param id ID of the user to delete
      * @return No content
      */
@@ -2726,6 +2766,7 @@ export class User implements IUser {
     partnerId?: number | undefined;
     partner?: Partner | undefined;
     subscriptions!: SubscribeActivity[];
+    scans!: TicketScan[];
 
     constructor(data?: IUser) {
         if (data) {
@@ -2737,6 +2778,7 @@ export class User implements IUser {
         if (!data) {
             this.roles = [];
             this.subscriptions = [];
+            this.scans = [];
         }
     }
 
@@ -2764,6 +2806,11 @@ export class User implements IUser {
                 this.subscriptions = [] as any;
                 for (let item of _data["subscriptions"])
                     this.subscriptions!.push(SubscribeActivity.fromJS(item));
+            }
+            if (Array.isArray(_data["scans"])) {
+                this.scans = [] as any;
+                for (let item of _data["scans"])
+                    this.scans!.push(TicketScan.fromJS(item));
             }
         }
     }
@@ -2800,6 +2847,11 @@ export class User implements IUser {
             for (let item of this.subscriptions)
                 data["subscriptions"].push(item.toJSON());
         }
+        if (Array.isArray(this.scans)) {
+            data["scans"] = [];
+            for (let item of this.scans)
+                data["scans"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -2820,6 +2872,7 @@ export interface IUser {
     partnerId?: number | undefined;
     partner?: Partner | undefined;
     subscriptions: SubscribeActivity[];
+    scans: TicketScan[];
 }
 
 export class Participant implements IParticipant {
@@ -2946,6 +2999,7 @@ export class Ticket implements ITicket {
     user?: User | undefined;
     association!: string;
     code!: string;
+    scans!: TicketScan[];
 
     constructor(data?: ITicket) {
         if (data) {
@@ -2953,6 +3007,9 @@ export class Ticket implements ITicket {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
+        }
+        if (!data) {
+            this.scans = [];
         }
     }
 
@@ -2966,6 +3023,11 @@ export class Ticket implements ITicket {
             this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>undefined;
             this.association = _data["association"];
             this.code = _data["code"];
+            if (Array.isArray(_data["scans"])) {
+                this.scans = [] as any;
+                for (let item of _data["scans"])
+                    this.scans!.push(TicketScan.fromJS(item));
+            }
         }
     }
 
@@ -2986,6 +3048,11 @@ export class Ticket implements ITicket {
         data["user"] = this.user ? this.user.toJSON() : <any>undefined;
         data["association"] = this.association;
         data["code"] = this.code;
+        if (Array.isArray(this.scans)) {
+            data["scans"] = [];
+            for (let item of this.scans)
+                data["scans"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -2999,6 +3066,75 @@ export interface ITicket {
     user?: User | undefined;
     association: string;
     code: string;
+    scans: TicketScan[];
+}
+
+export class TicketScan implements ITicketScan {
+    id!: number;
+    createdAt!: Date;
+    updatedAt!: Date;
+    version!: number;
+    ticketId!: number;
+    userId!: number;
+    ticket!: Ticket;
+    user!: User;
+
+    constructor(data?: ITicketScan) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.ticket = new Ticket();
+            this.user = new User();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+            this.version = _data["version"];
+            this.ticketId = _data["ticketId"];
+            this.userId = _data["userId"];
+            this.ticket = _data["ticket"] ? Ticket.fromJS(_data["ticket"]) : new Ticket();
+            this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
+        }
+    }
+
+    static fromJS(data: any): TicketScan {
+        data = typeof data === 'object' ? data : {};
+        let result = new TicketScan();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+        data["version"] = this.version;
+        data["ticketId"] = this.ticketId;
+        data["userId"] = this.userId;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ITicketScan {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+    ticketId: number;
+    userId: number;
+    ticket: Ticket;
+    user: User;
 }
 
 export enum SponsorPackage {

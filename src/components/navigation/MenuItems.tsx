@@ -14,6 +14,7 @@ import Register from '../../views/auth/Register';
 import UserHome from '../../views/homes/UserHome';
 import AdminTickets from '../../views/admin/AdminTickets';
 import ProgramComponent from '../program/ProgramComponent';
+import CheckIn from '../../views/volunteer/CheckIn';
 
 export interface MenuItem {
   name: string;
@@ -101,11 +102,12 @@ export const userMenuPages: MenuItem[] = [
     component: <UserHome />,
     disabled: (auth) => (auth.user === undefined),
   },
-  // {
-  //   name: 'My program',
-  //   target: '/user/:id/program',
-  //   component: null,
-  // },
+  {
+    name: 'Check in',
+    target: '/check-in',
+    component: <CheckIn />,
+    disabled: (auth) => (!authorized(auth, ['Volunteer', 'Admin'])),
+  },
 ];
 
 export const allPages: MenuItem[] = [

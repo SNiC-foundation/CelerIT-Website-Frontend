@@ -4,6 +4,8 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import en from 'javascript-time-ago/locale/en';
+import TimeAgo from 'javascript-time-ago';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
 import SNiCTheme from './theme';
@@ -13,6 +15,9 @@ import ContextProviders from './contexts/ContextProviders';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
+
+TimeAgo.addDefaultLocale(en);
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>

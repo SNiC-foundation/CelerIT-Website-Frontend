@@ -18,6 +18,7 @@
     "@types/react": "^18.0.6",
     "@types/react-dom": "^18.0.2",
     "http-proxy-middleware": "^2.0.6",
+    "javascript-time-ago": "^2.5.7",
     "moment": "^2.29.4",
     "react": "~18.0.0",
     "react-dom": "~18.0.0",
@@ -57,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "@types/javascript-time-ago": "^2.0.3",
     "@types/validator": "^13.7.4",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",

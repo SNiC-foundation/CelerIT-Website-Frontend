@@ -7,6 +7,7 @@ import {
 } from '../../clients/server.generated';
 import ActivityComponent from './ActivityComponent';
 import PageHeader from '../layout/PageHeader';
+import { AuthContext } from '../../auth/AuthContextProvider';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -25,6 +26,9 @@ function ProgramComponent() {
   const [activities, setActivities] = React.useState<ActivityWithParticipantAmount[] | null>(null);
   const [programParts, setProgramParts] = React.useState<ProgramPart[] | null>(null);
   const client = new Client();
+
+  const authContext = React.useContext(AuthContext);
+  const { user } = authContext;
 
   useEffect(() => {
     async function fetchActivities() {
@@ -86,6 +90,7 @@ function ProgramComponent() {
                 <Item>
                   <ActivityComponent
                     activity={activity[0]}
+                    user={user}
                   />
                 </Item>
               </Grid>

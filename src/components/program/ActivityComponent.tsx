@@ -3,7 +3,7 @@ import {
   Box, Typography, Divider,
 } from '@mui/material';
 import ProgramModal from './ProgramModal';
-import { Activity } from '../../clients/server.generated';
+import { Activity, User } from '../../clients/server.generated';
 
 type ActivityWithParticipantAmount = Activity & {
   nrOfSubscribers: number;
@@ -11,11 +11,13 @@ type ActivityWithParticipantAmount = Activity & {
 
 interface Props {
   activity: ActivityWithParticipantAmount,
+  user: User | undefined,
 }
 
 function ActivityComponent(props: Props) {
   const {
     activity,
+    user,
   } = props;
   const [modalOpen, setModalOpen] = React.useState(false);
 
@@ -48,6 +50,7 @@ function ActivityComponent(props: Props) {
       </Box>
       <ProgramModal
         activity={activity}
+        user={user}
         open={modalOpen}
         handleClose={() => setModalOpen(false)}
       />

@@ -3,7 +3,7 @@ import {
   Dialog, DialogContent, DialogTitle, DialogActions, Button,
 } from '@mui/material';
 import {
-  Activity, Client,
+  Activity, Client, User,
 } from '../../clients/server.generated';
 import { AlertContext } from '../../alerts/AlertContextProvider';
 
@@ -13,11 +13,14 @@ type ActivityWithParticipantAmount = Activity & {
 
 interface Props {
   activity: ActivityWithParticipantAmount;
+  user: User | undefined;
   open: boolean;
   handleClose: () => void;
 }
 
-function ProgramModal({ activity, open, handleClose }: Props) {
+function ProgramModal({
+  activity, user, open, handleClose,
+}: Props) {
   const { showAlert } = React.useContext(AlertContext);
 
   let newDescription = activity.description;
@@ -89,7 +92,8 @@ function ProgramModal({ activity, open, handleClose }: Props) {
             handleSubscribe();
           }}
           disabled={
-            activity.subscribe === undefined // if this is not a subscribable activity
+            user === undefined // if you are not logged in
+            || activity.subscribe === undefined // if this is not a subscribable activity
             || activity.nrOfSubscribers >= activity.subscribe.maxParticipants
             || activity.subscribe.subscriptionListOpenDate.getTime() > Date.now()
             || activity.subscribe.subscriptionListCloseDate.getTime() < Date.now()

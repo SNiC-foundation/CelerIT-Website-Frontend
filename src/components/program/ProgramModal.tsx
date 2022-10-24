@@ -24,7 +24,7 @@ function ProgramModal({
   const { showAlert } = React.useContext(AlertContext);
 
   let newDescription = activity.description;
-  if (activity.description == null || activity.description === '') {
+  if (newDescription == null || newDescription === '' || newDescription === undefined) {
     newDescription = 'A description is not yet set';
   }
 

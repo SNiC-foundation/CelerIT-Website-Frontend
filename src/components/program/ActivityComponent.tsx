@@ -22,8 +22,13 @@ function ActivityComponent(props: Props) {
   const [modalOpen, setModalOpen] = React.useState(false);
 
   let newDescription = activity.description;
-  if (activity.description == null || activity.description === '') {
+  if (newDescription == null || newDescription === '' || newDescription === undefined) {
     newDescription = 'A description is not yet set';
+  }
+  // TODO: Find a nice value for this magic number
+  const maxLengthToDisplay = 50;
+  if (newDescription.length > maxLengthToDisplay) {
+    newDescription = `${newDescription.substring(0, maxLengthToDisplay)}...`;
   }
 
   return (

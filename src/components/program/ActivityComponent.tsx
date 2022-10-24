@@ -1,41 +1,66 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import {
+  Box, Typography, Divider,
+} from '@mui/material';
+import ProgramModal from './ProgramModal';
+import { Activity, User } from '../../clients/server.generated';
+
+type ActivityWithParticipantAmount = Activity & {
+  nrOfSubscribers: number;
+}
 
 interface Props {
-  title: string;
-  location: string;
-  startTime: Date;
-  endTime: Date;
-  description?: string;
+  activity: ActivityWithParticipantAmount,
+  user: User | undefined,
 }
 
 function ActivityComponent(props: Props) {
   const {
-    title, location, startTime, endTime, description,
+    activity,
+    user,
   } = props;
+  const [modalOpen, setModalOpen] = React.useState(false);
 
-  let newDescription = description;
-  if (description == null || description === '') {
+  let newDescription = activity.description;
+  if (newDescription == null || newDescription === '' || newDescription === undefined) {
     newDescription = 'A description is not yet set';
+  }
+  // TODO: Find a nice value for this magic number
+  const maxLengthToDisplay = 50;
+  if (newDescription.length > maxLengthToDisplay) {
+    newDescription = `${newDescription.substring(0, maxLengthToDisplay)}...`;
   }
 
   return (
-    <Box>
-      <h1>
-        {`${title}`}
-      </h1>
-      <h4>
-        {`${location}, ${startTime.getUTCHours().toString().padStart(2, '0')}:${startTime.getUTCMinutes().toString().padStart(2, '0')}-${endTime.getUTCHours().toString().padStart(2, '0')}:${endTime.getUTCMinutes().toString().padStart(2, '0')}`}
-      </h4>
-      <p>
-        {newDescription}
-      </p>
-    </Box>
+    <>
+      {/* TODO: Visualise currently subscribed activities by user */}
+      <Box onClick={() => setModalOpen(true)} sx={{ cursor: 'pointer' }}>
+        <Typography variant="h4">
+          {`${activity.name}`}
+        </Typography>
+        <Typography variant="h6">
+          {`${activity.location}`}
+        </Typography>
+        <Typography variant="body1">
+          {newDescription}
+        </Typography>
+        <Divider />
+        <Typography variant="body1" sx={{ textAlign: 'right' }}>
+          {activity.nrOfSubscribers}
+          /
+          {activity.subscribe?.maxParticipants}
+          {' '}
+          subscribed
+        </Typography>
+      </Box>
+      <ProgramModal
+        activity={activity}
+        user={user}
+        open={modalOpen}
+        handleClose={() => setModalOpen(false)}
+      />
+    </>
   );
 }
-
-ActivityComponent.defaultProps = {
-  description: undefined,
-};
 
 export default ActivityComponent;

@@ -6,6 +6,8 @@ import {
   Activity, Client, ProgramPart,
 } from '../../clients/server.generated';
 import ActivityComponent from './ActivityComponent';
+import PageHeader from '../layout/PageHeader';
+import { AuthContext } from '../../auth/AuthContextProvider';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -15,15 +17,25 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+// TODO: Find a way to declare this ones for all children
+type ActivityWithParticipantAmount = Activity & {
+  nrOfSubscribers: number;
+}
+
 function ProgramComponent() {
-  const [activities, setActivities] = React.useState<Activity[] | null>(null);
+  const [activities, setActivities] = React.useState<ActivityWithParticipantAmount[] | null>(null);
   const [programParts, setProgramParts] = React.useState<ProgramPart[] | null>(null);
   const client = new Client();
+
+  const authContext = React.useContext(AuthContext);
+  const { user } = authContext;
 
   useEffect(() => {
     async function fetchActivities() {
       const res = await client.getAllActivities();
-      setActivities(res.map((act) => act.activity));
+      setActivities(res.map((act) => Object.assign(act.activity, {
+        nrOfSubscribers: act.nrOfSubscribers,
+      })));
     }
 
     async function fetchProgramParts() {
@@ -47,8 +59,20 @@ function ProgramComponent() {
       return (
         <>
           <Grid item xs={1}>
-            <Item sx={{ backgroundColor: '#df421d' }}>
-              <h1 style={{ color: '#ffffff' }}>{programPart.name}</h1>
+            {/* TODO: get the colours to work properly from the palette */}
+            <Item sx={{ backgroundColor: '#072b4e' }}>
+              <Typography variant="h4" sx={{ color: 'white' }}>
+                {programPart.name}
+              </Typography>
+              <Typography variant="subtitle1" sx={{ color: 'white' }}>
+                {programPart.beginTime.getUTCHours().toString().padStart(2, '0')}
+                :
+                {programPart.beginTime.getUTCMinutes().toString().padStart(2, '0')}
+                -
+                {programPart.endTime.getUTCHours().toString().padStart(2, '0')}
+                :
+                {programPart.endTime.getUTCMinutes().toString().padStart(2, '0')}
+              </Typography>
             </Item>
           </Grid>
 
@@ -65,11 +89,8 @@ function ProgramComponent() {
               <Grid item xs={1}>
                 <Item>
                   <ActivityComponent
-                    title={activity[0].name}
-                    location={activity[0].location}
-                    startTime={activity[0].programPart.beginTime}
-                    endTime={activity[0].programPart.endTime}
-                    description={activity[0].description}
+                    activity={activity[0]}
+                    user={user}
                   />
                 </Item>
               </Grid>
@@ -82,8 +103,8 @@ function ProgramComponent() {
     const locationsHtml = locations.map((location) => (
       <Grid item xs={1}>
         <Box>
-          <Item sx={{ backgroundColor: '#df421d' }}>
-            <h1 style={{ color: '#ffffff' }}>{location}</h1>
+          <Item sx={{ backgroundColor: '#072b4e' }}>
+            <Typography variant="h4" sx={{ color: 'white' }}>{location}</Typography>
           </Item>
         </Box>
       </Grid>
@@ -92,6 +113,14 @@ function ProgramComponent() {
     return (
       // TODO: fix the blocks such that they are all the same length
       <Container maxWidth="xl">
+        <Box sx={{ textAlign: 'center' }}>
+          <PageHeader
+            title="Program"
+            text="Below you may find the full program for SNiC 2022."
+            lines={1}
+            extraMargin={4}
+          />
+        </Box>
         <Grid container direction="row" spacing={2} columns={locations.length + 1} sx={{ alignItems: 'center', display: { xs: 'none', md: 'flex' } }}>
           {/* This is an empty box to make the table look nicer */}
           <Grid item xs={1} />

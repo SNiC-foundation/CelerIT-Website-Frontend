@@ -119,8 +119,8 @@ function AppToolbar() {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href=""
+            component={Link}
+            to="/"
             sx={{
               marginRight: 2,
               display: { xs: 'flex', md: 'none' },

@@ -107,11 +107,13 @@ function AppToolbar() {
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
-              <MenuItem
-                onClick={handleOpenAdminMenu}
-              >
-                <Typography textAlign="center">Admin</Typography>
-              </MenuItem>
+              {authContext.roles.includes('Admin') ? (
+                <MenuItem
+                  onClick={handleOpenAdminMenu}
+                >
+                  <Typography textAlign="center">Admin</Typography>
+                </MenuItem>
+              ) : null}
             </Menu>
           </Box>
           <Typography

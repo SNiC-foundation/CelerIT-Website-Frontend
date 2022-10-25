@@ -33,7 +33,6 @@ function ActivityComponent(props: Props) {
 
   return (
     <>
-      {/* TODO: Visualise currently subscribed activities by user */}
       <Box onClick={() => setModalOpen(true)} sx={{ cursor: 'pointer' }}>
         <Typography variant="h4">
           {`${activity.name}`}
@@ -53,6 +52,7 @@ function ActivityComponent(props: Props) {
           subscribed
         </Typography>
       </Box>
+
       <ProgramModal
         activity={activity}
         user={user}

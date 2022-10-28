@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import {
-  Box, CircularProgress, Container, Grid, Paper, styled, Typography,
+  Box, CircularProgress, Grid, Paper, styled, Typography,
 } from '@mui/material';
 import {
   Client, ProgramPart,
 } from '../../clients/server.generated';
-import ActivityComponent, { ActivityWithParticipantAmount } from './ActivityComponent';
+import ActivityComponent from './ActivityComponent';
 import PageHeader from '../layout/PageHeader';
 import { AuthContext } from '../../auth/AuthContextProvider';
+import { ActivityWithParticipantAmount } from './ProgramModal';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -51,10 +52,7 @@ function ProgramComponent() {
     getProgram();
   }, []);
 
-  let userActivities: string[] = [];
-  if (user !== undefined) {
-    userActivities = user.subscriptions.map((s) => s.activityId.toString());
-  }
+  const userActivities = user ? user.subscriptions.map((s) => s.activityId) : [];
 
   if (activities != null && programParts != null) {
     const locations = Array.from(new Set(activities.map((element) => element.location)));
@@ -74,20 +72,16 @@ function ProgramComponent() {
                 {programPart.name}
               </Typography>
               <Typography variant="subtitle1" sx={{ color: 'white' }}>
-                {programPart.beginTime.getUTCHours().toString().padStart(2, '0')}
-                :
-                {programPart.beginTime.getUTCMinutes().toString().padStart(2, '0')}
+                {programPart.beginTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
                 -
-                {programPart.endTime.getUTCHours().toString().padStart(2, '0')}
-                :
-                {programPart.endTime.getUTCMinutes().toString().padStart(2, '0')}
+                {programPart.endTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
               </Typography>
             </Item>
           </Grid>
 
           {locations.map((location) => {
-            const activity = activitiesInProgramPart.filter((ac) => ac.location === location);
-            if (activity[0] === undefined) {
+            const activity = activitiesInProgramPart.filter((ac) => ac.location === location)[0];
+            if (activity === undefined) {
               return (
                 <Grid item xs={1} sx={{ display: { xs: 'none', xl: 'flex' } }}>
                   {/* Adds an empty item for the table-view, but it is hidden on mobile */}
@@ -96,20 +90,20 @@ function ProgramComponent() {
             }
             return (
               <Grid item xs={1}>
-                {userActivities.includes(activity[0].id.toString()) ? (
-                  <Item sx={{ backgroundColor: '#df421d', color: 'white' }}>
+                {userActivities.includes(activity.id) || activity.subscribe == null ? (
+                  <Item sx={{ backgroundColor: '#e1e1e1' }}>
                     <ActivityComponent
-                      activity={activity[0]}
-                      user={user}
+                      activity={activity}
+                      getProgram={getProgram}
                     />
                   </Item>
                 ) : (
                   <Item>
                     <ActivityComponent
-                      activity={activity[0]}
-                      user={user}
-                  </Item>
+                      activity={activity}
+                      getProgram={getProgram}
                     />
+                  </Item>
                 )}
               </Grid>
             );
@@ -121,7 +115,7 @@ function ProgramComponent() {
     const locationsHtml = locations.map((location) => (
       <Grid item xs={1} sx={{ alignSelf: 'flex-end' }}>
         <Box>
-          <Item sx={{ backgroundColor: '#072b4e' }}>
+          <Item sx={(theme) => ({ backgroundColor: theme.palette.primary.main })}>
             <Typography variant="h4" sx={{ color: 'white' }}>{location}</Typography>
           </Item>
         </Box>

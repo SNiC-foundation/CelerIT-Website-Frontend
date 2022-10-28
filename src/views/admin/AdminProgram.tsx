@@ -106,7 +106,7 @@ function AdminProgram() {
     attribute: 'description',
     label: 'Description',
     width: 200,
-    fieldType: 'string',
+    fieldType: 'text',
     initial: '',
     canBeUpdated: true,
   }, {

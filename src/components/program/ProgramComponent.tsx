@@ -39,7 +39,6 @@ function ProgramComponent() {
 
     async function fetchProgramParts() {
       const res = await client.getAllProgramParts();
-      // TODO: fix something for when timeslots are overlapping (or just don't)
       res.sort((a, b) => ((a.beginTime > b.beginTime) ? 1 : -1));
       setProgramParts(res);
     }

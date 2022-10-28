@@ -100,6 +100,7 @@ function ProgramModal({
             <>
               <hr style={{ opacity: '0.40' }} />
               <span style={{ fontStyle: 'italic' }}>{blockedMessage}</span>
+              {blockedMessage !== '' && (<br />)}
               <span style={{ fontStyle: 'italic' }}>
                 Subscription list closes on
                 {' '}

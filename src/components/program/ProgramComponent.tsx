@@ -89,7 +89,7 @@ function ProgramComponent() {
             }
             return (
               <Grid item xs={1}>
-                {userActivities.includes(activity.id) || activity.subscribe == null ? (
+                {userActivities.includes(activity.id) || (user && activity.subscribe == null) ? (
                   <Item sx={{ backgroundColor: '#e1e1e1' }}>
                     <ActivityComponent
                       activity={activity}

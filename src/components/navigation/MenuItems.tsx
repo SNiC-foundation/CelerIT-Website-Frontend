@@ -91,12 +91,6 @@ export const userMenuPages: MenuItem[] = [
     disabled: (auth) => (auth.user !== undefined),
   },
   {
-    name: 'Logout',
-    target: '/logout',
-    component: <Logout />,
-    disabled: (auth) => (auth.user === undefined),
-  },
-  {
     name: 'Account',
     target: '/home',
     component: <UserHome />,
@@ -107,6 +101,12 @@ export const userMenuPages: MenuItem[] = [
     target: '/check-in',
     component: <CheckIn />,
     disabled: (auth) => (!authorized(auth, ['Volunteer', 'Admin'])),
+  },
+  {
+    name: 'Logout',
+    target: '/logout',
+    component: <Logout />,
+    disabled: (auth) => (auth.user === undefined),
   },
 ];
 

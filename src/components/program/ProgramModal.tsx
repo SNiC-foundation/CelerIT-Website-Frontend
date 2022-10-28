@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  Dialog, DialogContent, DialogTitle, DialogActions, Button,
+  Dialog, DialogContent, DialogTitle, DialogActions, Button, LinearProgress,
 } from '@mui/material';
 import {
-  Activity, Client, User,
+  Activity, ApiException, Client, User,
 } from '../../clients/server.generated';
 import { AlertContext } from '../../alerts/AlertContextProvider';
 
@@ -16,11 +16,13 @@ interface Props {
   user: User | undefined;
   open: boolean;
   handleClose: () => void;
+  getProgram: () => void;
 }
 
 function ProgramModal({
-  activity, user, open, handleClose,
+  activity, user, open, handleClose, getProgram,
 }: Props) {
+  const [loading, setLoading] = React.useState(false);
   const { showAlert } = React.useContext(AlertContext);
 
   let newDescription = activity.description;
@@ -33,32 +35,32 @@ function ProgramModal({
     speakers = '-';
   }
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = () => {
     if (activity.subscribe === undefined) return;
 
+    setLoading(true);
     const client = new Client();
-    client.subscribeToActivity(activity.subscribe.id)
+    client.subscribeToActivity(activity.id)
       .then(() => {
         showAlert({
           message: 'Successfully subscribed to this activity',
           severity: 'success',
         });
+        getProgram();
         handleClose();
-        // TODO: Find a nicer way to reload data after successful subscription
-        window.location.reload();
       })
-      .catch((e) => {
-        // TODO: Give a clearer error message to the user by expanding "message" below
+      .catch((e: ApiException) => {
         showAlert({
-          message: 'Something went wrong with subscribing to this activity.',
+          message: `Something went wrong with subscribing to this activity: ${e.message}`,
           severity: 'error',
         });
-        console.log(e);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <Dialog open={open} onClose={handleClose}>
+      {loading && (<LinearProgress />)}
       <DialogTitle sx={{ textAlign: 'center' }}>
         {activity.name}
       </DialogTitle>
@@ -85,22 +87,33 @@ function ProgramModal({
       <DialogActions>
         <Button
           variant="contained"
-          // TODO: Look at how to do separate styling for disabled button
-          // style={{ backgroundColor: '#df421d' }}
           onClick={(event) => {
             event.preventDefault();
-            handleSubscribe();
+            handleClose();
           }}
-          disabled={
-            user === undefined // if you are not logged in
-            || activity.subscribe === undefined // if this is not a subscribable activity
-            || activity.nrOfSubscribers >= activity.subscribe.maxParticipants
-            || activity.subscribe.subscriptionListOpenDate.getTime() > Date.now()
-            || activity.subscribe.subscriptionListCloseDate.getTime() < Date.now()
-          }
         >
-          Subscribe
+          Close
         </Button>
+        {activity.subscribe && (
+          <Button
+            variant="contained"
+            // TODO: Look at how to do separate styling for disabled button
+            // style={{ backgroundColor: '#df421d' }}
+            onClick={(event) => {
+              event.preventDefault();
+              handleSubscribe();
+            }}
+            color="secondary"
+            disabled={
+              user === undefined // if you are not logged in
+              || activity.nrOfSubscribers >= activity.subscribe.maxParticipants
+              || activity.subscribe.subscriptionListOpenDate.getTime() > Date.now()
+              || activity.subscribe.subscriptionListCloseDate.getTime() < Date.now()
+            }
+          >
+            Subscribe
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

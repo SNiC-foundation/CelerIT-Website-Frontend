@@ -181,7 +181,9 @@ function AdminProgram() {
       location: activity.location,
       programPartId: activity.programPartId,
       description: activity.description,
-      subscribe: new CreateSubscribeActivityParams(activity.subscribe),
+      subscribe: activity.subscribe
+        ? new CreateSubscribeActivityParams(activity.subscribe)
+        : undefined,
     }));
     getActivities();
   };

@@ -218,7 +218,7 @@ function AdminProps<T, P = {}>(props: AdminPropsProps<T, P>) {
                 />
               )}
               label={field.label}
-
+              views={['year', 'day', 'hours', 'minutes', 'seconds']}
             />
           </Grid>
         );

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  Box, Grid, Paper, styled, Typography,
+  Box, CircularProgress, Container, Grid, Paper, styled, Typography,
 } from '@mui/material';
 import {
   Client, ProgramPart,
@@ -51,6 +51,11 @@ function ProgramComponent() {
     getProgram();
   }, []);
 
+  let userActivities: string[] = [];
+  if (user !== undefined) {
+    userActivities = user.subscriptions.map((s) => s.activityId.toString());
+  }
+
   if (activities != null && programParts != null) {
     const locations = Array.from(new Set(activities.map((element) => element.location)));
 
@@ -91,13 +96,21 @@ function ProgramComponent() {
             }
             return (
               <Grid item xs={1}>
-                <Item>
-                  <ActivityComponent
-                    activity={activity[0]}
-                    user={user}
-                    getProgram={getProgram}
-                  />
-                </Item>
+                {userActivities.includes(activity[0].id.toString()) ? (
+                  <Item sx={{ backgroundColor: '#df421d', color: 'white' }}>
+                    <ActivityComponent
+                      activity={activity[0]}
+                      user={user}
+                    />
+                  </Item>
+                ) : (
+                  <Item>
+                    <ActivityComponent
+                      activity={activity[0]}
+                      user={user}
+                  </Item>
+                    />
+                )}
               </Grid>
             );
           })}
@@ -140,8 +153,7 @@ function ProgramComponent() {
   }
 
   return (
-    // TODO: make a nice component with an animated loading thingy
-    <Typography>Loading</Typography>
+    <CircularProgress />
   );
 }
 

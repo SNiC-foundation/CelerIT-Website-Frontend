@@ -67,6 +67,7 @@ function ActivityComponent({ activity, user, getProgram }: Props) {
         </Box>
         )}
       </Box>
+
       <ProgramModal
         activity={activity}
         user={user}

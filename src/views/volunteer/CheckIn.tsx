@@ -5,10 +5,11 @@ import {
 import { Check, Clear } from '@mui/icons-material';
 import { useElementSize } from 'usehooks-ts';
 import TypographyHeader from '../../components/layout/TypographyHeader';
-import { Client, Ticket } from '../../clients/server.generated';
+import { ApiException, Client, Ticket } from '../../clients/server.generated';
 import { AlertContext } from '../../alerts/AlertContextProvider';
 import TicketCheckInInfo from '../../components/ticket/TicketCheckInInfo';
 import TicketScanHistory from '../../components/ticket/TicketScanHistory';
+import TicketTrackInfo from '../../components/ticket/TicketTrackInfo';
 
 function CheckIn() {
   const [code, setCode] = React.useState('');
@@ -28,11 +29,11 @@ function CheckIn() {
       } else {
         setTicket(null);
       }
-    }).catch((e) => {
-      showAlert({ severity: 'error', message: e.message });
+    }).catch((e: ApiException) => {
+      showAlert({ severity: 'error', message: e.response });
+      setTicket(null);
     }).finally(() => {
       setLoading(false);
-      setTicket(null);
       setCode('');
     });
   };
@@ -97,6 +98,12 @@ function CheckIn() {
                   Scanned ticket
                 </TypographyHeader>
                 <TicketCheckInInfo ticket={ticket} />
+              </Box>
+              <Box sx={{ marginBottom: '1rem' }}>
+                <TypographyHeader variant="h5">
+                  Tracks
+                </TypographyHeader>
+                <TicketTrackInfo ticket={ticket} />
               </Box>
               <Box>
                 <TypographyHeader variant="h5">

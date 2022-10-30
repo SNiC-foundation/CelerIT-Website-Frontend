@@ -28,7 +28,7 @@ function ProgramModal({
 
   let newDescription = activity.description;
   if (newDescription == null || newDescription === '' || newDescription === undefined) {
-    newDescription = 'A description is not yet set';
+    newDescription = 'More information will follow soon.';
   }
 
   let speakers = activity.speakers.map((speaker) => speaker.name).join(', ');

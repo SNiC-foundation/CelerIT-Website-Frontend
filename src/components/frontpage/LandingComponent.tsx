@@ -7,10 +7,13 @@ import { useBodyScrollSize } from '../../hooks/useBodyScrollSize';
 
 interface Props {
   location: string;
+  finalFrame?: string;
   shuffledPartners: Partner[];
 }
 
-function LandingComponent({ location, shuffledPartners }: Props) {
+function LandingComponent({
+  location, shuffledPartners, finalFrame,
+}: Props) {
   // Height of the outer box containing the animation and the partners
   const [outerRef, outerSizes] = useElementSize();
   const innerHeight = outerSizes.height;
@@ -50,7 +53,7 @@ function LandingComponent({ location, shuffledPartners }: Props) {
         })}
         >
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video style={{ width: '100%', height: '100%', objectFit: 'cover' }} autoPlay muted playsInline>
+          <video style={{ width: '100%', height: '100%', objectFit: 'cover' }} poster={finalFrame} autoPlay muted playsInline>
             <source
               src={location}
               type="video/mp4"
@@ -70,5 +73,9 @@ function LandingComponent({ location, shuffledPartners }: Props) {
     </Box>
   );
 }
+
+LandingComponent.defaultProps = ({
+  finalFrame: undefined,
+});
 
 export default LandingComponent;

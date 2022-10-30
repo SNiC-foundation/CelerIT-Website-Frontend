@@ -1,6 +1,8 @@
 import React from 'react';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import {
+  createTheme, CssBaseline, responsiveFontSizes, ThemeProvider,
+} from '@mui/material';
 
 interface Props {
   children: React.ReactNode | React.ReactNode[];
@@ -9,7 +11,7 @@ interface Props {
 function SNiCTheme({ children }: Props) {
   // Todo: include CelerIT font
 
-  const theme = createTheme({
+  let theme = createTheme({
     palette: {
       primary: {
         main: '#072b4e',
@@ -25,6 +27,8 @@ function SNiCTheme({ children }: Props) {
       },
     },
   });
+
+  theme = responsiveFontSizes(theme);
 
   return (
     <ThemeProvider theme={theme}>

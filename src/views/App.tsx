@@ -28,7 +28,11 @@ function App() {
 
   return (
     <>
-      <LandingComponent location="/CelerIT_animatie.mp4" shuffledPartners={shuffledPartners} />
+      <LandingComponent
+        location="/CelerIT_animatie_updated.mp4"
+        shuffledPartners={shuffledPartners}
+        finalFrame="/CelerIT_animatie_finalframe.png"
+      />
       <DateLocationComponent />
       <ThemeComponent />
       <SkewContentBox image="/paneldiscussie.jpg">

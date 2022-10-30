@@ -13,6 +13,7 @@ services:
     volumes:
       - partners:/usr/src/app/data/logos
       - speakers:/usr/src/app/data/backgrounds
+      - barcodes:/usr/src/app/data/barcodes
   backend:
     build: ../SNiC-Congress-Backend
     image: default.docker-registry.gewis.nl/snic-congress-backend:latest
@@ -43,6 +44,7 @@ services:
       - MAIL_USER=snic@example.com
       - MAIL_PASSWORD=password
       - MAIL_FROM=SNiC 2022 <snic@example.com>
+      - URL=https://celerit.nl
 volumes:
   partners:
     driver: local

@@ -15,6 +15,7 @@ import UserHome from '../../views/homes/UserHome';
 import AdminTickets from '../../views/admin/AdminTickets';
 import ProgramComponent from '../program/ProgramComponent';
 import CheckIn from '../../views/volunteer/CheckIn';
+import PartnerQrScanner from '../../views/PartnerQrScanner';
 
 export interface MenuItem {
   name: string;
@@ -101,6 +102,12 @@ export const userMenuPages: MenuItem[] = [
     target: '/check-in',
     component: <CheckIn />,
     disabled: (auth) => (!authorized(auth, ['Volunteer', 'Admin'])),
+  },
+  {
+    name: 'Scan QR codes',
+    target: '/partner-qr',
+    component: <PartnerQrScanner />,
+    disabled: (auth) => (!authorized(auth, ['Partner'])),
   },
   {
     name: 'Logout',

@@ -32,6 +32,7 @@ function CheckIn() {
       showAlert({ severity: 'error', message: e.message });
     }).finally(() => {
       setLoading(false);
+      setTicket(null);
       setCode('');
     });
   };

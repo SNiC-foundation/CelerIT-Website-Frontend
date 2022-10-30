@@ -10,6 +10,7 @@ import {
 } from '../../clients/server.generated';
 import TypographyHeader from '../../components/layout/TypographyHeader';
 import ParticipantQrCode from '../../components/user/ParticipantQrCode';
+import TicketCode from '../../components/ticket/TicketCode';
 
 function UserHome() {
   const { user } = React.useContext(AuthContext);
@@ -67,6 +68,8 @@ function UserHome() {
           </Paper>
         </Container>
       )}
+
+      {user.ticket && (<TicketCode ticket={user.ticket} />)}
     </Box>
   );
 }

@@ -10,6 +10,8 @@ import {
 } from '../../clients/server.generated';
 import UserRoleModal from '../../components/admin/UserRoleModal';
 import { usePartners, useUsers } from '../../hooks/useEntities';
+import SetPasswordReminderModal from '../../components/mailings/SetPasswordReminderModal';
+import TracksReminderModal from '../../components/mailings/TracksReminderModal';
 
 function AdminUsers() {
   const [loading, setLoading] = React.useState(false);
@@ -139,6 +141,12 @@ function AdminUsers() {
             handleDelete={handleDeleteUser}
             customButtons={[UserRoleModal]}
           />
+        </CardContent>
+      </Paper>
+      <Paper elevation={3} sx={{ my: '1rem' }}>
+        <CardContent>
+          <SetPasswordReminderModal />
+          <TracksReminderModal />
         </CardContent>
       </Paper>
     </>

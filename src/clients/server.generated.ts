@@ -4845,8 +4845,9 @@ export interface ISendSetPasswordReminderParams {
 }
 
 export class LoginParams implements ILoginParams {
-    email?: string;
-    password?: string;
+    email!: string;
+    password!: string;
+    rememberMe?: boolean;
 
     constructor(data?: ILoginParams) {
         if (data) {
@@ -4861,6 +4862,7 @@ export class LoginParams implements ILoginParams {
         if (_data) {
             this.email = _data["email"];
             this.password = _data["password"];
+            this.rememberMe = _data["rememberMe"];
         }
     }
 
@@ -4875,13 +4877,15 @@ export class LoginParams implements ILoginParams {
         data = typeof data === 'object' ? data : {};
         data["email"] = this.email;
         data["password"] = this.password;
+        data["rememberMe"] = this.rememberMe;
         return data;
     }
 }
 
 export interface ILoginParams {
-    email?: string;
-    password?: string;
+    email: string;
+    password: string;
+    rememberMe?: boolean;
 }
 
 export class ParticipantInfo implements IParticipantInfo {

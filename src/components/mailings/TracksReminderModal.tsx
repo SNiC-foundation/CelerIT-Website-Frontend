@@ -14,6 +14,7 @@ function TracksReminderModal() {
   const { showAlert } = React.useContext(AlertContext);
 
   React.useEffect(() => {
+    if (!open) return;
     const client = new Client();
     client.getTracksReminderUsers()
       .then((u) => setUsers(u))
@@ -78,13 +79,13 @@ function TracksReminderModal() {
             onClick={handleSendEmails}
             variant="contained"
             color="secondary"
-            disabled={users == null || users.length === 0}
+            disabled={users == null || users.length === 0 || loading}
           >
             Send emails
           </Button>
         </DialogActions>
       </Dialog>
-      <Button variant="contained" onClick={() => setOpen(true)} sx={{ mx: '0.5rem' }}>Send track reminders</Button>
+      <Button variant="contained" onClick={() => setOpen(true)} sx={{ m: '0.5rem' }}>Send track reminders</Button>
     </>
   );
 }

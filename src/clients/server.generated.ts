@@ -265,6 +265,39 @@ export class Client {
     }
 
     /**
+     * @return No content
+     */
+    subscribeRemainingUsers(): Promise<void> {
+        let url_ = this.baseUrl + "/activity/subscribe/fill";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubscribeRemainingUsers(_response);
+        });
+    }
+
+    protected processSubscribeRemainingUsers(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @param body Parameters to create user with
      * @return Ok
      */
@@ -728,6 +761,50 @@ export class Client {
             });
         }
         return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @return Ok
+     */
+    getParticipantsExport(): Promise<ParticipantExport[]> {
+        let url_ = this.baseUrl + "/participant/export/export";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetParticipantsExport(_response);
+        });
+    }
+
+    protected processGetParticipantsExport(response: Response): Promise<ParticipantExport[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ParticipantExport.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ParticipantExport[]>(null as any);
     }
 
     /**
@@ -2694,66 +2771,6 @@ export class Client {
     }
 }
 
-export class ProgramPart implements IProgramPart {
-    id!: number;
-    createdAt!: Date;
-    updatedAt!: Date;
-    version!: number;
-    name!: string;
-    beginTime!: Date;
-    endTime!: Date;
-
-    constructor(data?: IProgramPart) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
-            this.version = _data["version"];
-            this.name = _data["name"];
-            this.beginTime = _data["beginTime"] ? new Date(_data["beginTime"].toString()) : <any>undefined;
-            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ProgramPart {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProgramPart();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
-        data["version"] = this.version;
-        data["name"] = this.name;
-        data["beginTime"] = this.beginTime ? this.beginTime.toISOString() : <any>undefined;
-        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IProgramPart {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    version: number;
-    name: string;
-    beginTime: Date;
-    endTime: Date;
-}
-
 export class Activity implements IActivity {
     id!: number;
     createdAt!: Date;
@@ -2840,6 +2857,81 @@ export interface IActivity {
     description?: string | undefined;
     speakers: Speaker[];
     subscribe?: SubscribeActivity | undefined;
+}
+
+export class ProgramPart implements IProgramPart {
+    id!: number;
+    createdAt!: Date;
+    updatedAt!: Date;
+    version!: number;
+    name!: string;
+    beginTime!: Date;
+    endTime!: Date;
+    activities!: Activity[];
+
+    constructor(data?: IProgramPart) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.activities = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+            this.version = _data["version"];
+            this.name = _data["name"];
+            this.beginTime = _data["beginTime"] ? new Date(_data["beginTime"].toString()) : <any>undefined;
+            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
+            if (Array.isArray(_data["activities"])) {
+                this.activities = [] as any;
+                for (let item of _data["activities"])
+                    this.activities!.push(Activity.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProgramPart {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProgramPart();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+        data["version"] = this.version;
+        data["name"] = this.name;
+        data["beginTime"] = this.beginTime ? this.beginTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        if (Array.isArray(this.activities)) {
+            data["activities"] = [];
+            for (let item of this.activities)
+                data["activities"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IProgramPart {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+    name: string;
+    beginTime: Date;
+    endTime: Date;
+    activities: Activity[];
 }
 
 export class Speaker implements ISpeaker {
@@ -4057,6 +4149,86 @@ export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticip
 /** Make all properties in T optional */
 export interface IPartial_UpdateParticipantParams_ {
     studyProgram?: string;
+}
+
+export class ParticipantExport implements IParticipantExport {
+    id!: number;
+    ticket!: string;
+    name!: string;
+    studyAssociation!: string;
+    studyProgram!: string;
+    qrCode!: string;
+    track1Name!: string;
+    track1Location!: string;
+    track2Name!: string;
+    track2Location!: string;
+    track3Name!: string;
+    track3Location!: string;
+
+    constructor(data?: IParticipantExport) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.ticket = _data["ticket"];
+            this.name = _data["name"];
+            this.studyAssociation = _data["studyAssociation"];
+            this.studyProgram = _data["studyProgram"];
+            this.qrCode = _data["qrCode"];
+            this.track1Name = _data["track1Name"];
+            this.track1Location = _data["track1Location"];
+            this.track2Name = _data["track2Name"];
+            this.track2Location = _data["track2Location"];
+            this.track3Name = _data["track3Name"];
+            this.track3Location = _data["track3Location"];
+        }
+    }
+
+    static fromJS(data: any): ParticipantExport {
+        data = typeof data === 'object' ? data : {};
+        let result = new ParticipantExport();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticket"] = this.ticket;
+        data["name"] = this.name;
+        data["studyAssociation"] = this.studyAssociation;
+        data["studyProgram"] = this.studyProgram;
+        data["qrCode"] = this.qrCode;
+        data["track1Name"] = this.track1Name;
+        data["track1Location"] = this.track1Location;
+        data["track2Name"] = this.track2Name;
+        data["track2Location"] = this.track2Location;
+        data["track3Name"] = this.track3Name;
+        data["track3Location"] = this.track3Location;
+        return data;
+    }
+}
+
+export interface IParticipantExport {
+    id: number;
+    ticket: string;
+    name: string;
+    studyAssociation: string;
+    studyProgram: string;
+    qrCode: string;
+    track1Name: string;
+    track1Location: string;
+    track2Name: string;
+    track2Location: string;
+    track3Name: string;
+    track3Location: string;
 }
 
 export class PartnerParams implements IPartnerParams {

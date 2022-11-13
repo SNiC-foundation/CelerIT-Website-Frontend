@@ -18,7 +18,7 @@ function SetPasswordReminderModal() {
   const timeAgo = new TimeAgo('en-UK');
 
   React.useEffect(() => {
-    if (date == null) return;
+    if (date == null || !open) return;
     const client = new Client();
     client.getSetPasswordReminderUsers(date)
       .then((u) => setUsers(u))
@@ -100,13 +100,19 @@ function SetPasswordReminderModal() {
             onClick={handleSendEmails}
             variant="contained"
             color="secondary"
-            disabled={date == null || users == null || users.length === 0}
+            disabled={date == null || users == null || users.length === 0 || loading}
           >
             Send emails
           </Button>
         </DialogActions>
       </Dialog>
-      <Button variant="contained" onClick={() => setOpen(true)} sx={{ mx: '0.5rem' }}>Send activation reminders</Button>
+      <Button
+        variant="contained"
+        onClick={() => setOpen(true)}
+        sx={{ m: '0.5rem' }}
+      >
+        Send activation reminders
+      </Button>
     </>
   );
 }

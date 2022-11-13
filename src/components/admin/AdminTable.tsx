@@ -72,6 +72,8 @@ function AdminTable<T, P = {}>(props: Props<T, P>) {
             let value = params.formattedValue;
             if (c.fieldType === 'dropdown') {
               value = c.options.find((o) => o.key === params.value)?.value;
+            } else if (c.fieldType === 'datetime') {
+              value = typeof value === 'object' ? value.toLocaleString() : value;
             }
             return (
               <AdminTableExpandableCell value={value} />

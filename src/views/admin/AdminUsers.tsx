@@ -12,6 +12,7 @@ import UserRoleModal from '../../components/admin/UserRoleModal';
 import { usePartners, useUsers } from '../../hooks/useEntities';
 import SetPasswordReminderModal from '../../components/mailings/SetPasswordReminderModal';
 import TracksReminderModal from '../../components/mailings/TracksReminderModal';
+import AutoSubscribeModal from '../../components/program/AutoSubscribeModal';
 
 function AdminUsers() {
   const [loading, setLoading] = React.useState(false);
@@ -129,6 +130,13 @@ function AdminUsers() {
   return (
     <>
       <TypographyHeader variant="h2">Users</TypographyHeader>
+      <Paper elevation={3} sx={{ my: '1rem' }}>
+        <CardContent>
+          <SetPasswordReminderModal />
+          <TracksReminderModal />
+          <AutoSubscribeModal />
+        </CardContent>
+      </Paper>
       <Paper elevation={3}>
         <CardContent>
           <AdminTable
@@ -141,12 +149,6 @@ function AdminUsers() {
             handleDelete={handleDeleteUser}
             customButtons={[UserRoleModal]}
           />
-        </CardContent>
-      </Paper>
-      <Paper elevation={3} sx={{ my: '1rem' }}>
-        <CardContent>
-          <SetPasswordReminderModal />
-          <TracksReminderModal />
         </CardContent>
       </Paper>
     </>

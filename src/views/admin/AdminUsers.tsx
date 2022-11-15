@@ -1,6 +1,7 @@
 import React from 'react';
 import validator from 'validator';
-import { CardContent, Paper } from '@mui/material';
+import { Button, CardContent, Paper } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
 import TypographyHeader from '../../components/layout/TypographyHeader';
@@ -135,6 +136,14 @@ function AdminUsers() {
           <SetPasswordReminderModal />
           <TracksReminderModal />
           <AutoSubscribeModal />
+          <Button
+            component={Link}
+            to="/admin/users/export"
+            variant="contained"
+            sx={{ m: '0.5rem' }}
+          >
+            Export participants
+          </Button>
         </CardContent>
       </Paper>
       <Paper elevation={3}>

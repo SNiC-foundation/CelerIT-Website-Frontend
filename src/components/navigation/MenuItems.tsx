@@ -16,6 +16,7 @@ import AdminTickets from '../../views/admin/AdminTickets';
 import ProgramComponent from '../program/ProgramComponent';
 import CheckIn from '../../views/volunteer/CheckIn';
 import PartnerQrScanner from '../../views/PartnerQrScanner';
+import AdminParticipantsExport from '../../views/admin/AdminParticipantsExport';
 
 export interface MenuItem {
   name: string;
@@ -121,4 +122,10 @@ export const allPages: MenuItem[] = [
   ...generalPages,
   ...adminMenuPages,
   ...userMenuPages,
+  {
+    name: 'Participant Export',
+    target: '/admin/users/export',
+    component: <AdminParticipantsExport />,
+    disabled: (auth) => (!authorized(auth, ['Admin'])),
+  },
 ];

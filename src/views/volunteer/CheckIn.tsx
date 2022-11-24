@@ -1,8 +1,9 @@
 import React, { FormEvent } from 'react';
 import {
+  Alert,
   Box, Button, CardContent, CircularProgress, FormControl, Grid, Paper, TextField,
 } from '@mui/material';
-import { Check, Clear } from '@mui/icons-material';
+import { Check, Clear, QuestionMark } from '@mui/icons-material';
 import { useElementSize } from 'usehooks-ts';
 import TypographyHeader from '../../components/layout/TypographyHeader';
 import { ApiException, Client, Ticket } from '../../clients/server.generated';
@@ -24,7 +25,7 @@ function CheckIn() {
     setLoading(true);
     const client = new Client();
     client.scanSingleTicket(code).then((t) => {
-      if (t != null && t.user != null) {
+      if (t != null) {
         setTicket(t);
       } else {
         setTicket(null);
@@ -39,10 +40,14 @@ function CheckIn() {
   };
 
   let codeIcon;
+  let alert;
   if (loading) {
     codeIcon = (<CircularProgress size="50%" />);
   } else if (ticket == null) {
     codeIcon = (<Clear color="error" sx={{ width: '100%', height: '100%' }} />);
+  } else if (ticket.user == null) {
+    codeIcon = (<QuestionMark color="warning" sx={{ width: '100%', height: '100%' }} />);
+    alert = (<Alert sx={{ mb: '1rem' }} severity="warning">This ticket has not been activated on the CelerIT website!</Alert>);
   } else {
     codeIcon = (<Check color="success" sx={{ width: '100%', height: '100%' }} />);
   }
@@ -93,6 +98,7 @@ function CheckIn() {
         <Grid item xs={12} md={6}>
           <Paper elevation={3}>
             <CardContent>
+              {alert}
               <Box sx={{ marginBottom: '1rem' }}>
                 <TypographyHeader variant="h5">
                   Scanned ticket

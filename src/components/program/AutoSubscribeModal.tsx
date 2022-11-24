@@ -93,7 +93,7 @@ function AutoSubscribeModal() {
             color="secondary"
             disabled={loading || (!openActivities) || openActivities.length > 0}
           >
-            Send emails
+            Subscribe remaining users
           </Button>
         </DialogActions>
       </Dialog>

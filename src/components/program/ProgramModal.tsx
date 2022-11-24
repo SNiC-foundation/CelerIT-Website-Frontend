@@ -94,7 +94,7 @@ function ProgramModal({
           {activity.programPart.beginTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
           -
           {activity.programPart.endTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
-          <hr style={{ opacity: '0.40' }} />
+          <hr style={{ opacity: '0.40', whiteSpace: 'pre-wrap' }} />
           {newDescription}
           {(blockedMessage !== '' || subscriptionListOpen) && (
             <>

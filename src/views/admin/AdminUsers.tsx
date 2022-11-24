@@ -1,6 +1,8 @@
 import React from 'react';
 import validator from 'validator';
-import { Button, CardContent, Paper } from '@mui/material';
+import {
+  Box, Button, CardContent, Paper,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
@@ -14,6 +16,7 @@ import { usePartners, useUsers } from '../../hooks/useEntities';
 import SetPasswordReminderModal from '../../components/mailings/SetPasswordReminderModal';
 import TracksReminderModal from '../../components/mailings/TracksReminderModal';
 import AutoSubscribeModal from '../../components/program/AutoSubscribeModal';
+import FinalInfoModal from '../../components/mailings/FinalInfoModal';
 
 function AdminUsers() {
   const [loading, setLoading] = React.useState(false);
@@ -133,17 +136,24 @@ function AdminUsers() {
       <TypographyHeader variant="h2">Users</TypographyHeader>
       <Paper elevation={3} sx={{ my: '1rem' }}>
         <CardContent>
-          <SetPasswordReminderModal />
-          <TracksReminderModal />
-          <AutoSubscribeModal />
-          <Button
-            component={Link}
-            to="/admin/users/export"
-            variant="contained"
-            sx={{ m: '0.5rem' }}
-          >
-            Export participants
-          </Button>
+          <TypographyHeader variant="h5" sx={{ marginBottom: 0 }}>Emails</TypographyHeader>
+          <Box sx={{ marginBottom: '1rem' }}>
+            <SetPasswordReminderModal />
+            <TracksReminderModal />
+            <FinalInfoModal />
+          </Box>
+          <TypographyHeader variant="h5" sx={{ marginBottom: 0 }}>Actions</TypographyHeader>
+          <Box>
+            <AutoSubscribeModal />
+            <Button
+              component={Link}
+              to="/admin/users/export"
+              variant="contained"
+              sx={{ m: '0.5rem' }}
+            >
+              Export participants
+            </Button>
+          </Box>
         </CardContent>
       </Paper>
       <Paper elevation={3}>

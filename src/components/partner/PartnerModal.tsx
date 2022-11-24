@@ -16,7 +16,7 @@ function PartnerModal({ partner, open, handleClose }: Props) {
       <DialogTitle>
         {partner.name}
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ whiteSpace: 'pre-wrap' }}>
         {partner.description}
       </DialogContent>
     </Dialog>

@@ -12,7 +12,7 @@ import {
   Client, Participant, User,
 } from '../../clients/server.generated';
 import UserRoleModal from '../../components/admin/UserRoleModal';
-import { usePartners, useUsers } from '../../hooks/useEntities';
+import { usePartners, useRoles, useUsers } from '../../hooks/useEntities';
 import SetPasswordReminderModal from '../../components/mailings/SetPasswordReminderModal';
 import TracksReminderModal from '../../components/mailings/TracksReminderModal';
 import AutoSubscribeModal from '../../components/program/AutoSubscribeModal';
@@ -21,6 +21,7 @@ import FinalInfoModal from '../../components/mailings/FinalInfoModal';
 function AdminUsers() {
   const [loading, setLoading] = React.useState(false);
   const { users, loading: loadingUsers, getUsers } = useUsers();
+  const { roles, loading: loadingRoles } = useRoles();
   const { partners, loading: loadingPartners } = usePartners();
 
   const entityColumns: AdminPropField<User, Participant>[] = [{
@@ -131,6 +132,10 @@ function AdminUsers() {
     setLoading(false);
   };
 
+  const UserRoleModalWithRoles = (
+    { entity }: {entity: User },
+  ) => UserRoleModal({ entity, roles: roles || [] });
+
   return (
     <>
       <TypographyHeader variant="h2">Users</TypographyHeader>
@@ -160,13 +165,13 @@ function AdminUsers() {
         <CardContent>
           <AdminTable
             entityName="user"
-            loading={loading || loadingUsers || loadingPartners}
+            loading={loading || loadingUsers || loadingRoles || loadingPartners}
             entityColumns={entityColumns}
             entities={users}
             handleUpdate={handleUpdateUser}
             handleCreate={handleCreateUser}
             handleDelete={handleDeleteUser}
-            customButtons={[UserRoleModal]}
+            customButtons={[UserRoleModalWithRoles]}
           />
         </CardContent>
       </Paper>

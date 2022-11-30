@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { AuthContext } from '../auth/AuthContextProvider';
 import TypographyHeader from '../components/layout/TypographyHeader';
 import QrScannerComponent from '../components/QrScannerComponent';
-import { Client, QRParams } from '../clients/server.generated';
+import { ApiException, Client, QRParams } from '../clients/server.generated';
 import { AlertContext } from '../alerts/AlertContextProvider';
 import NotFound from './public/NotFound';
 
@@ -24,11 +24,11 @@ function PartnerQrScanner() {
     setScanEnabled(false);
     setLoading(true);
     const client = new Client();
-    client.requestScan(user?.id || -1, new QRParams({
+    client.requestScan(user?.partnerId || -1, new QRParams({
       encryptedId: result,
     }))
       .then(() => showAlert({ severity: 'success', message: 'Successfully scanned QR code!' }))
-      .catch(() => showAlert({ severity: 'error', message: 'Could not scan QR code. Is the code invalid?' }))
+      .catch((e: ApiException) => showAlert({ severity: 'error', message: `Could not scan QR code. Is the code invalid? ${e.response}` }))
       .finally(() => setLoading(false));
   };
 

@@ -7,18 +7,22 @@ import {
 import { Badge } from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import {
-  Client, User,
+  Client, Role, User,
 } from '../../clients/server.generated';
 import AdminTableButton from './AdminTableButton';
-import { useRoles } from '../../hooks/useEntities';
 
-function ActivityRoleModal({ entity } : { entity: User; }) {
+interface UserRoleModalProps {
+  entity: User;
+  roles: Role[];
+}
+
+function ActivityRoleModal({ entity, roles } : UserRoleModalProps) {
   const [open, setOpen] = React.useState(false);
   const [chosenRoles, setChosenRoles] = React.useState<number[]>(
     entity.roles.map((s) => s.id),
   );
   const [saving, setSaving] = React.useState(false);
-  const { loading, roles } = useRoles();
+  // const { loading, roles } = useRoles();
 
   const handleClose = () => setOpen(false);
 
@@ -49,7 +53,7 @@ function ActivityRoleModal({ entity } : { entity: User; }) {
         <Badge fontSize="small" />
       </AdminTableButton>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        {loading || saving ? (<LinearProgress color="primary" />) : null}
+        {saving ? (<LinearProgress color="primary" />) : null}
         <DialogTitle>Edit roles</DialogTitle>
         <DialogContent>
           {roles !== undefined && (
@@ -85,7 +89,7 @@ function ActivityRoleModal({ entity } : { entity: User; }) {
             variant="contained"
             color="success"
             type="submit"
-            disabled={loading || saving}
+            disabled={saving}
           >
             Save
           </Button>

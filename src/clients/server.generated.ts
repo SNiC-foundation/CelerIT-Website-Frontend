@@ -265,6 +265,39 @@ export class Client {
     }
 
     /**
+     * @return No content
+     */
+    subscribeRemainingUsers(): Promise<void> {
+        let url_ = this.baseUrl + "/activity/subscribe/fill";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubscribeRemainingUsers(_response);
+        });
+    }
+
+    protected processSubscribeRemainingUsers(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @param body Parameters to create user with
      * @return Ok
      */
@@ -728,6 +761,83 @@ export class Client {
             });
         }
         return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @return Ok
+     */
+    getParticipantsExport(): Promise<ParticipantExport[]> {
+        let url_ = this.baseUrl + "/participant/export/export";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetParticipantsExport(_response);
+        });
+    }
+
+    protected processGetParticipantsExport(response: Response): Promise<ParticipantExport[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ParticipantExport.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ParticipantExport[]>(null as any);
+    }
+
+    /**
+     * @return No content
+     */
+    getParticipantQrCodeExport(): Promise<void> {
+        let url_ = this.baseUrl + "/participant/export/qrcodes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetParticipantQrCodeExport(_response);
+        });
+    }
+
+    protected processGetParticipantQrCodeExport(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -2479,6 +2589,206 @@ export class Client {
     }
 
     /**
+     * @param date User creation date for which people should receive an email
+     * @return Ok
+     */
+    getSetPasswordReminderUsers(date: Date): Promise<User[]> {
+        let url_ = this.baseUrl + "/user/mail/set-password-reminder?";
+        if (date === undefined || date === null)
+            throw new Error("The parameter 'date' must be defined and cannot be null.");
+        else
+            url_ += "date=" + encodeURIComponent(date ? "" + date.toISOString() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetSetPasswordReminderUsers(_response);
+        });
+    }
+
+    protected processGetSetPasswordReminderUsers(response: Response): Promise<User[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(User.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<User[]>(null as any);
+    }
+
+    /**
+     * @return No content
+     */
+    sendSetPasswordReminder(body: SendSetPasswordReminderParams): Promise<void> {
+        let url_ = this.baseUrl + "/user/mail/set-password-reminder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSendSetPasswordReminder(_response);
+        });
+    }
+
+    protected processSendSetPasswordReminder(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return Ok
+     */
+    getTracksReminderUsers(): Promise<User[]> {
+        let url_ = this.baseUrl + "/user/mail/tracks-reminder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetTracksReminderUsers(_response);
+        });
+    }
+
+    protected processGetTracksReminderUsers(response: Response): Promise<User[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(User.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<User[]>(null as any);
+    }
+
+    /**
+     * @return No content
+     */
+    sendTracksReminders(body: number[]): Promise<void> {
+        let url_ = this.baseUrl + "/user/mail/tracks-reminder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSendTracksReminders(_response);
+        });
+    }
+
+    protected processSendTracksReminders(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No content
+     */
+    sendFinalInfo(): Promise<void> {
+        let url_ = this.baseUrl + "/user/mail/final-info";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSendFinalInfo(_response);
+        });
+    }
+
+    protected processSendFinalInfo(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return Ok
      */
     login(body: LoginParams): Promise<void> {
@@ -2525,66 +2835,6 @@ export class Client {
         }
         return Promise.resolve<void>(null as any);
     }
-}
-
-export class ProgramPart implements IProgramPart {
-    id!: number;
-    createdAt!: Date;
-    updatedAt!: Date;
-    version!: number;
-    name!: string;
-    beginTime!: Date;
-    endTime!: Date;
-
-    constructor(data?: IProgramPart) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
-            this.version = _data["version"];
-            this.name = _data["name"];
-            this.beginTime = _data["beginTime"] ? new Date(_data["beginTime"].toString()) : <any>undefined;
-            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ProgramPart {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProgramPart();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
-        data["version"] = this.version;
-        data["name"] = this.name;
-        data["beginTime"] = this.beginTime ? this.beginTime.toISOString() : <any>undefined;
-        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IProgramPart {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    version: number;
-    name: string;
-    beginTime: Date;
-    endTime: Date;
 }
 
 export class Activity implements IActivity {
@@ -2673,6 +2923,81 @@ export interface IActivity {
     description?: string | undefined;
     speakers: Speaker[];
     subscribe?: SubscribeActivity | undefined;
+}
+
+export class ProgramPart implements IProgramPart {
+    id!: number;
+    createdAt!: Date;
+    updatedAt!: Date;
+    version!: number;
+    name!: string;
+    beginTime!: Date;
+    endTime!: Date;
+    activities!: Activity[];
+
+    constructor(data?: IProgramPart) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.activities = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+            this.version = _data["version"];
+            this.name = _data["name"];
+            this.beginTime = _data["beginTime"] ? new Date(_data["beginTime"].toString()) : <any>undefined;
+            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
+            if (Array.isArray(_data["activities"])) {
+                this.activities = [] as any;
+                for (let item of _data["activities"])
+                    this.activities!.push(Activity.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProgramPart {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProgramPart();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+        data["version"] = this.version;
+        data["name"] = this.name;
+        data["beginTime"] = this.beginTime ? this.beginTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        if (Array.isArray(this.activities)) {
+            data["activities"] = [];
+            for (let item of this.activities)
+                data["activities"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IProgramPart {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+    name: string;
+    beginTime: Date;
+    endTime: Date;
+    activities: Activity[];
 }
 
 export class Speaker implements ISpeaker {
@@ -2767,6 +3092,7 @@ export class User implements IUser {
     partner?: Partner | undefined;
     subscriptions!: SubscribeActivity[];
     scans!: TicketScan[];
+    identity?: LocalAuthenticator;
 
     constructor(data?: IUser) {
         if (data) {
@@ -2812,6 +3138,7 @@ export class User implements IUser {
                 for (let item of _data["scans"])
                     this.scans!.push(TicketScan.fromJS(item));
             }
+            this.identity = _data["identity"] ? LocalAuthenticator.fromJS(_data["identity"]) : <any>undefined;
         }
     }
 
@@ -2852,6 +3179,7 @@ export class User implements IUser {
             for (let item of this.scans)
                 data["scans"].push(item.toJSON());
         }
+        data["identity"] = this.identity ? this.identity.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -2873,6 +3201,7 @@ export interface IUser {
     partner?: Partner | undefined;
     subscriptions: SubscribeActivity[];
     scans: TicketScan[];
+    identity?: LocalAuthenticator;
 }
 
 export class Participant implements IParticipant {
@@ -3321,6 +3650,73 @@ export interface ISubscribeActivity {
     subscriptionListOpenDate: Date;
     subscriptionListCloseDate: Date;
     subscribers: User[];
+}
+
+export class LocalAuthenticator implements ILocalAuthenticator {
+    createdAt!: Date;
+    updatedAt!: Date;
+    version!: number;
+    userId!: number;
+    user!: User;
+    verifiedEmail!: boolean;
+    hash?: string;
+    salt!: string;
+
+    constructor(data?: ILocalAuthenticator) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.user = new User();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+            this.version = _data["version"];
+            this.userId = _data["userId"];
+            this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
+            this.verifiedEmail = _data["verifiedEmail"];
+            this.hash = _data["hash"];
+            this.salt = _data["salt"];
+        }
+    }
+
+    static fromJS(data: any): LocalAuthenticator {
+        data = typeof data === 'object' ? data : {};
+        let result = new LocalAuthenticator();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+        data["version"] = this.version;
+        data["userId"] = this.userId;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["verifiedEmail"] = this.verifiedEmail;
+        data["hash"] = this.hash;
+        data["salt"] = this.salt;
+        return data;
+    }
+}
+
+export interface ILocalAuthenticator {
+    createdAt: Date;
+    updatedAt: Date;
+    version: number;
+    userId: number;
+    user: User;
+    verifiedEmail: boolean;
+    hash?: string;
+    salt: string;
 }
 
 export class ActivityResponse implements IActivityResponse {
@@ -3819,6 +4215,86 @@ export class Partial_UpdateParticipantParams_ implements IPartial_UpdateParticip
 /** Make all properties in T optional */
 export interface IPartial_UpdateParticipantParams_ {
     studyProgram?: string;
+}
+
+export class ParticipantExport implements IParticipantExport {
+    id!: number;
+    ticket!: string;
+    name!: string;
+    studyAssociation!: string;
+    studyProgram!: string;
+    qrCode!: string;
+    track1Name!: string;
+    track1Location!: string;
+    track2Name!: string;
+    track2Location!: string;
+    track3Name!: string;
+    track3Location!: string;
+
+    constructor(data?: IParticipantExport) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.ticket = _data["ticket"];
+            this.name = _data["name"];
+            this.studyAssociation = _data["studyAssociation"];
+            this.studyProgram = _data["studyProgram"];
+            this.qrCode = _data["qrCode"];
+            this.track1Name = _data["track1Name"];
+            this.track1Location = _data["track1Location"];
+            this.track2Name = _data["track2Name"];
+            this.track2Location = _data["track2Location"];
+            this.track3Name = _data["track3Name"];
+            this.track3Location = _data["track3Location"];
+        }
+    }
+
+    static fromJS(data: any): ParticipantExport {
+        data = typeof data === 'object' ? data : {};
+        let result = new ParticipantExport();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticket"] = this.ticket;
+        data["name"] = this.name;
+        data["studyAssociation"] = this.studyAssociation;
+        data["studyProgram"] = this.studyProgram;
+        data["qrCode"] = this.qrCode;
+        data["track1Name"] = this.track1Name;
+        data["track1Location"] = this.track1Location;
+        data["track2Name"] = this.track2Name;
+        data["track2Location"] = this.track2Location;
+        data["track3Name"] = this.track3Name;
+        data["track3Location"] = this.track3Location;
+        return data;
+    }
+}
+
+export interface IParticipantExport {
+    id: number;
+    ticket: string;
+    name: string;
+    studyAssociation: string;
+    studyProgram: string;
+    qrCode: string;
+    track1Name: string;
+    track1Location: string;
+    track2Name: string;
+    track2Location: string;
+    track3Name: string;
+    track3Location: string;
 }
 
 export class PartnerParams implements IPartnerParams {
@@ -4555,9 +5031,61 @@ export interface IPartial_PersonalUserParams_ {
     participantInfo?: UpdateParticipantParams;
 }
 
+export class SendSetPasswordReminderParams implements ISendSetPasswordReminderParams {
+    ids!: number[];
+    date!: Date;
+
+    constructor(data?: ISendSetPasswordReminderParams) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.ids = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["ids"])) {
+                this.ids = [] as any;
+                for (let item of _data["ids"])
+                    this.ids!.push(item);
+            }
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SendSetPasswordReminderParams {
+        data = typeof data === 'object' ? data : {};
+        let result = new SendSetPasswordReminderParams();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.ids)) {
+            data["ids"] = [];
+            for (let item of this.ids)
+                data["ids"].push(item);
+        }
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISendSetPasswordReminderParams {
+    ids: number[];
+    date: Date;
+}
+
 export class LoginParams implements ILoginParams {
-    email?: string;
-    password?: string;
+    email!: string;
+    password!: string;
+    rememberMe?: boolean;
 
     constructor(data?: ILoginParams) {
         if (data) {
@@ -4572,6 +5100,7 @@ export class LoginParams implements ILoginParams {
         if (_data) {
             this.email = _data["email"];
             this.password = _data["password"];
+            this.rememberMe = _data["rememberMe"];
         }
     }
 
@@ -4586,13 +5115,15 @@ export class LoginParams implements ILoginParams {
         data = typeof data === 'object' ? data : {};
         data["email"] = this.email;
         data["password"] = this.password;
+        data["rememberMe"] = this.rememberMe;
         return data;
     }
 }
 
 export interface ILoginParams {
-    email?: string;
-    password?: string;
+    email: string;
+    password: string;
+    rememberMe?: boolean;
 }
 
 export class ParticipantInfo implements IParticipantInfo {

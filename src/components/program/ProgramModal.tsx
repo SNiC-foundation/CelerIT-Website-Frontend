@@ -28,7 +28,7 @@ function ProgramModal({
 
   let newDescription = activity.description;
   if (newDescription == null || newDescription === '' || newDescription === undefined) {
-    newDescription = 'A description is not yet set';
+    newDescription = 'More information will follow soon.';
   }
 
   let speakers = activity.speakers.map((speaker) => speaker.name).join(', ');
@@ -94,7 +94,7 @@ function ProgramModal({
           {activity.programPart.beginTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
           -
           {activity.programPart.endTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
-          <hr style={{ opacity: '0.40' }} />
+          <hr style={{ opacity: '0.40', whiteSpace: 'pre-wrap' }} />
           {newDescription}
           {(blockedMessage !== '' || subscriptionListOpen) && (
             <>

@@ -1,6 +1,9 @@
 import React from 'react';
 import validator from 'validator';
-import { CardContent, Paper } from '@mui/material';
+import {
+  Box, Button, CardContent, Paper,
+} from '@mui/material';
+import { Link } from 'react-router-dom';
 import { AdminPropField } from '../../components/admin/AdminProps';
 import { notEmptyString } from '../../components/admin/defaultValidators';
 import TypographyHeader from '../../components/layout/TypographyHeader';
@@ -9,11 +12,16 @@ import {
   Client, Participant, User,
 } from '../../clients/server.generated';
 import UserRoleModal from '../../components/admin/UserRoleModal';
-import { usePartners, useUsers } from '../../hooks/useEntities';
+import { usePartners, useRoles, useUsers } from '../../hooks/useEntities';
+import SetPasswordReminderModal from '../../components/mailings/SetPasswordReminderModal';
+import TracksReminderModal from '../../components/mailings/TracksReminderModal';
+import AutoSubscribeModal from '../../components/program/AutoSubscribeModal';
+import FinalInfoModal from '../../components/mailings/FinalInfoModal';
 
 function AdminUsers() {
   const [loading, setLoading] = React.useState(false);
   const { users, loading: loadingUsers, getUsers } = useUsers();
+  const { roles, loading: loadingRoles } = useRoles();
   const { partners, loading: loadingPartners } = usePartners();
 
   const entityColumns: AdminPropField<User, Participant>[] = [{
@@ -124,20 +132,46 @@ function AdminUsers() {
     setLoading(false);
   };
 
+  const UserRoleModalWithRoles = (
+    { entity }: {entity: User },
+  ) => UserRoleModal({ entity, roles: roles || [] });
+
   return (
     <>
       <TypographyHeader variant="h2">Users</TypographyHeader>
+      <Paper elevation={3} sx={{ my: '1rem' }}>
+        <CardContent>
+          <TypographyHeader variant="h5" sx={{ marginBottom: 0 }}>Emails</TypographyHeader>
+          <Box sx={{ marginBottom: '1rem' }}>
+            <SetPasswordReminderModal />
+            <TracksReminderModal />
+            <FinalInfoModal />
+          </Box>
+          <TypographyHeader variant="h5" sx={{ marginBottom: 0 }}>Actions</TypographyHeader>
+          <Box>
+            <AutoSubscribeModal />
+            <Button
+              component={Link}
+              to="/admin/users/export"
+              variant="contained"
+              sx={{ m: '0.5rem' }}
+            >
+              Export participants
+            </Button>
+          </Box>
+        </CardContent>
+      </Paper>
       <Paper elevation={3}>
         <CardContent>
           <AdminTable
             entityName="user"
-            loading={loading || loadingUsers || loadingPartners}
+            loading={loading || loadingUsers || loadingRoles || loadingPartners}
             entityColumns={entityColumns}
             entities={users}
             handleUpdate={handleUpdateUser}
             handleCreate={handleCreateUser}
             handleDelete={handleDeleteUser}
-            customButtons={[UserRoleModal]}
+            customButtons={[UserRoleModalWithRoles]}
           />
         </CardContent>
       </Paper>

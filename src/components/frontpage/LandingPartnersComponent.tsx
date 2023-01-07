@@ -11,9 +11,11 @@ function LandingPartnersComponent({ shuffledPartners }: Props) {
   return (
     <>
       {shuffledPartners.map((p) => (
-        <Box sx={{
-          height: '92px', width: '92px', display: 'flex', alignItems: 'center', padding: '0.25rem',
-        }}
+        <Box
+          sx={{
+            height: '92px', width: '92px', display: 'flex', alignItems: 'center', padding: '0.25rem',
+          }}
+          key={p.name}
         >
           <Box>
             <a href={p.url} target="_blank" rel="noreferrer">

@@ -33,14 +33,15 @@ function ActivityComponent({ activity, getProgram }: Props) {
           <Typography
             variant="body1"
             sx={{
+              marginTop: '0.75rem',
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 1,
+              WebkitLineClamp: 5,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
           >
-            {activity.description || 'A description is not yet set'}
+            {activity.description || 'More information will follow soon.'}
           </Typography>
         </Box>
         {activity.subscribe && (

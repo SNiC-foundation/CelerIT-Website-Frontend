@@ -1,14 +1,18 @@
 import React, { FormEvent } from 'react';
 import {
+  Alert,
   Box, Button, CardContent, CircularProgress, FormControl, Grid, Paper, TextField,
 } from '@mui/material';
-import { Check, Clear } from '@mui/icons-material';
+import {
+  Check, Clear, PriorityHigh, QuestionMark,
+} from '@mui/icons-material';
 import { useElementSize } from 'usehooks-ts';
 import TypographyHeader from '../../components/layout/TypographyHeader';
-import { Client, Ticket } from '../../clients/server.generated';
+import { ApiException, Client, Ticket } from '../../clients/server.generated';
 import { AlertContext } from '../../alerts/AlertContextProvider';
 import TicketCheckInInfo from '../../components/ticket/TicketCheckInInfo';
 import TicketScanHistory from '../../components/ticket/TicketScanHistory';
+import TicketTrackInfo from '../../components/ticket/TicketTrackInfo';
 
 function CheckIn() {
   const [code, setCode] = React.useState('');
@@ -23,25 +27,32 @@ function CheckIn() {
     setLoading(true);
     const client = new Client();
     client.scanSingleTicket(code).then((t) => {
-      if (t != null && t.user != null) {
+      if (t != null) {
         setTicket(t);
       } else {
         setTicket(null);
       }
-    }).catch((e) => {
-      showAlert({ severity: 'error', message: e.message });
+    }).catch((e: ApiException) => {
+      showAlert({ severity: 'error', message: e.response });
+      setTicket(null);
     }).finally(() => {
       setLoading(false);
-      setTicket(null);
       setCode('');
     });
   };
 
   let codeIcon;
+  let alert;
   if (loading) {
     codeIcon = (<CircularProgress size="50%" />);
   } else if (ticket == null) {
     codeIcon = (<Clear color="error" sx={{ width: '100%', height: '100%' }} />);
+  } else if (ticket.user == null) {
+    codeIcon = (<QuestionMark color="warning" sx={{ width: '100%', height: '100%' }} />);
+    alert = (<Alert sx={{ mb: '1rem' }} severity="warning">This ticket has not been activated on the CelerIT website! Please send this person to support.</Alert>);
+  } else if (ticket.user.subscriptions.length === 0) {
+    codeIcon = (<PriorityHigh color="info" sx={{ width: '100%', height: '100%' }} />);
+    alert = (<Alert sx={{ mb: '1rem' }} severity="info">This visitor was too late with activating their ticket. Please give them an empty badge!</Alert>);
   } else {
     codeIcon = (<Check color="success" sx={{ width: '100%', height: '100%' }} />);
   }
@@ -92,11 +103,18 @@ function CheckIn() {
         <Grid item xs={12} md={6}>
           <Paper elevation={3}>
             <CardContent>
+              {alert}
               <Box sx={{ marginBottom: '1rem' }}>
                 <TypographyHeader variant="h5">
                   Scanned ticket
                 </TypographyHeader>
                 <TicketCheckInInfo ticket={ticket} />
+              </Box>
+              <Box sx={{ marginBottom: '1rem' }}>
+                <TypographyHeader variant="h5">
+                  Tracks
+                </TypographyHeader>
+                <TicketTrackInfo ticket={ticket} />
               </Box>
               <Box>
                 <TypographyHeader variant="h5">

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button, IconButton, Input, InputAdornment, InputLabel, FormControl, Paper, LinearProgress, Box,
+  FormControlLabel, Switch,
 } from '@mui/material';
 import {
   Lock, Person, Visibility, VisibilityOff,
@@ -14,6 +15,7 @@ function LoginForm() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
+  const [rememberMe, setRememberMe] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ function LoginForm() {
     setLoading(true);
     const client = new Client();
     client.login(new LoginParams({
-      email, password,
+      email, password, rememberMe,
     }))
       .then(async () => {
         await updateProfile();
@@ -93,6 +95,14 @@ function LoginForm() {
               </InputAdornment>
             )}
           />
+        </FormControl>
+        <FormControl variant="standard" sx={{ my: 1, width: '100%' }}>
+          <Box>
+            <FormControlLabel
+              control={<Switch checked={rememberMe} onClick={() => setRememberMe(!rememberMe)} />}
+              label="Remember me"
+            />
+          </Box>
         </FormControl>
 
         <Button type="submit" variant="contained" sx={{ mt: 2 }} onClick={handleLogin}>Login</Button>

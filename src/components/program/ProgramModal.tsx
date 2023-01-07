@@ -94,6 +94,15 @@ function ProgramModal({
           {activity.programPart.beginTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
           -
           {activity.programPart.endTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
+          {!!activity.recordingUrl && (
+            <>
+              <br />
+              <strong>Recording: </strong>
+              <a href={activity.recordingUrl} title="Recording" target="_blank" rel="noreferrer">
+                Click here to watch the recording
+              </a>
+            </>
+          )}
           <hr style={{ opacity: '0.40', whiteSpace: 'pre-wrap' }} />
           {newDescription}
           {(blockedMessage !== '' || subscriptionListOpen) && (

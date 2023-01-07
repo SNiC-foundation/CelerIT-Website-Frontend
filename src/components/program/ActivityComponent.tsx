@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Box, Typography, Divider,
 } from '@mui/material';
+import { Videocam } from '@mui/icons-material';
 import ProgramModal, { ActivityWithParticipantAmount } from './ProgramModal';
 
 interface Props {
@@ -44,6 +45,14 @@ function ActivityComponent({ activity, getProgram }: Props) {
             {activity.description || 'More information will follow soon.'}
           </Typography>
         </Box>
+        {!!activity.recordingUrl && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: '0.5rem' }}>
+            <Videocam />
+            <Typography sx={{ fontStyle: 'italic' }}>
+              This talk is recorded
+            </Typography>
+          </Box>
+        )}
         {activity.subscribe && (
         <Box sx={{ width: '100%' }}>
           <Divider />

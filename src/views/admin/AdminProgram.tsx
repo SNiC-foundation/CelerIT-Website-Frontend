@@ -110,6 +110,13 @@ function AdminProgram() {
     initial: '',
     canBeUpdated: true,
   }, {
+    attribute: 'recordingUrl',
+    label: 'Recording URL',
+    width: 200,
+    fieldType: 'string',
+    initial: '',
+    canBeUpdated: true,
+  }, {
     attribute: 'subscribe',
     label: 'Activity can be subscribed to',
     width: 0,

@@ -8,15 +8,6 @@ const Paragraph = styled(Typography)(() => ({
   marginBottom: '2rem',
 }));
 
-const ContactInfoHeader = styled(TypographyHeader)(() => ({
-  marginBottom: 0,
-  marginTop: '8px',
-}));
-
-const ContactInfoField = styled(Typography)({
-  paddingLeft: '3rem',
-});
-
 function AboutPage() {
   return (
     <Box sx={{
@@ -66,25 +57,12 @@ function AboutPage() {
         }}
         >
           <TypographyHeader variant="h3">Contact us</TypographyHeader>
-          <Container maxWidth="xs" sx={() => ({ textAlign: 'left' })}>
-            <ContactInfoHeader variant="h5">General Email</ContactInfoHeader>
-            <ContactInfoField><Link href="mailto:info@celerit.nl">info@celerit.nl</Link></ContactInfoField>
-            <ContactInfoHeader variant="h5">Business Email</ContactInfoHeader>
-            <ContactInfoField><Link href="mailto:partners@celerit.nl">partners@celerit.nl</Link></ContactInfoField>
-            <ContactInfoHeader variant="h5">Phone</ContactInfoHeader>
-            <ContactInfoField>(+31) (040) 247 2815</ContactInfoField>
-            <ContactInfoHeader variant="h5">Address</ContactInfoHeader>
-            <ContactInfoField sx={{ whiteSpace: 'pre-wrap' }}>
-              GEWIS t.a.v. CelerIT
-              <br />
-              MF 3.155
-              <br />
-              Postbus 513
-              <br />
-              Eindhoven, 5600MB
-              <br />
-            </ContactInfoField>
-          </Container>
+          <p>
+            The CelerIT committee has been discharged and can thus no longer
+            be contacted for inquiries regarding SNiC.
+            {' '}
+            <a target="_blank" href="https://stichting.snic.nl/contact.html" rel="noreferrer">Please contact the foundation instead.</a>
+          </p>
         </Box>
       </Container>
     </Box>

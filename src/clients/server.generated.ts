@@ -2847,6 +2847,7 @@ export class Activity implements IActivity {
     programPartId!: number;
     programPart!: ProgramPart;
     description?: string | undefined;
+    recordingUrl?: string;
     speakers!: Speaker[];
     subscribe?: SubscribeActivity | undefined;
 
@@ -2874,6 +2875,7 @@ export class Activity implements IActivity {
             this.programPartId = _data["programPartId"];
             this.programPart = _data["programPart"] ? ProgramPart.fromJS(_data["programPart"]) : new ProgramPart();
             this.description = _data["description"];
+            this.recordingUrl = _data["recordingUrl"];
             if (Array.isArray(_data["speakers"])) {
                 this.speakers = [] as any;
                 for (let item of _data["speakers"])
@@ -2901,6 +2903,7 @@ export class Activity implements IActivity {
         data["programPartId"] = this.programPartId;
         data["programPart"] = this.programPart ? this.programPart.toJSON() : <any>undefined;
         data["description"] = this.description;
+        data["recordingUrl"] = this.recordingUrl;
         if (Array.isArray(this.speakers)) {
             data["speakers"] = [];
             for (let item of this.speakers)
@@ -2921,6 +2924,7 @@ export interface IActivity {
     programPartId: number;
     programPart: ProgramPart;
     description?: string | undefined;
+    recordingUrl?: string;
     speakers: Speaker[];
     subscribe?: SubscribeActivity | undefined;
 }
@@ -3811,6 +3815,7 @@ export class ActivityParams implements IActivityParams {
     location!: string;
     programPartId!: number;
     description?: string;
+    recordingUrl?: string;
     image?: string;
     speakerIds?: number[];
     subscribe?: UpdateSubscribeActivityParams;
@@ -3830,6 +3835,7 @@ export class ActivityParams implements IActivityParams {
             this.location = _data["location"];
             this.programPartId = _data["programPartId"];
             this.description = _data["description"];
+            this.recordingUrl = _data["recordingUrl"];
             this.image = _data["image"];
             if (Array.isArray(_data["speakerIds"])) {
                 this.speakerIds = [] as any;
@@ -3853,6 +3859,7 @@ export class ActivityParams implements IActivityParams {
         data["location"] = this.location;
         data["programPartId"] = this.programPartId;
         data["description"] = this.description;
+        data["recordingUrl"] = this.recordingUrl;
         data["image"] = this.image;
         if (Array.isArray(this.speakerIds)) {
             data["speakerIds"] = [];
@@ -3869,6 +3876,7 @@ export interface IActivityParams {
     location: string;
     programPartId: number;
     description?: string;
+    recordingUrl?: string;
     image?: string;
     speakerIds?: number[];
     subscribe?: UpdateSubscribeActivityParams;

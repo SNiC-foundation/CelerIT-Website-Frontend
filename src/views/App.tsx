@@ -10,6 +10,7 @@ import SpeakersComponent from '../components/frontpage/SpeakersComponent';
 import TicketComponent from '../components/frontpage/TicketComponent';
 import LocationComponent from '../components/frontpage/LocationComponent';
 import PartnersComponent from '../components/frontpage/PartnersComponent';
+import AftermovieComponent from '../components/frontpage/AftermovieComponent';
 
 function App() {
   const [partners, setPartners] = React.useState<Partner[] | null>(null);
@@ -33,6 +34,7 @@ function App() {
         shuffledPartners={shuffledPartners}
         finalFrame="/CelerIT_animatie_finalframe.png"
       />
+      <AftermovieComponent />
       <DateLocationComponent />
       <ThemeComponent />
       <SkewContentBox image="/paneldiscussie.jpg">

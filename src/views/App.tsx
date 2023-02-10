@@ -1,6 +1,6 @@
 import React from 'react';
 import LandingComponent from '../components/frontpage/LandingComponent';
-import { Client, Partner } from '../clients/server.generated';
+import { ClientStatic, Partner } from '../clients/static';
 import ThemeComponent from '../components/frontpage/ThemeComponent';
 import DateLocationComponent from '../components/frontpage/DateLocationComponent';
 import SkewContentBox from '../components/layout/SkewContentBox';
@@ -17,7 +17,7 @@ function App() {
   const [shuffledPartners, setShuffledPartners] = React.useState<Partner[] | null>(null);
 
   React.useEffect(() => {
-    const client = new Client();
+    const client = new ClientStatic();
     client.getAllPartners()
       .then((p) => {
         setPartners(p);

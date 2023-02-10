@@ -1,14 +1,15 @@
 import React from 'react';
 import { Box, CircularProgress, Grid } from '@mui/material';
-import { Client, Speaker } from '../../clients/server.generated';
+import { Speaker } from '../../clients/server.generated';
 import PageHeader from '../../components/layout/PageHeader';
 import SpeakerCard from '../../components/speaker/SpeakerCard';
+import { ClientStatic } from '../../clients/static';
 
 function SpeakersPage() {
   const [speakers, setSpeakers] = React.useState<Speaker[] | undefined>(undefined);
 
   React.useEffect(() => {
-    const client = new Client();
+    const client = new ClientStatic();
     client.getAllSpeakers(true).then((s) => setSpeakers(s));
   }, []);
 

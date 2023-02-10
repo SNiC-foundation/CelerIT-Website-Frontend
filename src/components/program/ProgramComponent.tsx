@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import {
   Box, CircularProgress, Grid, Paper, styled, Typography,
 } from '@mui/material';
-import {
-  Client, ProgramPart,
-} from '../../clients/server.generated';
+import { ProgramPart } from '../../clients/server.generated';
 import ActivityComponent from './ActivityComponent';
 import PageHeader from '../layout/PageHeader';
 import { AuthContext } from '../../auth/AuthContextProvider';
 import { ActivityWithParticipantAmount } from './ProgramModal';
+import { ClientStatic } from '../../clients/static';
+import { dateToTime } from '../../helpers/dateTime';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,7 +28,7 @@ function ProgramComponent() {
   const { user } = authContext;
 
   const getProgram = () => {
-    const client = new Client();
+    const client = new ClientStatic();
 
     async function fetchActivities() {
       const res = await client.getAllActivities();
@@ -71,9 +71,9 @@ function ProgramComponent() {
                 {programPart.name}
               </Typography>
               <Typography variant="subtitle1" sx={{ color: 'white' }}>
-                {programPart.beginTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
+                {dateToTime(programPart.beginTime)}
                 -
-                {programPart.endTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
+                {dateToTime(programPart.endTime)}
               </Typography>
             </Item>
           </Grid>

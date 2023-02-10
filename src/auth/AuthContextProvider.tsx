@@ -43,7 +43,7 @@ function AuthContextProvider({ children }: Props) {
   };
 
   React.useEffect(() => {
-    updateProfile().then();
+    // updateProfile().then();
   }, []);
 
   const authContext = React.useMemo(() => ({

@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import { Activity, Client } from '../../clients/server.generated';
 import { AlertContext } from '../../alerts/AlertContextProvider';
+import { dateToString } from '../../helpers/dateTime';
 
 function AutoSubscribeModal() {
   const [open, setOpen] = React.useState(false);
@@ -77,7 +78,7 @@ function AutoSubscribeModal() {
                 {openActivities.map((a) => (
                   <tr key={a.id}>
                     <td style={{ paddingRight: '0.5rem' }}>{a.name}</td>
-                    <td>{a.subscribe!.subscriptionListCloseDate.toLocaleString()}</td>
+                    <td>{dateToString(a.subscribe!.subscriptionListCloseDate)}</td>
                   </tr>
                 ))}
               </tbody>

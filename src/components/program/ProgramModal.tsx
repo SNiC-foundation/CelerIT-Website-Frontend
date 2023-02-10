@@ -7,6 +7,7 @@ import {
 } from '../../clients/server.generated';
 import { AlertContext } from '../../alerts/AlertContextProvider';
 import { AuthContext } from '../../auth/AuthContextProvider';
+import { dateToString, dateToTime, getTime } from '../../helpers/dateTime';
 
 export type ActivityWithParticipantAmount = Activity & {
   nrOfSubscribers: number;
@@ -35,8 +36,8 @@ function ProgramModal({
   if (speakers === '') speakers = '-';
 
   const subscriptionListOpen = activity.subscribe
-    ? activity.subscribe.subscriptionListOpenDate.getTime() < Date.now()
-      && activity.subscribe.subscriptionListCloseDate.getTime() > Date.now()
+    ? getTime(activity.subscribe.subscriptionListOpenDate) < Date.now()
+      && getTime(activity.subscribe.subscriptionListCloseDate) > Date.now()
     : false;
 
   const handleSubscribe = () => {
@@ -67,9 +68,9 @@ function ProgramModal({
   if (activity.subscribe && user) {
     if (user.subscriptions.map((s) => s.id).includes(activity.subscribe.id)) {
       blockedMessage = 'You are already subscribed to this activity.';
-    } else if (activity.subscribe.subscriptionListOpenDate.getTime() > Date.now()) {
-      blockedMessage = `Subscription list opens at ${activity.subscribe.subscriptionListOpenDate.toLocaleString()}`;
-    } else if (activity.subscribe.subscriptionListCloseDate.getTime() < Date.now()) {
+    } else if (getTime(activity.subscribe.subscriptionListOpenDate) > Date.now()) {
+      blockedMessage = `Subscription list opens at ${dateToString(activity.subscribe.subscriptionListOpenDate)}`;
+    } else if (getTime(activity.subscribe.subscriptionListCloseDate) < Date.now()) {
       blockedMessage = 'Subscription list has closed.';
     } else if (activity.nrOfSubscribers >= activity.subscribe.maxParticipants) {
       blockedMessage = 'This activity is full.';
@@ -91,9 +92,9 @@ function ProgramModal({
           {activity.location}
           <br />
           <strong>Time: </strong>
-          {activity.programPart.beginTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
+          {dateToTime(activity.programPart.beginTime)}
           -
-          {activity.programPart.endTime.toLocaleTimeString(undefined, { timeZone: 'Europe/Amsterdam', timeStyle: 'short' })}
+          {dateToTime(activity.programPart.endTime)}
           {!!activity.recordingUrl && (
             <>
               <br />
@@ -113,7 +114,7 @@ function ProgramModal({
               <span style={{ fontStyle: 'italic' }}>
                 Subscription list closes on
                 {' '}
-                {activity.subscribe?.subscriptionListCloseDate.toLocaleString()}
+                {dateToString(activity.subscribe?.subscriptionListCloseDate!)}
                 .
               </span>
             </>

@@ -2,15 +2,16 @@ import React from 'react';
 import {
   Box, CircularProgress,
 } from '@mui/material';
-import { Client, Partner } from '../../clients/server.generated';
+import { Partner } from '../../clients/server.generated';
 import PageHeader from '../../components/layout/PageHeader';
 import PartnerGrid from '../../components/partner/PartnerGrid';
+import { ClientStatic } from '../../clients/static';
 
 function PartnersPage() {
   const [partners, setPartners] = React.useState<Partner[] | undefined>(undefined);
 
   React.useEffect(() => {
-    const client = new Client();
+    const client = new ClientStatic();
     client.getAllPartners().then((p) => setPartners(p));
   }, []);
 

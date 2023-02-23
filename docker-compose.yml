@@ -2,7 +2,7 @@ version: '2'
 services:
   frontend:
     build:
-      context: ../SNiC-Congress-Frontend
+      context: ../CelerIT-Website-Frontend
       dockerfile: Dockerfile
     image: default.docker-registry.gewis.nl/snic-congress-frontend:latest
     restart: 'unless-stopped'
@@ -15,7 +15,7 @@ services:
       - speakers:/usr/src/app/data/backgrounds
       - barcodes:/usr/src/app/data/barcodes
   backend:
-    build: ../SNiC-Congress-Backend
+    build: ../CelerIT-Website-Backend
     image: default.docker-registry.gewis.nl/snic-congress-backend:latest
     restart: 'unless-stopped'
     networks:
